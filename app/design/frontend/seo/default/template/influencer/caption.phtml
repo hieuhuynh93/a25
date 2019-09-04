@@ -1,0 +1,221 @@
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<div class="page-title">
+    <div class="row">
+        <div class="col-sm-6">
+            <h4 class="mb-0"> Social Media Management - Caption</h4>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                <li class="breadcrumb-item"><a href="<?php echo Mage::getBaseUrl(); ?>" class="default-color">Home</a></li>
+                <li class="breadcrumb-item active">Caption </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<?php
+    $emojiesCollection = Mage::getModel('emojis/emojis')
+            ->getCollection()
+            ->addFieldToFilter('status', '1');
+
+    $htmlEmoji = "";
+    //$count = 0;
+    foreach ($emojiesCollection as $emojiesColl) {
+        $htmlEmoji .= "<a class='captionemoji' href='javascript:setEmojiInCaption(" . $emojiesColl->getDec() . ")'>&#" . $emojiesColl->getDec() . "</a>";
+    }
+?>
+<style>
+    .captionemoji{
+        font-size:20px; 
+        padding: 3px; 
+        margin: 1px;
+    }
+    
+    .captionemoji:hover{
+        border-radius: 5px;
+        background-color: #999;
+    }
+</style>
+<script>
+    
+    function setEmojiInCaption(emojiCode){
+        var textareaText = document.getElementById("caption").value;
+        textareaText = textareaText + "&#" + emojiCode + " ";
+        document.getElementById("caption").value = textareaText;
+        //alert(document.getElementById("caption").innerHTML);
+        document.getElementById("caption").focus();
+        
+        document.getElementById("caption").innerHTML = textareaText;
+    }
+</script>
+<div class="row">
+    <div class="col-12 mb-30 ">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <form method="post">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" name="caption_name" id="caption_name" placeholder="Caption Title">
+                        <div class="invalid-feedback" style="display: none;">
+                            Please provide a valid city.
+                        </div>
+                    </div>
+                    <div class="">
+                        <textarea style="width: 90%; float: left;" id="caption" name="caption" placeholder="Add Caption" class="form-control" rows="3"></textarea>                    
+                        
+                        <a data-html="true" data-container="body" data-toggle="popover" data-placement="left" data-content="<?php echo $htmlEmoji; ?>" data-original-title="Emojis" title="Emojis" aria-describedby="popover403501" style="float: right;font-size:30px;" href="#" class="btn btn-outline-success btn-sm">&#128524;</a>
+                    </div>
+                    <div class="input-group mb-3">
+                        <button style="float: right;" onclick="addCaption();" class="button" type="button">Add Caption</button>
+                        <label id="captionLabel" style="padding-top: 8px; padding-left: 50px;">
+
+                        </label>
+                    </div>
+                    <input type="submit" id="frmSubmit" style="display: none;">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    <?php
+    if (Mage::getSingleton('customer/session')->isLoggedIn()) {
+        $customerData = Mage::getSingleton('customer/session')->getCustomer();
+        $customerId = $customerData->getId();
+    }
+    $captionCollection = Mage::getModel('caption/caption')
+            ->getCollection()
+            ->addFieldToFilter('customer_id', $customerId)
+            ->addFieldToFilter('status', '1');
+
+    
+    ?>
+    <div class="row">
+
+        <?php foreach ($captionCollection as $captions): ?>
+            <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
+                <div class="card card-statistics h-100">
+                    <div class="card-body">
+                        <div class="btn-group info-drop">
+                            <button type="button" class="dropdown-toggle-split text-muted" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ti-more"></i></button>
+                            <div style="position: absolute; transform: translate3d(0px, 27px, 0px); top: 0px; left: 0px; will-change: transform;" x-placement="bottom-start" class="dropdown-menu">
+                                <a class="dropdown-item" href="javascript:editCaption('<?php echo $captions->getId(); ?>');"><i class="text-primary ti-reload"></i>Edit</a>
+                                <a class="dropdown-item" href="javascript:deleteCaption('<?php echo $captions->getId(); ?>'); "><i class="text-secondary ti-eye"></i>Delete</a>
+                            </div>
+                        </div>
+                        <div class="card-body pb-150" id="captionResultSection<?php echo $captions->getId(); ?>">
+                            <h5 class="card-title"><?php echo $captions->getTitle(); ?></h5>
+                            <div class="row mt-20" style="word-wrap: anywhere;">
+                                <?php echo $captions->getCaptionText(); ?>
+                            </div>
+                        </div>
+                        <div class="card-body pb-150" id="captionEditSection<?php echo $captions->getId(); ?>" style="display: none;">
+                            <form method="post">
+                                <div class="input-group mb-3">
+                                    <input value="<?php echo $captions->getTitle(); ?>" type="text" class="form-control" name="caption_name<?php echo $captions->getId(); ?>" id="caption_name<?php echo $captions->getId(); ?>" placeholder="Caption Title" required="required">
+                                </div>
+                                <div class="input-group mb-3">
+                                    <textarea id="caption<?php echo $captions->getId(); ?>" name="caption<?php echo $captions->getId(); ?>" placeholder="Add Caption" class="form-control" rows="3"><?php echo $captions->getCaptionText(); ?></textarea>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <button style="padding: 5px 5px;" onclick="updateCaption('<?php echo $captions->getId(); ?>');" class="button" type="button">Update Caption</button>
+                                    <label id="captionLabel<?php echo $captions->getId(); ?>" style="padding-top: 8px; padding-left: 10px;">
+
+                                    </label>
+                                </div>
+                                <input type="submit" id="frmSubmit<?php echo $captions->getId(); ?>" style="display: none;">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            
+        </div>
+            <?php endforeach; ?>
+    </div>
+
+    <script>
+        function updateCaption(captionId) {
+            var caption_name = document.getElementById("caption_name" + captionId).value;
+            var caption = document.getElementById("caption" + captionId).value;
+            var url = "<?php echo Mage::getBaseUrl(); ?>caption/index/updatecaption?captionid=" + captionId + "&caption_name=" + caption_name + "&caption=" + caption;
+            document.getElementById("captionLabel" + captionId).innerHTML = '<i class="fa fa-spinner fa-spin" style="font-size:24px; margin-right: 10px;"></i>';
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: ""/*form.serialize()*/,
+                success: function (data)
+                {
+                    updatePage();
+                    //swal("Caption Updated Successfully");
+                    document.getElementById("captionLabel" + captionId).innerHTML = '<i class="fa fa-check" style="font-size:24px; margin-right: 10px;"></i>';
+                    document.getElementById("captionResultSection" + captionId).setAttribute("style", "display:block;");
+                    document.getElementById("captionEditSection" + captionId).setAttribute("style", "display:none;");
+                }
+            });
+        }
+
+        function editCaption(captionId) {
+            document.getElementById("captionResultSection" + captionId).setAttribute("style", "display:none;");
+            document.getElementById("captionEditSection" + captionId).setAttribute("style", "display:block;");
+        }
+
+        function deleteCaption(captionId) {
+            var url = "<?php echo Mage::getBaseUrl(); ?>caption/index/deletecaption?captionid=" + captionId;
+            jQuery("#pre-loader").css("opacity", '0.8');
+            jQuery("#pre-loader").show();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: ""/*form.serialize()*/,
+                success: function (data)
+                {
+                    jQuery("#pre-loader").hide();
+                    updatePage();
+                    swal("Caption Deleted Successfully");
+                }
+            });
+        }
+
+        function updatePage() {
+            var url = "<?php echo Mage::getBaseUrl(); ?>captions";
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: ""/*form.serialize()*/,
+                success: function (data)
+                {
+                    document.getElementById("caption_name").value = "";
+                    document.getElementById("caption").value = "";
+                    var $result = jQuery(data).find('#resultCaption').html();
+                    jQuery("#resultCaption").html($result);
+                }
+            });
+        }
+
+        function addCaption() {
+            var caption = document.getElementById("caption").value;
+            var caption_name = document.getElementById("caption_name").value;
+            if (caption_name == '' || caption_name == null) {
+                document.getElementById("frmSubmit").click();
+            } else {
+                document.getElementById("captionLabel").innerHTML = '<i class="fa fa-spinner fa-spin" style="font-size:24px; margin-right: 10px;"></i> Adding Caption . . .';
+                var url = "<?php echo Mage::getBaseUrl(); ?>caption/index/savecaption";
+                jQuery.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {caption: caption, caption_name: caption_name},
+                    success: function (data)
+                    {
+                        //updatePage();
+                        /*var objData = jQuery.parseJSON(data);
+                         if (objData.status == 1) {
+                         document.getElementById("captionLabel").innerHTML = '<i class="fa fa-check" style="font-size:24px; margin-right: 10px;"></i> Caption Added Successfully . . .';
+                         } else {
+                         document.getElementById("captionLabel").innerHTML = objData.msg;
+                         }
+                         updatePage();
+                         swal("Caption Added Successfully");*/
+                        location.reload();
+                    }
+                });
+            }
+        }
+    </script>

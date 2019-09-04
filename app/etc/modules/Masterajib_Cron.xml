@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Masterajib_Cron>
+            <active>false</active>
+            <codePool>local</codePool>
+        </Masterajib_Cron>
+    </modules>
+</config> 

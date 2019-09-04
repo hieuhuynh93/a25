@@ -1,0 +1,1855 @@
+<?php
+$linkDetailsId = $_REQUEST['linkDetailsId'];
+$helper = Mage::helper('linkanalysis/data');
+$linkdetails = Mage::getModel('linkdetails/linkdetails')->load($linkDetailsId);
+
+$linkAnalysisId = $linkdetails->getLinkanalysisId();
+
+$isRobot = $helper->isListedInRobotTxt($linkdetails->getRelatedUrl(), "NameOfAgent");
+$metaTitle = $linkdetails->getMetaTitle();
+$metaDescription = $linkdetails->getMetaDescription();
+$keywords = $linkdetails->getMetaKeywords();
+
+
+$country = '';
+$customerId = Mage::getSingleton('customer/session')->getCustomer()->getEntityId();
+$customer = Mage::getModel('customer/customer')->load($customerId);
+if (isset($_REQUEST['cn'])) {
+    $country = $_REQUEST['cn'];
+} else {
+    $country = $customer->getCountryCode();
+}
+?>
+<?php $_countries = Mage::getResourceModel('directory/country_collection')->loadData()->toOptionArray(false) ?>
+<!-- --------------------- Modal for Google Trends Starts ------------------------>
+<button id="btnGoogleTrends" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style="display: none;"></button>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="exampleModalLabel">
+                    <div class="mb-30" style="margin-bottom: -0.857rem !important;">
+                        <h6 style="float: left;">Google Trends</h6>
+                        <?php if (count($_countries) > 0): ?>
+                            <select onchange="setTrendsCountry(this);" name="country" id="country" style="width: 150px; margin-left: 50px;">
+                                <option value="">-- Country --</option>
+                                <?php foreach ($_countries as $_country): ?>
+                                    <option <?php echo ($country == $_country['value'] ? 'selected="selected"' : '') ?> value="<?php echo $_country['value'] ?>">
+                                        <?php echo $_country['label'] ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <!-- ---------------------------->
+                            <select onchange="setTrendsTime(this);" id="google_trends_time" name="google_trends_time">
+                                <option value="now 1-H" selected="selected">now 1-H</option>
+                                <option value="now 4-H">now 4-H</option>
+                                <option value="now 1-d">now 1-d</option>
+                                <option value="now 7-d">now 7-d</option>
+                                <option value="today 1-m">today 1-m</option>
+                                <option value="today 3-m">today 3-m</option>
+                            </select>
+                            <!-- ---------------------------->
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modal_content" style="padding: 0rem !important;">
+                <iframe id="trendsPopupFrame" frameborder="0" src="" height="400" width="100%"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- --------------------- Modal for Google Trends Ends -------------------------->
+
+<!-- --------------------- Modal for Keyword Analysis Starts ------------------------>
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="width: 1000px;">
+        <div class="modal-content" style="padding-bottom: 10px;">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="mb-30" style="margin-bottom: 5px !important;">
+                        <h6 id="keyword_title">EXPERTISE</h6>
+                    </div>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="height: 70vh; overflow: auto;">
+                <center>
+                    <img style="display: none;" id="modal_loading" src="<?php echo $this->getSkinUrl('images/pre-loader/loader-01.svg', array('_secure' => true)); ?>" alt="">
+                </center>
+                <ul class="list-unstyled" id="keyword_analysis_result_modal_body">
+
+                </ul>
+            </div>
+            <div class="row" style="margin-right: 0px;margin-left: 0px;padding-top: 10px;border-top: solid 2px #ccc;">
+                <div class="col-sm-12 col-md-5">
+                    <div class="dataTables_info" id="datatable_info" role="status" aria-live="polite">
+                        Showing 1 to 10 of 57 entries
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-7">
+                    <div class="dataTables_paginate paging_simple_numbers" id="datatable_paginate">
+                        <ul class="pagination">
+                            <li class="paginate_button page-item previous disabled" id="datatable_previous">
+                                <a href="#" aria-controls="datatable" data-dt-idx="0" tabindex="0" class="page-link">Previous</a>
+                            </li>
+                            <li class="paginate_button page-item active">
+                                <a href="#" aria-controls="datatable" data-dt-idx="1" tabindex="0" class="page-link">1</a>
+                            </li>
+                            <li class="paginate_button page-item ">
+                                <a href="#" aria-controls="datatable" data-dt-idx="2" tabindex="0" class="page-link">2</a>
+                            </li>
+                            <li class="paginate_button page-item ">
+                                <a href="#" aria-controls="datatable" data-dt-idx="3" tabindex="0" class="page-link">3</a>
+                            </li>
+                            <li class="paginate_button page-item ">
+                                <a href="#" aria-controls="datatable" data-dt-idx="4" tabindex="0" class="page-link">4</a>
+                            </li>
+                            <li class="paginate_button page-item ">
+                                <a href="#" aria-controls="datatable" data-dt-idx="5" tabindex="0" class="page-link">5</a>
+                            </li>
+                            <li class="paginate_button page-item ">
+                                <a href="#" aria-controls="datatable" data-dt-idx="6" tabindex="0" class="page-link">6</a>
+                            </li>
+                            <li class="paginate_button page-item next" id="datatable_next">
+                                <a href="#" aria-controls="datatable" data-dt-idx="7" tabindex="0" class="page-link">Next</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer" style="display: none;">
+
+        </div>
+    </div>
+</div>
+
+<a style="display: none;" id="linkanalysis_result_modal" data-toggle="modal" data-target=".bd-example-modal-lg"></a>
+<!-- --------------------- Modal for Keyword Analysis Ends -------------------------->
+<style>
+    .acd-group{
+        color: #ffffff;
+        background: #84ba3f;
+        margin-bottom: 20px;
+        padding: 12px 24px !important;
+        font-weight: 500;
+        font-size: 1.143rem;
+        padding: 12px 0;
+        border-radius: 3px;
+    }
+    .instagram-bg{
+        background:#6a453b;
+    }
+
+    .linkedin-bg{
+        background: #007ab9;
+    }
+
+    .pinterest-bg{
+        background: #cb2027;
+    }
+
+    .google-bg{
+        background: #dc4e41;
+    }
+
+    .timblr-bg{
+        background: #395976;
+    }
+</style>
+<div class="page-title">
+    <div class="row">
+        <div class="col-sm-4">
+            <h4 class="mb-0"> Analysis Result</h4>
+        </div>
+        <div class="col-sm-8">
+            <!--<ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                <li class="breadcrumb-item"><a href="index.html" class="default-color">Home</a></li>
+                <li class="breadcrumb-item">Dashboard</li>
+                <li class="breadcrumb-item active">Link Analysis</li>
+                <li class="breadcrumb-item active">Link Analysis Details</li>
+                <li class="breadcrumb-item active">Analysis Results</li>
+            </ol>-->
+            <?php if (count($_countries) > 0): ?>
+                <select onchange="setCuntryLocation(this);" name="countryCommon" id="countryCommon" style="float: right;">
+                    <option value="">-- Country --</option>
+                    <?php foreach ($_countries as $_country): ?>
+                        <option <?php echo ($country == $_country['value'] ? 'selected="selected"' : '') ?> value="<?php echo $_country['value'] ?>">
+                            <?php echo $_country['label'] ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            <?php endif; ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <h6><?php echo $linkdetails->getRelatedUrl(); ?></h6>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-12 mb-30">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <div class="acd-group">
+                    <a class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse-occupiers0" aria-expanded="false">General Information</a>
+                </div>
+                <div id="collapse-occupiers0" class="panel-collapse collapse show">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-6 col-lg-6 col-md-6 mb-30">
+                                <div class="card card-statistics h-100">
+                                    <div class="card-body">
+                                        <div class="clearfix">
+                                            <div class="float-left">
+                                                <span class="text-danger">
+                                                    <?php if ($isRobot): ?>
+                                                        <i style="color:green;" class="fa fa-check-square-o highlight-icon" aria-hidden="true"></i>
+                                                    <?php else: ?>
+                                                        <i style="color:#dc3545;" class="fa fa-times-circle-o highlight-icon" aria-hidden="true"></i>
+                                                    <?php endif; ?>
+                                                </span>
+                                            </div>
+                                            <div class="float-right text-right">
+                                                <p class="card-text text-dark">ROBOT.TXT</p>
+                                                <?php if ($isRobot): ?>
+                                                    <h4><label class="badge badge-success">AVAILABLE</label></h4>
+                                                <?php else: ?>
+                                                    <h4><label class="badge badge-danger">NOT AVAILABLE</label></h4>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                        <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                                            <a style="float: inherit;" href="javascript:void(0);" class="btn btn-outline-success btn-sm">Show Robot</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 mb-30">
+                                <div class="card card-statistics h-100">
+                                    <div class="card-body">
+                                        <div class="clearfix">
+                                            <div class="float-left">
+                                                <span class="text-danger">
+                                                    <?php if ($isRobot): ?>
+                                                        <i style="color:green;" class="fa fa-check-square-o highlight-icon" aria-hidden="true"></i>
+                                                    <?php else: ?>
+                                                        <i style="color:#dc3545;" class="fa fa-times-circle-o highlight-icon" aria-hidden="true"></i>
+                                                    <?php endif; ?>
+                                                </span>
+                                            </div>
+                                            <div class="float-right text-right">
+                                                <p class="card-text text-dark">ANALYSIS STATUS</p>
+                                                <?php if ($isRobot): ?>
+                                                    <h4><label class="badge badge-success">ALLOW</label></h4>
+                                                <?php else: ?>
+                                                    <h4><label class="badge badge-danger">DISALLOW</label></h4>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                        <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                                            <i class="fa fa-exclamation-circle mr-1" aria-hidden="true"></i> 81% lower growth
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+                                <div class="card card-statistics h-100">
+                                    <div class="card-body">
+                                        <div class="clearfix">
+                                            <div class="float-left">
+                                                <span class="text-success">
+                                                    <i class="fa fa-floppy-o highlight-icon" aria-hidden="true"></i>
+                                                </span>
+                                            </div>
+                                            <div class="float-right text-right">
+                                                <p class="card-text text-dark">PAGE SIZE</p>
+                                                <h4><?php echo $linkdetails->getPageSize(); ?></h4>
+                                            </div>
+                                        </div>
+                                        <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                                            <i class="fa fa-exclamation-circle mr-1" aria-hidden="true"></i> 81% lower growth
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+                                <div class="card card-statistics h-100">
+                                    <div class="card-body">
+                                        <div class="clearfix">
+                                            <div class="float-left">
+                                                <span class="text-success">
+                                                    <i class="fa fa-clock-o highlight-icon" aria-hidden="true"></i>
+                                                </span>
+                                            </div>
+                                            <div class="float-right text-right">
+                                                <p class="card-text text-dark">LOAD TIME</p>
+                                                <h4><?php echo strtoupper($linkdetails->getLoadTime()); ?></h4>
+                                            </div>
+                                        </div>
+                                        <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                                            <i class="fa fa-exclamation-circle mr-1" aria-hidden="true"></i> 81% lower growth
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+                                <div class="card card-statistics h-100">
+                                    <div class="card-body">
+                                        <div class="clearfix">
+                                            <div class="float-left">
+                                                <span class="text-success">
+                                                    <i class="fa fa-cubes highlight-icon" aria-hidden="true"></i>
+                                                </span>
+                                            </div>
+                                            <div class="float-right text-right">
+                                                <p class="card-text text-dark">PAGE AUTHORITY</p>
+                                                <h4><?php echo $helper->getPageAuthority($linkdetails->getRelatedUrl()); ?></h4>
+                                            </div>
+                                        </div>
+                                        <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                                            <i class="fa fa-exclamation-circle mr-1" aria-hidden="true"></i> 81% lower growth
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-12 mb-30">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <div class="acd-group">
+                    <a onclick="showSocialShare();" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse-occupiers1" aria-expanded="false">Social Share</a>
+                </div>
+                <center>
+                    <img style="display: none;" id="rowLoaderSocialShare" src="<?php echo $this->getSkinUrl('images/pre-loader/loader-01.svg', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="collapse-occupiers1" class="panel-collapse collapse" style="display: none;">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-3 mb-30">
+                                <div class="card card-statistics fb-bg h-100">
+                                    <div class="card-body">
+                                        <div class="clearfix">
+                                            <div class="float-left icon-box-fixed">
+                                                <span class="text-white">
+                                                    <i class="fa fa-facebook highlight-icon" aria-hidden="true"></i>
+                                                </span>
+                                            </div>
+                                            <div class="float-right">
+                                                <h4 id="facebook_count" class="text-white">11,543</h4>
+                                                <p class="card-text text-white">Share </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 mb-30">
+                                <div class="card card-statistics twitter-bg h-100">
+                                    <div class="card-body">
+                                        <div class="clearfix">
+                                            <div class="float-left icon-box-fixed">
+                                                <span class="text-white">
+                                                    <i class="fa fa-twitter highlight-icon" aria-hidden="true"></i>
+                                                </span>
+                                            </div>
+                                            <div class="float-right">
+                                                <h4 id="twitter_count" class="text-white">41,652</h4>
+                                                <p class="card-text text-white">Followers </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 mb-30">
+                                <div class="card card-statistics youtube-bg h-100">
+                                    <div class="card-body">
+                                        <div class="clearfix">
+                                            <div class="float-left icon-box-fixed">
+                                                <span class="text-white">
+                                                    <i class="fa fa-youtube highlight-icon" aria-hidden="true"></i>
+                                                </span>
+                                            </div>
+                                            <div class="float-right">
+                                                <h4 id="youtube_count" class="text-white">1,20,543</h4>
+                                                <p class="card-text text-white">Subscribers </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 mb-30">
+                                <div class="card card-statistics fb-bg h-100">
+                                    <div class="card-body">
+                                        <div class="clearfix">
+                                            <div class="float-left icon-box-fixed">
+                                                <span class="text-white">
+                                                    <i class="fa fa-instagram highlight-icon" aria-hidden="true"></i>
+                                                </span>
+                                            </div>
+                                            <div class="float-right">
+                                                <h4 id="instagram_count" class="text-white">11,543</h4>
+                                                <p class="card-text text-white">Likes </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 mb-30">
+                                <div class="card card-statistics twitter-bg h-100">
+                                    <div class="card-body">
+                                        <div class="clearfix">
+                                            <div class="float-left icon-box-fixed">
+                                                <span class="text-white">
+                                                    <i class="fa fa-linkedin highlight-icon" aria-hidden="true"></i>
+                                                </span>
+                                            </div>
+                                            <div class="float-right">
+                                                <h4 id="linkedin_count" class="text-white">41,652</h4>
+                                                <p class="card-text text-white">Followers </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 mb-30">
+                                <div class="card card-statistics youtube-bg h-100">
+                                    <div class="card-body">
+                                        <div class="clearfix">
+                                            <div class="float-left icon-box-fixed">
+                                                <span class="text-white">
+                                                    <i class="fa fa-pinterest highlight-icon" aria-hidden="true"></i>
+                                                </span>
+                                            </div>
+                                            <div class="float-right">
+                                                <h4 id="pinterest_count" class="text-white">1,20,543</h4>
+                                                <p class="card-text text-white">Subscribers </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 mb-30">
+                                <div class="card card-statistics fb-bg h-100">
+                                    <div class="card-body">
+                                        <div class="clearfix">
+                                            <div class="float-left icon-box-fixed">
+                                                <span class="text-white">
+                                                    <i class="fa fa-google-plus highlight-icon" aria-hidden="true"></i>
+                                                </span>
+                                            </div>
+                                            <div class="float-right">
+                                                <h4 id="google_count" class="text-white">11,543</h4>
+                                                <p class="card-text text-white">Likes </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 mb-30">
+                                <div class="card card-statistics twitter-bg h-100">
+                                    <div class="card-body">
+                                        <div class="clearfix">
+                                            <div class="float-left icon-box-fixed">
+                                                <span class="text-white">
+                                                    <i class="fa fa-timblr highlight-icon" aria-hidden="true"></i>
+                                                </span>
+                                            </div>
+                                            <div class="float-right">
+                                                <h4 id="timblr_count" class="text-white">41,652</h4>
+                                                <p class="card-text text-white">Followers </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-12 mb-30">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <div class="acd-group">
+                    <a onclick="showIndexCount()" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse-occupiers2" aria-expanded="false">Index Information</a>
+                </div>
+                <center>
+                    <img style="display: none;" id="rowLoaderIndexCount" src="<?php echo $this->getSkinUrl('images/pre-loader/loader-01.svg', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="collapse-occupiers2" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
+                                <div class="card card-statistics h-100">
+                                    <div class="card-body">
+                                        <div class="clearfix">
+                                            <div class="float-left">
+                                                <span class="text-danger" id="google_index_count_icon">
+
+                                                </span>
+                                            </div>
+                                            <div class="float-right text-right">
+                                                <p class="card-text text-dark">GOOGLE</p>
+                                                <h4><label class="badge badge-success" id="index_google_label">INDEXED</label></h4>
+                                            </div>
+                                        </div>
+                                        <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                                            <i id="google_count_num" class="fa fa-exclamation-circle mr-1" aria-hidden="true"> &nbsp;</i> 
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
+                                <div class="card card-statistics h-100">
+                                    <div class="card-body">
+                                        <div class="clearfix">
+                                            <div class="float-left">
+                                                <span class="text-danger" id="bing_index_count_icon">
+
+                                                </span>
+                                            </div>
+                                            <div class="float-right text-right">
+                                                <p class="card-text text-dark">BING</p>
+                                                <h4><label class="badge badge-success" id="index_bing_label">INDEXED</label></h4>
+                                            </div>
+                                        </div>
+                                        <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                                            <i id="bing_count_num" class="fa fa-exclamation-circle mr-1" aria-hidden="true"> &nbsp;</i> 
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
+                                <div class="card card-statistics h-100">
+                                    <div class="card-body">
+                                        <div class="clearfix">
+                                            <div class="float-left">
+                                                <span class="text-danger" id="yahoo_index_count_icon">
+
+                                                </span>
+                                            </div>
+                                            <div class="float-right text-right">
+                                                <p class="card-text text-dark">YAHOO</p>
+                                                <h4><label class="badge badge-success" id="index_yahoo_label">INDEXED</label></h4>
+                                            </div>
+                                        </div>
+                                        <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                                            <i id="yahoo_count_num" class="fa fa-exclamation-circle mr-1" aria-hidden="true"> &nbsp;</i> 
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
+                                <div class="card card-statistics h-100">
+                                    <div class="card-body">
+                                        <div class="clearfix">
+                                            <div class="float-left">
+                                                <span class="text-danger" id="yandex_index_count_icon">
+
+                                                </span>
+                                            </div>
+                                            <div class="float-right text-right">
+                                                <p class="card-text text-dark">YANDEX</p>
+                                                <h4><label class="badge badge-success" id="index_yandex_label">INDEXED</label></h4>
+                                            </div>
+                                        </div>
+                                        <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                                            <i id="yandex_count_num" class="fa fa-exclamation-circle mr-1" aria-hidden="true"> &nbsp;</i> 
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-12 mb-30">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <div class="acd-group">
+                    <a onclick="getInternalLinksURL();" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse-occupiers11" aria-expanded="false">Internal Links</a>
+                </div>
+            </div>
+            <center>
+                <img style="display: none;" id="rowLoaderInternalLink" src="<?php echo $this->getSkinUrl('images/pre-loader/loader-01.svg', array('_secure' => true)); ?>" alt="">
+            </center>
+            <div id="collapse-occupiers11" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xl-12 mb-30">
+                            <div class="card card-statistics h-100">
+                                <div class="card-body">
+                                    <div class="tab nav-border" style="position: relative;">
+                                        <div class="d-block d-md-flex justify-content-between">
+                                            <div class="row" style="width: 100%;">
+                                                <div class="col-md-8">
+                                                    <h5 class="card-title" id="count_internal_link">Total Internal Links: </h5>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <select style="float: right;">
+                                                        <option value="all">All</option>
+                                                        <option value="dofollow">Dofollow</option>
+                                                        <option value="nofollow">Nofollow</option>
+                                                        <option value="na">NA</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-content" id="myTabContentInternal">
+                                            <div class="tab-pane fade active show" id="months" role="tabpanel" aria-labelledby="months-tab">
+                                                <div class="row mb-30" style="padding-left: 5px;">
+                                                    <div class="col-md-1 col-sm-6">
+                                                        SN
+                                                    </div>
+                                                    <div class="col-md-1 col-sm-6">
+                                                        Preview
+                                                    </div>
+                                                    <div class="col-md-8 col-sm-6">
+                                                        External Link
+                                                    </div>
+                                                    <div class="col-md-2 col-sm-6 col-6 sm-mt-20">
+                                                        Description
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div id="resultInternalLink" style="padding: 15px; height: 250px; overflow: auto;">
+
+                                                </div>
+                                            </div> 
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>   
+</div>
+<div class="row">
+    <div class="col-xl-12 mb-30">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <div class="acd-group">
+                    <a onclick="getExternalLinksURL();" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse-occupiers3" aria-expanded="false">External Links</a>
+                </div>
+            </div>
+            <center>
+                <img style="display: none;" id="rowLoaderExternalLink" src="<?php echo $this->getSkinUrl('images/pre-loader/loader-01.svg', array('_secure' => true)); ?>" alt="">
+            </center>
+            <div id="collapse-occupiers3" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xl-12 mb-30">
+                            <div class="card card-statistics h-100">
+                                <div class="card-body">
+                                    <div class="tab nav-border" style="position: relative;">
+                                        <div class="d-block d-md-flex justify-content-between">
+                                            <div class="row" style="width: 100%;">
+                                                <div class="col-md-8">
+                                                    <h5 class="card-title" id="count_external_link">Total External Links: </h5>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <select style="float: right;">
+                                                        <option value="all">All</option>
+                                                        <option value="dofollow">Dofollow</option>
+                                                        <option value="nofollow">Nofollow</option>
+                                                        <option value="na">NA</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-content" id="myTabContent">
+                                            <div class="tab-pane fade active show" id="months" role="tabpanel" aria-labelledby="months-tab">
+                                                <div class="row mb-30" style="padding-left: 5px;">
+                                                    <div class="col-md-1 col-sm-6">
+                                                        SN
+                                                    </div>
+                                                    <div class="col-md-1 col-sm-6">
+                                                        Preview
+                                                    </div>
+                                                    <div class="col-md-8 col-sm-6">
+                                                        External Link
+                                                    </div>
+                                                    <div class="col-md-2 col-sm-6 col-6 sm-mt-20">
+                                                        Description
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div id="resultExternalLink" style="padding: 15px;">
+
+                                                </div>
+                                            </div> 
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>   
+</div>
+
+
+<div class="row">
+    <div class="col-xl-12 mb-30">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <div class="acd-group">
+                    <a class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse-occupiers4" aria-expanded="false">Backlink Analysis</a>
+                </div>
+                <div id="collapse-occupiers4" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30">
+                                <div class="table-responsive mt-15">
+                                    <table class="table center-aligned-table mb-0">
+                                        <thead>
+                                            <tr class="text-dark">
+                                                <th>Order No</th>
+                                                <th>Product Name</th>
+                                                <th>Purchased On</th>
+                                                <th>Shipping Status</th>
+                                                <th>Payment Method</th>
+                                                <th>Payment Status</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>034</td>
+                                                <td>Iphone 7</td>
+                                                <td>12 May 2017</td>
+                                                <td>Dispatched</td>
+                                                <td>Credit card</td>
+                                                <td><label class="badge badge-success">Approved</label></td>
+                                                <td><a href="#" class="btn btn-outline-success btn-sm">View Order</a></td>
+                                                <td><a href="#" class="btn btn-outline-warning btn-sm">Cancel</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td>035</td>
+                                                <td>Galaxy S8</td>
+                                                <td>15 May 2017</td>
+                                                <td>Dispatched</td>
+                                                <td>Internet banking</td>
+                                                <td><label class="badge badge-warning">Pending</label></td>
+                                                <td><a href="#" class="btn btn-outline-success btn-sm">View Order</a></td>
+                                                <td><a href="#" class="btn btn-outline-warning btn-sm">Cancel</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td>036</td>
+                                                <td>Amazon Echo</td>
+                                                <td>17 May 2017</td>
+                                                <td>Dispatched</td>
+                                                <td>Credit card</td>
+                                                <td><label class="badge badge-success">Approved</label></td>
+                                                <td><a href="#" class="btn btn-outline-success btn-sm">View Order</a></td>
+                                                <td><a href="#" class="btn btn-outline-warning btn-sm">Cancel</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td>037</td>
+                                                <td>Google Pixel</td>
+                                                <td>17 May 2017</td>
+                                                <td>Dispatched</td>
+                                                <td>Cash on delivery</td>
+                                                <td><label class="badge badge-danger">Rejected</label></td>
+                                                <td><a href="#" class="btn btn-outline-success btn-sm">View Order</a></td>
+                                                <td><a href="#" class="btn btn-outline-warning btn-sm">Cancel</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td>038</td>
+                                                <td>Mac Mini</td>
+                                                <td>19 May 2017</td>
+                                                <td>Dispatched</td>
+                                                <td>Debit card</td>
+                                                <td><label class="badge badge-success">Approved</label></td>
+                                                <td><a href="#" class="btn btn-outline-success btn-sm">View Order</a></td>
+                                                <td><a href="#" class="btn btn-outline-warning btn-sm">Cancel</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td>035</td>
+                                                <td>Galaxy S8</td>
+                                                <td>15 May 2017</td>
+                                                <td>Dispatched</td>
+                                                <td>Internet banking</td>
+                                                <td><label class="badge badge-warning">Pending</label></td>
+                                                <td><a href="#" class="btn btn-outline-success btn-sm">View Order</a></td>
+                                                <td><a href="#" class="btn btn-outline-warning btn-sm">Cancel</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td>034</td>
+                                                <td>Iphone 7</td>
+                                                <td>12 May 2017</td>
+                                                <td>Dispatched</td>
+                                                <td>Credit card</td>
+                                                <td><label class="badge badge-success">Approved</label></td>
+                                                <td><a href="#" class="btn btn-outline-success btn-sm">View Order</a></td>
+                                                <td><a href="#" class="btn btn-outline-warning btn-sm">Cancel</a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-12 mb-30">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <div class="acd-group">
+                    <a class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse-occupiers5" aria-expanded="false">Meta Tag</a>
+                </div>
+                <div id="collapse-occupiers5" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row" style="margin-bottom: -20px;">
+                            <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+                                <div class="card card-statistics h-100">
+                                    <div class="card-body" style="padding-bottom: 5px;">
+                                        <div class="clearfix">
+                                            <div class="float-left">
+                                                <span class="text-danger">
+                                                    <?php if (strlen($metaTitle) > 0): ?>
+                                                        <i style="color:green;" class="fa fa-check-square-o highlight-icon" aria-hidden="true"></i>
+                                                    <?php else: ?>
+                                                        <i style="color:#dc3545;" class="fa fa-times-circle-o highlight-icon" aria-hidden="true"></i>
+                                                    <?php endif; ?>
+                                                </span>
+                                            </div>
+                                            <div class="float-right text-right">
+                                                <p class="card-text text-dark" style="margin-bottom: -0.3rem;">META TITLE</p>
+                                                <?php if (strlen($metaTitle) > 0): ?>
+                                                    <h4><label class="badge badge-success">AVAILABLE</label></h4>
+                                                <?php else: ?>
+                                                    <h4><label class="badge badge-danger">NOT AVAILABLE</label></h4>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                        <p class="text-muted pt-3 mb-0 mt-2 border-top" style="text-align: center; padding-top: 3px;">
+                                            <a style="float: inherit;" href="javascript:showMetaTitle('<?php echo $metaTitle; ?>');" class="btn btn-outline-success btn-sm">View Meta Title</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+                                <div class="card card-statistics h-100">
+                                    <div class="card-body" style="padding-bottom: 5px;">
+                                        <div class="clearfix">
+                                            <div class="float-left">
+                                                <span class="text-warning">
+                                                    <?php if (strlen($metaDescription) > 0): ?>
+                                                        <i style="color:green;" class="fa fa-check-square-o highlight-icon" aria-hidden="true"></i>
+                                                    <?php else: ?>
+                                                        <i style="color:#dc3545;" class="fa fa-times-circle-o highlight-icon" aria-hidden="true"></i>
+                                                    <?php endif; ?>
+                                                </span>
+                                            </div>
+                                            <div class="float-right text-right">
+                                                <p class="card-text text-dark" style="margin-bottom: -0.3rem;">META DESCRIPTION</p>
+                                                <?php if (strlen($metaDescription) > 0): ?>
+                                                    <h4><label class="badge badge-success">AVAILABLE</label></h4>
+                                                <?php else: ?>
+                                                    <h4><label class="badge badge-danger">NOT AVAILABLE</label></h4>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                        <p class="text-muted pt-3 mb-0 mt-2 border-top" style="text-align: center; padding-top: 3px;">
+                                            <a style="float: inherit;" href="javascript:showMetaDescription('<?php echo $metaDescription; ?>');" class="btn btn-outline-success btn-sm">View Meta Description</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+                                <div class="card card-statistics h-100">
+                                    <div class="card-body" style="padding-bottom: 5px;">
+                                        <div class="clearfix">
+                                            <div class="float-left">
+                                                <span class="text-success">
+                                                    <?php if (strlen($keywords) > 0): ?>
+                                                        <i style="color:green;" class="fa fa-check-square-o highlight-icon" aria-hidden="true"></i>
+                                                    <?php else: ?>
+                                                        <i style="color:#dc3545;" class="fa fa-times-circle-o highlight-icon" aria-hidden="true"></i>
+                                                    <?php endif; ?>
+                                                </span>
+                                            </div>
+                                            <div class="float-right text-right">
+                                                <p class="card-text text-dark" style="margin-bottom: -0.3rem;">META KEYWORDS</p>
+                                                <?php if (strlen($keywords) > 0): ?>
+                                                    <h4><label class="badge badge-success">AVAILABLE</label></h4>
+                                                <?php else: ?>
+                                                    <h4><label class="badge badge-danger">NOT AVAILABLE</label></h4>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                        <p class="text-muted pt-3 mb-0 mt-2 border-top" style="text-align: center; padding-left: 10px; padding-top: 3px;">
+                                            <a style="float: left;" href="javascript:showKeyWords('<?php echo $keywords; ?>');" class="btn btn-outline-success btn-sm">View Keywords</a>
+                                            <a style="float: right;" href="javascript:addKeyWord('<?php $linkDetailsId; ?>', '<?php echo $keywords; ?>');" class="btn btn-outline-warning btn-sm">Add Keywords</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="padding-top: 0px; display: block;">   
+                            <div class="col-xl-12 mb-30" style="margin-bottom: 1.125rem !important;">     
+                                <div class="card card-statistics h-100">
+                                    <div id="section_title"><p style="padding-left:20px;" class="card-text text-dark"><b>ADD KEYWORDS</b></p></div>
+                                    <div class="card-body" style="padding-top: 5px; padding-bottom: 0px;">
+                                        <!-- ---------- Add Key Word Starts --------------->
+                                        <?php $existKeywordsArr = explode(",", strlen($linkdetails->getMetaKeywords()) > 1 ? $linkdetails->getMetaKeywords() : ''); ?>
+                                        <?php //echo "<pre>"; print_r($linkdetails->getMetaKeywords());  ?>
+                                        <div class="row" id="metatitlesection" style="padding-left: 10px;">
+                                            <div class="alert alert-warning" id="msgbox_warning" role="alert" style="width: 100%; display: block; padding: .15rem 1.5rem;">Please click on above sections</div>
+                                        </div>
+                                        <div id="addKeyWordSec" style="display:none;">
+                                            <div class="col-sm-12 col-md-6" style="float: left; padding: 0px;">
+                                                <form id="addKeywordFrm" action="">
+                                                    <div class="input-group mb-3">
+                                                        <input id="keywords_name" name="keywords_name" placeholder="Add Keywords" class="form-control" aria-label="Text input with checkbox" type="search" required="required" style="padding-top: 0px; padding-bottom: 0px;">
+                                                        <div class="input-group-prepend" id="addKeyWordBtn">
+                                                            <button onclick="addKeywords('<?php echo $linkdetails->getId(); ?>');" class="button" type="button" style="padding: 0px 20px;" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Check for robots.txt">Add</button>
+                                                        </div>
+                                                    </div>
+                                                    <input type="submit" id="submitkeywordname" style="display: none;" value="Submit">
+                                                </form>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6" style="float: left; padding-left: 20px; padding-right: 0px;">
+                                                <a href="" class="button" style="float: right; padding: 0px 20px;">
+                                                    <span>Edit</span>
+                                                    <i class="fa fa-refresh" style="font-size:16px"></i>
+                                                </a>
+
+                                                <a href="javascript:deleteKeywords('keyword_checkbox');" class="button" style="float: right; margin-right: 10px; padding: 0px 20px;">
+                                                    <span>Delete</span>
+                                                    <i class="fa fa-trash-o" style="font-size:16px"></i>
+                                                </a>
+                                            </div>
+
+                                            <table class="table table-striped table-bordered p-0">
+                                                <thead>
+                                                    <tr>
+                                                        <td style="padding: .3rem; text-align: center; width: 30px;">
+                                                            <input id="links_ids_all_keywords" type="checkbox" onclick="checkUncheckAll('links_ids_all_keywords', 'keyword_checkbox');">
+                                                        </td>
+                                                        <td style="padding: .3rem; text-align: center; width: 50px;">SL</td>
+                                                        <td style="padding: .3rem; text-align: center;">Keyword</td>
+                                                        <!--<td style="padding: .3rem; text-align: center; width: 160px;">Action</td>-->
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                            <div style="width: 100%; margin-top: -15px;">
+                                                <table class="table table-striped table-bordered p-0" id="keywordTableCustom">
+                                                    <tbody>
+                                                        <?php if (strlen($linkdetails->getMetaKeywords()) > 0 && count($existKeywordsArr) > 0): ?>
+                                                            <?php $keyWordCount = 1; ?>
+                                                            <?php foreach ($existKeywordsArr as $existKeyword): ?>
+                                                                <?php if ($keyWordCount > 25): ?>
+                                                                <script>
+                                                                    jQuery("#addKeyWordBtn").hide();
+                                                                </script>
+                                                            <?php else: ?>
+                                                                <tr>
+                                                                    <td class="keywordcheckbox"><input name="keyword_checkbox" value="<?php echo $existKeyword; ?>" type="checkbox"></td>
+                                                                    <td class="keywordcount"><?php echo $keyWordCount; ?></td>
+                                                                    <td><?php echo $existKeyword; ?></td>
+                                                                    <!--<td class="keyword_start_analysis">
+                                                                        <a href="" class="btn btn-outline-success btn-sm">Start Analysis</a>
+                                                                    </td>-->
+                                                                </tr>
+                                                            <?php endif; ?>
+                                                            <?php $keyWordCount++; ?>
+                                                        <?php endforeach; ?>
+                                                    <?php else: ?>
+                                                        <tr>
+                                                            <td colspan="4">
+                                                                <div class="alert alert-warning" role="alert" style="width: 100%; display: block; padding: .15rem 1.5rem;">Sorry, No Keywords Found!</div>
+                                                            </td>
+                                                        </tr>   
+                                                    <?php endif; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <!-- ---------- Add Key Words Ends ---------------->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<!-- ----------------------------------->
+<div class="row">
+    <div class="col-xl-12 mb-30">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <div class="acd-group">
+                    <a onclick="getKeywordDensityAndPossibilitySpam();" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse-occupiers12" aria-expanded="false">Keyword Density and Possibility Span</a>
+                </div>
+            </div>
+            <center>
+                <img style="display: none;" id="rowLoaderKDPS" src="<?php echo $this->getSkinUrl('images/pre-loader/loader-01.svg', array('_secure' => true)); ?>" alt="">
+            </center>
+            <div id="collapse-occupiers12" class="panel-collapse collapse">
+                <div class="row" style="padding-left: 15px; padding-right: 15px;" id="kdpsBoby">
+                    <div class="col-xl-6 mb-30">     
+                        <div class="card card-statistics h-100"> 
+                            <div class="card-body">
+                                <h5 class="card-title border-0 pb-0">One Phrase Keywords</h5>
+                                <div class="table-responsive">
+                                    <table class="mb-0 table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center;">Keywords</th>
+                                                <th style="text-align: center;">Occurrence</th>
+                                                <th style="text-align: center;">Density</th>
+                                                <th style="text-align: center;">Possibility Spam</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="bodyOfSinglePhrase">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>   
+                    </div>
+                    <div class="col-xl-6 mb-30">     
+                        <div class="card card-statistics h-100"> 
+                            <div class="card-body">
+                                <h5 class="card-title border-0 pb-0">2 Phrase Keywords</h5>
+                                <div class="table-responsive">
+                                    <table class="mb-0 table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center;">Keywords</th>
+                                                <th style="text-align: center;">Occurrence</th>
+                                                <th style="text-align: center;">Density</th>
+                                                <th style="text-align: center;">Possibility Spam</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="bodyOfTwoPhrase">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>   
+                    </div>
+                    <div class="col-xl-6 mb-30">     
+                        <div class="card card-statistics h-100"> 
+                            <div class="card-body">
+                                <h5 class="card-title border-0 pb-0">3 Phrase Keywords</h5>
+                                <div class="table-responsive">
+                                    <table class="mb-0 table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center;">Keywords</th>
+                                                <th style="text-align: center;">Occurrence</th>
+                                                <th style="text-align: center;">Density</th>
+                                                <th style="text-align: center;">Possibility Spam</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="bodyOfThreePhrase">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>   
+                    </div>
+                    <div class="col-xl-6 mb-30">     
+                        <div class="card card-statistics h-100"> 
+                            <div class="card-body">
+                                <h5 class="card-title border-0 pb-0">4 Phrase Keywords</h5>
+                                <div class="table-responsive">
+                                    <table class="mb-0 table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center;">Keywords</th>
+                                                <th style="text-align: center;">Occurrence</th>
+                                                <th style="text-align: center;">Density</th>
+                                                <th style="text-align: center;">Possibility Spam</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="bodyOfFourPhrase">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>   
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>   
+</div>
+<!-- ----------------------------------->
+
+<div class="row">
+    <div class="col-xl-12 mb-30">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <div class="acd-group">
+                    <a id="keyword_analysis_label" onclick="getKeywordAnalysis()" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse-occupiers6" aria-expanded="false">Keyword Analysis</a>
+                </div>
+                <center>
+                    <img style="display: none;" id="rowLoaderKeywordAnalysis" src="<?php echo $this->getSkinUrl('images/pre-loader/loader-01.svg', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="collapse-occupiers6" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30">
+                                <div class="table-responsive mt-15">
+                                    <table class="table center-aligned-table mb-0">
+                                        <thead>
+                                            <tr class="text-dark">
+                                                <th>SL</th>
+                                                <th>Keywords</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="link_analysis_result_custom">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-12 mb-30">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <div class="acd-group">
+                    <a id="keywordPositionLabel" onclick="getLinkPosition();" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse-occupiers7" aria-expanded="false">Keyword Position &amp; Trands</a>
+                </div>
+                <center>
+                    <img style="display: none;" id="rowLoaderLinkPosition" src="<?php echo $this->getSkinUrl('images/pre-loader/loader-01.svg', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="collapse-occupiers7" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+                                <table class="table center-aligned-table mb-0">
+                                    <thead>
+                                        <tr class="text-dark">
+                                            <th style="text-align: center;">S/N</th>
+                                            <th style="text-align: center;">
+                                                <input id="links_ids_all" onclick="checkUncheckAll('links_ids_all', 'keywords');" type="checkbox">
+                                            </th>
+                                            <th style="text-align: center;">Keywords</th>
+                                            <th style="text-align: center;">Google</th>
+                                            <th style="text-align: center;">Yahoo</th>
+                                            <th style="text-align: center;">Bing</th>
+                                            <th style="text-align: center;">Yandex</th>
+                                            <th style="text-align: center;">G Trends</th>
+                                            <th style="text-align: center;">
+                                                <a class="button icon x-small" href="javascript:compareKeywords();"> Compare <i class="fa fa-long-arrow-right"></i> </a>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="keywordposition_rowdata">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-12 mb-30">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <div class="acd-group">
+                    <a onclick="getKeywordSuggession();" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse-occupiers8" aria-expanded="false">Keyword Suggession</a>
+                </div>
+                <div id="collapse-occupiers8" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <center style="width: 100%;">
+                                <img style="display: none;" id="rowLoaderKeywordSuggession" src="<?php echo $this->getSkinUrl('images/pre-loader/loader-01.svg', array('_secure' => true)); ?>" alt="">
+                            </center>
+                            <div class="col-xl-12 mb-30" id="keywordSuggessionBoby">
+                                <div class="table-responsive">
+                                    <table class="table center-aligned-table mb-0" style="width: 100%;">
+                                        <thead>
+                                            <tr class="text-dark">
+                                                <th style="width: 10%;">SL</th>
+                                                <th style="width: 20%">Kayword</th>
+                                                <th style="width: 35%">All Keywords</th>
+                                                <th style="width: 35%">Suggested Keywords</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="keywordSuggessionData">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-12 mb-30">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <div class="acd-group">
+                    <a class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse-occupiers9" aria-expanded="false">Improovement Suggession</a>
+                </div>
+                <div id="collapse-occupiers9" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <!-- ----------------------------->
+                            <div class="col-xl-12 mb-30">
+                                <div class="card card-statistics mb-30"> 
+                                    <div class="card-body datepicker-form">
+                                        <h6 class="card-title">Date Range</h6>
+                                        <div class="input-group" data-date="23/11/2018" data-date-format="mm/dd/yyyy" style="vertical-align: middle;">
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                            <input type="text" class="form-control range-from" name="from">
+                                            <span class="input-group-addon">To</span>
+                                            <input class="form-control range-to" type="text" name="to">
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                            <a style="vertical-align: middle; width: 150px; font-weight: 600; font-size: 14px; padding-top: 12px; margin-left: 5px; margin-right: 5px;" href="#" class="btn btn-outline-success btn-sm">Show Graph</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.js"></script>
+                            
+                            <?php $count = 0; ?>
+                            <?php foreach (explode(",", $keywords) as $keywordCustomForGraph): ?>
+                                <?php
+                                    $graphModel = Mage::getModel('graph/graph')
+                                                    ->getCollection()
+                                                    ->addFieldToFilter('linkdetails_id', '3')
+                                                    ->addFieldToFilter('element_name', $keywordCustomForGraph)
+                                                    ->addFieldToFilter('element_type', '1')
+                                                    ->addFieldToFilter('status', '1');
+                                    $arrayGoogleRank = array();
+                                    $arrayYahooRank = array();
+                                    $arrayBingRank = array();
+                                    $arrayYandexRank = array();
+                                    $arrayDay = array();
+                                    foreach ($graphModel as $graph) {
+                                        array_push($arrayGoogleRank, $graph->getGoogleRank());
+                                        array_push($arrayYahooRank, $graph->getYahooRank());
+                                        array_push($arrayBingRank, $graph->getBingRank());
+                                        array_push($arrayYandexRank, $graph->getYandexRank());
+                                        array_push($arrayDay, '"'.$graph->getDay() . '/' . $graph->getMonth() . '/' . $graph->getYear() . '"');
+                                        //$day = $graph->getDay();
+                                        //$month = $graph->getMonth();
+                                        //$year = $graph->getYear();
+                                    }
+                                ?>
+                                <div style="width: 100%; text-align: center; padding-bottom: 10px;">
+                                    <center>
+                                        <table style="width: 50%;">
+                                            <tr>
+                                                <td style="background-color: #007bff; width: 25%; color: #fff; font-size: 10px; font-weight: 600; text-align: center;">GOOGLE</td>
+                                                <td style="background-color: #28a745; width: 25%; color: #fff; font-size: 10px; font-weight: 600; text-align: center;">YAHOO</td>
+                                                <td style="background-color: #444444; width: 25%; color: #fff; font-size: 10px; font-weight: 600; text-align: center;">BING</td>
+                                                <td style="background-color: #dc3545; width: 25%; color: #fff; font-size: 10px; font-weight: 600; text-align: center;">YANDEX</td>
+                                            </tr>
+                                        </table>
+                                    </center>
+                                </div>
+                                <h6 style="padding-left: 15px;">Keyword: <span><?php echo $keywordCustomForGraph; ?></span></h6>
+                                <hr>
+                                <canvas id="chBar_<?php echo $keywordCustomForGraph; ?>" height="100"></canvas>
+                                <script>
+                                    var colors = ['#007bff', '#28a745', '#444444', '#c3e6cb', '#dc3545'];
+
+                                    var chBar = document.getElementById("chBar_<?php echo $keywordCustomForGraph; ?>");
+                                    var chartData = {
+                                        labels: [<?php echo implode(",", $arrayDay); ?>],
+                                        datasets: [{
+                                                data: [<?php echo implode(",", $arrayGoogleRank); ?>],
+                                                backgroundColor: colors[0]
+                                            },
+                                            {
+                                                data: [<?php echo implode(",", $arrayYahooRank); ?>],
+                                                backgroundColor: colors[1]
+                                            },
+                                            {
+                                                data: [<?php echo implode(",", $arrayBingRank); ?>],
+                                                backgroundColor: colors[2]
+                                            },
+                                            {
+                                                data: [<?php echo implode(",", $arrayYandexRank); ?>],
+                                                backgroundColor: colors[4]
+                                            }]
+                                    };
+
+                                    if (chBar) {
+                                        new Chart(chBar, {
+                                            type: 'bar',
+                                            data: chartData,
+                                            options: {
+                                                scales: {
+                                                    xAxes: [{
+                                                            barPercentage: 0.4,
+                                                            categoryPercentage: 0.5
+                                                        }],
+                                                    yAxes: [{
+                                                            ticks: {
+                                                                beginAtZero: false
+                                                            }
+                                                        }]
+                                                },
+                                                legend: {
+                                                    display: false
+                                                }
+                                            }
+                                        });
+                                    }
+                                </script>
+                                <?php $count++; ?>
+                            <?php endforeach; ?>
+                            <!-- ----------------------------->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-12 mb-30">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <div class="acd-group">
+                    <a class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse-occupiers10" aria-expanded="false">Graph</a>
+                </div>
+                <div id="collapse-occupiers10" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <?php
+                        $keywordsAr = explode(",", $keywords);
+                        $keywordsArSize = count($keywordsAr);
+                        ?>
+                        <?php if ($keywordsArSize > 0): ?>
+                            <?php foreach ($keywordsAr as $keyword): ?>
+                                <div class="row">
+                                    <iframe src="<?php echo Mage::getBaseUrl(); ?>graph/?linkanalysis_id=<?php echo $linkAnalysisId; ?>&linkdetails_id=<?php echo $linkDetailsId; ?>&keywords=<?php echo $keyword; ?>" style="width: 100%; height: 320px" frameborder="0" scrolling="no"></iframe>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <h3>Sorry, No Data Found For Graph.</h3>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+<input type="hidden" id="social_share_status_box" value="0">
+<input type="hidden" id="index_status_box" value="0">
+<input type="hidden" id="external_link_status_box" value="0">
+<input type="hidden" id="link_poition_status_box" value="0">
+<input type="hidden" id="keyword_analysis_status_box" value="0">
+<input type="hidden" id="internal_link_status_box" value="0">
+
+<script>
+    var codeTrendsKey = '';
+    var codeTrendsCountry = '';
+    var codeTrendsTime = '';
+
+    function getKeywordDensityAndPossibilitySpam() {
+        jQuery("#rowLoaderKDPS").show();
+        jQuery("#kdpsBoby").hide();
+        var url = "<?php echo Mage::getBaseUrl(); ?>linkanalysis/index/KeywordDensityAndPossibilitySpam?linkdetails_id=<?php echo $linkDetailsId; ?>";
+                jQuery.ajax({
+                    type: "POST",
+                    url: url,
+                    data: "",
+                    success: function (data)
+                    {
+                        var objData = jQuery.parseJSON(data);
+                        document.getElementById("bodyOfSinglePhrase").innerHTML = objData.one_phrase;
+                        document.getElementById("bodyOfTwoPhrase").innerHTML = objData.two_phrase;
+                        document.getElementById("bodyOfThreePhrase").innerHTML = objData.three_phrase;
+                        document.getElementById("bodyOfFourPhrase").innerHTML = objData.four_phrase;
+
+                        jQuery("#kdpsBoby").show();
+                        jQuery("#rowLoaderKDPS").hide();
+
+                    }
+                });
+            }
+
+            function setTrendsTime(e) {
+                codeTrendsTime = e.value;
+                var country = document.getElementById("country").value;
+                codeTrendsCountry = country;
+                var newURL = "<?php echo Mage::getBaseUrl() . 'keyword-trends?google_trends_keywords='; ?>" + codeTrendsKey + "&google_trends_geo=" + codeTrendsCountry + "&google_trends_time=" + codeTrendsTime;
+                var iframe = document.getElementById('trendsPopupFrame');
+                iframe.src = newURL;
+            }
+
+            function setTrendsCountry(e) {
+                codeTrendsTime = document.getElementById("google_trends_time").value;
+                codeTrendsCountry = e.value;
+                var newURL = "<?php echo Mage::getBaseUrl() . 'keyword-trends?google_trends_keywords='; ?>" + codeTrendsKey + "&google_trends_geo=" + codeTrendsCountry + "&google_trends_time=" + codeTrendsTime;
+                var iframe = document.getElementById('trendsPopupFrame');
+                iframe.src = newURL;
+            }
+
+            function showGoogleTrends(key) {
+                codeTrendsTime = document.getElementById("google_trends_time").value;
+                var country = document.getElementById("country").value;
+                codeTrendsCountry = country;
+                document.getElementById("trendsPopupFrame").setAttribute("src", "");
+                codeTrendsKey = key;
+                var url = "<?php echo Mage::getBaseUrl() . 'keyword-trends?google_trends_keywords='; ?>" + codeTrendsKey + "&google_trends_geo=" + codeTrendsCountry + "&google_trends_time=" + codeTrendsTime;
+                document.getElementById("trendsPopupFrame").setAttribute("src", url);
+                document.getElementById("btnGoogleTrends").click();
+            }
+
+            function compareKeywords() {
+                var ids = [];
+                jQuery.each($("input[name='keywords']:checked"), function () {
+                    ids.push(jQuery(this).val());
+                });
+
+                var key = ids.join(",");
+                codeTrendsKey = key;
+                codeTrendsCountry = document.getElementById("country").value;
+                codeTrendsTime = document.getElementById("google_trends_time").value;
+                document.getElementById("trendsPopupFrame").setAttribute("src", "");
+                var url = "<?php echo Mage::getBaseUrl() . 'keyword-trends?google_trends_keywords='; ?>" + codeTrendsKey + "&google_trends_geo=" + codeTrendsCountry + "&google_trends_time=" + codeTrendsTime;
+                document.getElementById("trendsPopupFrame").setAttribute("src", url);
+                document.getElementById("btnGoogleTrends").click();
+            }
+
+            function getKeywordSuggession() {
+                jQuery("#rowLoaderKeywordSuggession").show();
+                jQuery("#keywordSuggessionBoby").hide();
+                var url = "<?php echo Mage::getBaseUrl(); ?>linkanalysis/index/getkeywordsuggession?linkdetails_id=<?php echo $linkDetailsId; ?>";
+                        jQuery.ajax({
+                            type: "POST",
+                            url: url,
+                            data: "",
+                            success: function (data)
+                            {
+                                jQuery("#keywordSuggessionData").html(data);
+                                jQuery("#keywordSuggessionBoby").show();
+                                jQuery("#rowLoaderKeywordSuggession").hide();
+
+                            }
+                        });
+                    }
+
+                    function showKeywordAnalysisResult(keyword) {
+                        jQuery("#pre-loader").css("opacity", '0.8');
+                        jQuery("#pre-loader").show();
+
+                        jQuery("#keyword_analysis_result_modal_body").hide();
+                        var url = "<?php echo Mage::getBaseUrl(); ?>linkanalysis/index/getkeywordanalysisresulthtml?linkdetails_id=<?php echo $linkDetailsId; ?>&keyword=" + keyword;
+                        jQuery("#keyword_title").html("Analysis Result: " + keyword);
+                        jQuery.ajax({
+                            type: "POST",
+                            url: url,
+                            data: "",
+                            success: function (data)
+                            {
+                                jQuery("#pre-loader").hide();
+                                jQuery("#keyword_analysis_result_modal_body").show();
+                                jQuery("#keyword_analysis_result_modal_body").html(data);
+                                //document.getElementById("keyword_analysis_status_box").value = 1;
+                                document.getElementById("linkanalysis_result_modal").click();
+                            }
+                        });
+                    }
+
+                    function getKeywordAnalysis() {
+                        var keyword_analysis_status_box = document.getElementById("keyword_analysis_status_box").value;
+                        if (keyword_analysis_status_box == '0') {
+                            jQuery("#rowLoaderKeywordAnalysis").show();
+                            jQuery("#collapse-occupiers6").hide();
+                            var url = "<?php echo Mage::getBaseUrl(); ?>linkanalysis/index/getkeywordanalysis?linkdetails_id=<?php echo $linkDetailsId; ?>";
+                                        jQuery.ajax({
+                                            type: "POST",
+                                            url: url,
+                                            data: "",
+                                            success: function (data)
+                                            {
+                                                //var objData = jQuery.parseJSON(data);
+                                                jQuery("#collapse-occupiers6").show();
+                                                jQuery("#rowLoaderKeywordAnalysis").hide();
+                                                jQuery("#link_analysis_result_custom").html(data);
+                                                document.getElementById("keyword_analysis_status_box").value = 1;
+                                            }
+                                        });
+                                    }
+                                }
+
+                                function getLinkPosition() {
+                                    var link_poition_status_box = document.getElementById("link_poition_status_box").value;
+                                    if (link_poition_status_box == '0') {
+                                        jQuery("#rowLoaderLinkPosition").show();
+                                        jQuery("#collapse-occupiers7").hide();
+                                        var url = "<?php echo Mage::getBaseUrl(); ?>linkanalysis/index/getlinkposition?linkdetails_id=<?php echo $linkDetailsId; ?>";
+                                                    jQuery.ajax({
+                                                        type: "POST",
+                                                        url: url,
+                                                        data: "",
+                                                        success: function (data)
+                                                        {
+                                                            //var objData = jQuery.parseJSON(data);
+                                                            jQuery("#collapse-occupiers7").show();
+                                                            jQuery("#rowLoaderLinkPosition").hide();
+                                                            jQuery("#keywordposition_rowdata").html(data);
+                                                            document.getElementById("link_poition_status_box").value = 1;
+                                                        }
+                                                    });
+                                                }
+                                            }
+
+                                            function getInternalLinksURL() {
+                                                var internal_link_status_box = document.getElementById("internal_link_status_box").value;
+                                                if (internal_link_status_box == '0') {
+                                                    jQuery("#rowLoaderInternalLink").show();
+                                                    jQuery("#collapse-occupiers11").hide();
+                                                    var url = "<?php echo Mage::getBaseUrl(); ?>linkanalysis/index/getinternallinks?linkdetails_id=<?php echo $linkDetailsId; ?>";
+                                                                jQuery.ajax({
+                                                                    type: "POST",
+                                                                    url: url,
+                                                                    data: "",
+                                                                    success: function (data)
+                                                                    {
+                                                                        var objData = jQuery.parseJSON(data);
+                                                                        jQuery("#collapse-occupiers11").show();
+                                                                        jQuery("#rowLoaderInternalLink").hide();
+                                                                        if (parseInt(objData.status) == 1) {
+                                                                            jQuery("#resultInternalLink").html(objData.html);
+                                                                            jQuery("#count_internal_link").html("Total Internal Links No: " + objData.count);
+                                                                        } else {
+                                                                            jQuery("#count_internal_link").html("Total Internal Links No: 0");
+                                                                            jQuery("#resultInternalLink").html("Sorry, No Internal Links Found!");
+                                                                        }
+                                                                        document.getElementById("internal_link_status_box").value = 1;
+                                                                    }
+                                                                });
+                                                            }
+                                                        }
+
+                                                        function getExternalLinksURL() {
+                                                            var external_link_status_box = document.getElementById("external_link_status_box").value;
+                                                            if (external_link_status_box == '0') {
+                                                                jQuery("#rowLoaderExternalLink").show();
+                                                                jQuery("#collapse-occupiers3").hide();
+                                                                var url = "<?php echo Mage::getBaseUrl(); ?>linkanalysis/index/getexternallinks?linkdetails_id=<?php echo $linkDetailsId; ?>";
+                                                                            jQuery.ajax({
+                                                                                type: "POST",
+                                                                                url: url,
+                                                                                data: "",
+                                                                                success: function (data)
+                                                                                {
+                                                                                    var objData = jQuery.parseJSON(data);
+                                                                                    jQuery("#collapse-occupiers3").show();
+                                                                                    jQuery("#rowLoaderExternalLink").hide();
+                                                                                    if (parseInt(objData.status) == 1) {
+                                                                                        jQuery("#resultExternalLink").html(objData.html);
+                                                                                        jQuery("#count_external_link").html("Total External Links No: " + objData.count);
+                                                                                    } else {
+                                                                                        jQuery("#count_external_link").html("Total External Links No: 0");
+                                                                                        jQuery("#resultExternalLink").html("Sorry, No External Links Found!");
+                                                                                    }
+                                                                                    document.getElementById("external_link_status_box").value = 1;
+                                                                                }
+                                                                            });
+                                                                        }
+                                                                    }
+
+                                                                    function deleteKeywords(keyword_ids) {
+                                                                        var linkDetailsId = "<?php echo $linkDetailsId; ?>";
+                                                                        var ids = [];
+                                                                        jQuery.each($("input[name='" + keyword_ids + "']:checked"), function () {
+                                                                            ids.push(jQuery(this).val());
+                                                                        });
+                                                                        var keywordIds = ids.join(",");
+                                                                        var url = "<?php echo Mage::getBaseUrl(); ?>linkanalysis/index/deletekeyword?keywords_name=" + keywordIds + "&linkDetailsId=" + linkDetailsId;
+
+                                                                        if (keywordIds.length > 0) {
+                                                                            jQuery("#pre-loader").css("opacity", '0.8');
+                                                                            jQuery("#pre-loader").show();
+                                                                            jQuery.ajax({
+                                                                                type: "POST",
+                                                                                url: url,
+                                                                                data: "",
+                                                                                success: function (data)
+                                                                                {
+                                                                                    var objData = jQuery.parseJSON(data);
+                                                                                    document.getElementById("keywordTableCustom").innerHTML = objData.content;
+                                                                                    jQuery("#pre-loader").hide();
+                                                                                }
+                                                                            });
+                                                                        } else {
+                                                                            alert("Please select keywords");
+                                                                        }
+                                                                    }
+
+                                                                    function addKeywords(linkDetailsId) {
+                                                                        var keywords_name = jQuery("#keywords_name").val();
+                                                                        var url = "<?php echo Mage::getBaseUrl(); ?>linkanalysis/index/addkeyword?keywords_name=" + keywords_name + "&linkDetailsId=" + linkDetailsId;
+                                                                        if (keywords_name == '' || keywords_name == null) {
+                                                                            document.getElementById("submitkeywordname").click();
+                                                                        } else {
+                                                                            jQuery("#pre-loader").css("opacity", '0.8');
+                                                                            jQuery("#pre-loader").show();
+                                                                            jQuery.ajax({
+                                                                                type: "POST",
+                                                                                url: url,
+                                                                                data: "",
+                                                                                success: function (data)
+                                                                                {
+                                                                                    var objData = jQuery.parseJSON(data);
+                                                                                    document.getElementById("keywordTableCustom").innerHTML = objData.content;
+                                                                                    jQuery("#pre-loader").hide();
+                                                                                    var keyword_analysis_status_box = document.getElementById("keyword_analysis_status_box").value;
+                                                                                    if (parseInt(keyword_analysis_status_box) >= 1) {
+                                                                                        document.getElementById("keyword_analysis_status_box").value = 0;
+                                                                                        document.getElementById("keyword_analysis_label").click();
+                                                                                    }
+                                                                                    var link_poition_status_box = document.getElementById("link_poition_status_box").value;
+                                                                                    if (parseInt(link_poition_status_box) >= 1) {
+                                                                                        document.getElementById("link_poition_status_box").value = 0;
+                                                                                        document.getElementById("keywordPositionLabel").click();
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                        }
+                                                                    }
+
+                                                                    function showMetaTitle(metaTitle) {
+                                                                        jQuery("#addKeyWordSec").hide();
+                                                                        jQuery("#metatitlesection").show();
+                                                                        jQuery("#section_title").html("<p style='padding-left:10px;' class='card-text text-dark'><b>META TITLE</b></p>");
+                                                                        if (metaTitle.length > 1) {
+                                                                            jQuery("#metatitlesection").html(metaTitle);
+                                                                        } else {
+                                                                            jQuery("#metatitlesection").html('<label style="font-size:13px;padding-bottom: 10px; padding-top: 8px;" class="badge badge-danger">Meta Title Not Found!</label>');
+                                                                        }
+                                                                    }
+
+                                                                    function showMetaDescription(metaDescription) {
+                                                                        jQuery("#addKeyWordSec").hide();
+                                                                        jQuery("#metatitlesection").show();
+                                                                        jQuery("#section_title").html("<p style='padding-left:10px;' class='card-text text-dark'><b>META DESCRIPTION</b></p>");
+                                                                        if (metaDescription.length > 1) {
+                                                                            jQuery("#metatitlesection").html(metaDescription);
+                                                                        } else {
+                                                                            jQuery("#metatitlesection").html('<label style="font-size:13px;padding-bottom: 10px;padding-top: 8px;" class="badge badge-danger">Meta Description Not Found!</label>');
+                                                                        }
+                                                                    }
+
+                                                                    function showKeyWords(metaKeywords) {
+                                                                        jQuery("#addKeyWordSec").hide();
+                                                                        jQuery("#metatitlesection").show();
+                                                                        jQuery("#section_title").html("<p style='padding-left:10px;' class='card-text text-dark'><b>META KEYWORDS</b></p>");
+                                                                        if (metaKeywords.length > 1) {
+                                                                            jQuery("#metatitlesection").html(metaKeywords);
+                                                                        } else {
+                                                                            jQuery("#metatitlesection").html('<label style="font-size:13px;padding-bottom: 10px; padding-top: 8px;" class="badge badge-danger">Meta Keywords Not Found!</label>');
+                                                                        }
+                                                                    }
+
+                                                                    function addKeyWord(referenceLinkId, metaKeywords) {
+                                                                        jQuery("#section_title").html("<p style='padding-left:20px;' class='card-text text-dark'><b>ADD KEYWORDS</b></p>");
+                                                                        jQuery("#metatitlesection").hide();
+                                                                        jQuery("#addKeyWordSec").show();
+                                                                    }
+
+                                                                    function showIndexCount() {
+                                                                        var index_status_box = document.getElementById("index_status_box").value;
+                                                                        if (index_status_box == '0') {
+                                                                            jQuery("#rowLoaderIndexCount").show();
+                                                                            jQuery("#collapse-occupiers2").hide();
+                                                                            var url = "<?php echo Mage::getBaseUrl(); ?>linkanalysis/index/getindexcount?linkdetails_id=<?php echo $linkDetailsId; ?>";
+                                                                                        jQuery.ajax({
+                                                                                            type: "POST",
+                                                                                            url: url,
+                                                                                            data: "",
+                                                                                            success: function (data)
+                                                                                            {
+                                                                                                var objData = jQuery.parseJSON(data);
+                                                                                                if (parseInt(objData.google_count) > 0) {
+                                                                                                    jQuery("#google_index_count_icon").html('<i style="color:green;" class="fa fa-check-square-o highlight-icon" aria-hidden="true"></i>');
+                                                                                                    document.getElementById("index_google_label").setAttribute("class", "badge badge-success");
+                                                                                                    jQuery("#index_google_label").html("INDEXED");
+                                                                                                    jQuery("#google_count_num").html(" " + objData.google_count);
+                                                                                                } else {
+                                                                                                    jQuery("#google_index_count_icon").html('<i style="color:#dc3545;" class="fa fa-times-circle-o highlight-icon" aria-hidden="true"></i>');
+                                                                                                    document.getElementById("index_google_label").setAttribute("class", "badge badge-danger");
+                                                                                                    jQuery("#index_google_label").html("NOT INDEXED");
+                                                                                                    jQuery("#google_count_num").html("0");
+                                                                                                }
+
+                                                                                                if (parseInt(objData.bing_count) > 0) {
+                                                                                                    jQuery("#bing_index_count_icon").html('<i style="color:green;" class="fa fa-check-square-o highlight-icon" aria-hidden="true"></i>');
+                                                                                                    document.getElementById("index_bing_label").setAttribute("class", "badge badge-success");
+                                                                                                    jQuery("#index_bing_label").html("INDEXED");
+                                                                                                    jQuery("#bing_count_num").html(" " + objData.bing_count);
+                                                                                                } else {
+                                                                                                    jQuery("#bing_index_count_icon").html('<i style="color:#dc3545;" class="fa fa-times-circle-o highlight-icon" aria-hidden="true"></i>');
+                                                                                                    document.getElementById("index_bing_label").setAttribute("class", "badge badge-danger");
+                                                                                                    jQuery("#index_bing_label").html("NOT INDEXED");
+                                                                                                    jQuery("#bing_count_num").html("0");
+                                                                                                }
+
+                                                                                                if (parseInt(objData.yahoo_count) > 0) {
+                                                                                                    jQuery("#yahoo_index_count_icon").html('<i style="color:green;" class="fa fa-check-square-o highlight-icon" aria-hidden="true"></i>');
+                                                                                                    document.getElementById("index_yahoo_label").setAttribute("class", "badge badge-success");
+                                                                                                    jQuery("#index_yahoo_label").html("INDEXED");
+                                                                                                    jQuery("#yahoo_count_num").html(" " + objData.yahoo_count);
+                                                                                                } else {
+                                                                                                    jQuery("#yahoo_index_count_icon").html('<i style="color:#dc3545;" class="fa fa-times-circle-o highlight-icon" aria-hidden="true"></i>');
+                                                                                                    document.getElementById("index_yahoo_label").setAttribute("class", "badge badge-danger");
+                                                                                                    jQuery("#index_yahoo_label").html("NOT INDEXED");
+                                                                                                    jQuery("#yahoo_count_num").html("0");
+                                                                                                }
+
+                                                                                                if (parseInt(objData.yandex_count) > 0) {
+                                                                                                    jQuery("#yandex_index_count_icon").html('<i style="color:green;" class="fa fa-check-square-o highlight-icon" aria-hidden="true"></i>');
+                                                                                                    document.getElementById("index_yandex_label").setAttribute("class", "badge badge-success");
+                                                                                                    jQuery("#index_yandex_label").html("INDEXED");
+                                                                                                    jQuery("#yandex_count_num").html(" " + objData.yandex_count);
+                                                                                                } else {
+                                                                                                    jQuery("#yandex_index_count_icon").html('<i style="color:#dc3545;" class="fa fa-times-circle-o highlight-icon" aria-hidden="true"></i>');
+                                                                                                    document.getElementById("index_yandex_label").setAttribute("class", "badge badge-danger");
+                                                                                                    jQuery("#index_yandex_label").html("NOT INDEXED");
+                                                                                                    jQuery("#yandex_count_num").html("0");
+                                                                                                }
+
+
+
+                                                                                                jQuery("#rowLoaderIndexCount").hide();
+                                                                                                jQuery("#collapse-occupiers2").show();
+
+                                                                                                document.getElementById("index_status_box").value = 1;
+                                                                                            }
+                                                                                        });
+                                                                                    }
+                                                                                }
+
+                                                                                function showSocialShare() {
+                                                                                    var social_share_status_box = document.getElementById("social_share_status_box").value;
+                                                                                    if (social_share_status_box == '0') {
+                                                                                        jQuery("#collapse-occupiers1").hide();
+                                                                                        jQuery("#rowLoaderSocialShare").show();
+                                                                                        var url = "<?php echo Mage::getBaseUrl(); ?>linkanalysis/index/getsocialsharecount?linkdetails_id=<?php echo $linkDetailsId; ?>";
+                                                                                                    jQuery.ajax({
+                                                                                                        type: "POST",
+                                                                                                        url: url,
+                                                                                                        data: "",
+                                                                                                        success: function (data)
+                                                                                                        {
+                                                                                                            var objData = jQuery.parseJSON(data);
+                                                                                                            document.getElementById("facebook_count").innerHTML = objData.fb_count;
+                                                                                                            document.getElementById("twitter_count").innerHTML = "0";
+                                                                                                            document.getElementById("youtube_count").innerHTML = "0";
+                                                                                                            document.getElementById("instagram_count").innerHTML = "0";
+                                                                                                            document.getElementById("linkedin_count").innerHTML = "0";
+                                                                                                            document.getElementById("pinterest_count").innerHTML = objData.pintrest_count;
+                                                                                                            document.getElementById("google_count").innerHTML = "0";
+                                                                                                            document.getElementById("timblr_count").innerHTML = "0";
+
+                                                                                                            jQuery("#rowLoaderSocialShare").hide();
+                                                                                                            jQuery("#collapse-occupiers1").show();
+
+                                                                                                            document.getElementById("social_share_status_box").value = 1;
+                                                                                                        }
+                                                                                                    });
+                                                                                                }
+                                                                                            }
+
+                                                                                            function setCuntryLocation(e) {
+                                                                                                var countryCode = e.value;
+                                                                                                var url = "<?php echo Mage::getBaseUrl(); ?>linkanalysis/index/setcountry?linkdetails_id=<?php echo $linkDetailsId; ?>&countryCode=" + countryCode;
+                                                                                                //jQuery("pre-loader").show();
+                                                                                                jQuery.ajax({
+                                                                                                    type: "POST",
+                                                                                                    url: url,
+                                                                                                    data: "",
+                                                                                                    success: function (data)
+                                                                                                    {
+                                                                                                        //jQuery("pre-loader").hide();
+                                                                                                        /*var objData = jQuery.parseJSON(data);
+                                                                                                         if(parseInt(objData.status) == 1){
+                                                                                                         document.location.href = "<?php //echo Mage::getBaseUrl();         ?>analysis-result?linkDetailsId=<?php echo $linkDetailsId; ?>&cn="+countryCode;
+                                                                                                         }else{
+                                                                                                         alert("Sorry! Something wrong");
+                                                                                                         }*/
+                                                                                                        document.location.href = "<?php echo Mage::getBaseUrl(); ?>analysis-result?linkDetailsId=<?php echo $linkDetailsId; ?>&cn=" + countryCode;
+                                                                                                    }
+                                                                                                });
+                                                                                            }
+</script>

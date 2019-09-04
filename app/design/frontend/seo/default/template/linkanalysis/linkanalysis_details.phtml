@@ -1,0 +1,422 @@
+<?php
+$pageSize = 25;
+$currPage = 1;
+$noOfPage = 1;
+if (isset($_REQUEST['ps'])) {
+    $pageSize = $_REQUEST['ps'];
+}
+if (isset($_REQUEST['cp'])) {
+    $currPage = $_REQUEST['cp'];
+}
+$primaryDomainId = $_REQUEST['domain'];
+$customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
+
+$userPermissions = '';
+$customerData = Mage::getModel('customer/customer')->load($customerId);
+$userPermissions = $customerData->getUserPermissions();
+
+$linkDetailsCollection = Mage::getModel('linkdetails/linkdetails')
+        ->getCollection()
+        ->addFieldToFilter('linkanalysis_id', $primaryDomainId)
+        ->addFieldToFilter('customer_id', $customerId)
+        /* ->setOrder('linkdetails_id', 'DESC') */
+        ->setPageSize($pageSize)
+        ->setCurPage($currPage);
+
+$primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($primaryDomainId);
+$helper = Mage::helper('linkanalysis/data');
+
+
+
+if (($linkDetailsCollection->getSize() % $pageSize) == 0) {
+    $noOfPage = $linkDetailsCollection->getSize() / $pageSize;
+} else {
+    $noOfPage = ($linkDetailsCollection->getSize() / $pageSize) + 1;
+}
+?>
+<!-- ----------------- Modal Start ------------------------>
+<style>
+    #empTable{
+        width: 100%;
+    }
+    .modal-lg {
+        max-width: 750px;
+    }
+    .modal-content{
+        height:70vh;
+    }
+    .modal-dialog {
+        margin: 1rem auto;
+    }
+    .modal-body {
+        padding: 0rem;
+
+    }
+    .tab-vertical .tab-content {
+
+        background-color: #ffffff;
+        border: 1px solid #eeeeee;
+        padding: 0px 30px;
+        margin-left: 25%;
+        line-height: 30px;
+        margin-top: 0;
+
+    }
+
+    .social_custom{
+        padding-top: 5px;
+        margin-bottom: 0rem !important;
+    }
+</style>
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="mb-30" style="margin-bottom: 0px !important;">
+                        <h6 style="float: left;" id="linkView" class="text-info">Add Link for Domain: <?php echo $primaryDomain->getUrl(); ?></h6>
+                        <a style="margin-left: 200px;" id="addRow" href="javascript:addRow();" class="btn btn-outline-success btn-sm"><b>Add Link Row</b></a>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline-success btn-sm" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modal_body" style="padding-left: 10px; padding-right: 10px; overflow: auto;">
+                <center>
+                    <img style="display: none;" id="modal_loading" src="<?php echo $this->getSkinUrl('images/pre-loader/loader-01.svg', array('_secure' => true)); ?>" alt="">
+                </center>
+            </div>
+            <div class="modal-footer">
+                <a href="javascript:saveManualLinks();" class="btn btn-outline-success btn-sm"><b style="padding-left: 10px; padding-right: 10px;">SAVE</b></a>
+            </div>
+        </div>
+    </div>
+</div>
+<button id="modalButtonCommon" type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg" style="display: none;">Large modal</button>
+<!-- ----------------- Modal End -------------------------->
+<div class="page-title">
+    <div class="row">
+        <div class="col-sm-6">
+            <h5 class="mb-0"> Link Analysis Details: <?php echo $primaryDomain->getUrl(); ?></h5>
+            <p>Total <?php echo $linkDetailsCollection->getSize(); ?> Records Found</p>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                <li class="breadcrumb-item"><a href="index.html" class="default-color">Home</a></li>
+                <li class="breadcrumb-item">Dashboard</li>
+                <li class="breadcrumb-item active">Link Analysis</li>
+                <li class="breadcrumb-item active">Link Analysis Details</li>
+            </ol>
+        </div>
+    </div>
+</div>
+<?php /* if (in_array($linkAnalysisPermission, explode(",", $userPermissions))): */ ?>
+<div class="row">
+    <div class="col-xl-12 mb-30">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-8">
+
+                        <a href="javascript:downloadLinkDetailsCsv('links_ids');" class="button" style="float: right;">
+                            <span>Download</span>
+                            <i class="fa fa-cloud-download" style="font-size:16px"></i>
+                        </a>
+
+                        <a href="javascript:deleteDomain('links_ids');" class="button">
+                            <span>Delete</span>
+                            <i class="fa fa-trash-o" style="font-size:16px"></i>
+                        </a>
+
+                        <a href="javascript:addDomainLinks();" class="button" style="float: left;">
+                            <span>Add Link</span>
+                            <i class="fa fa-edit" style="font-size:16px"></i>
+                        </a>
+
+                        <a href="javascript:showPageById('7', '1');" class="button">
+                            <span>Update</span>
+                            <i class="fa fa-refresh" id="selectedUpdateCustom" style="font-size:16px"></i>
+                        </a>
+
+                    </div>
+                    <div class="col-sm-12 col-md-4">
+                        <div class="widget-search ml-0 clearfix" style="float: left; width: 60%;">
+                            <i class="fa fa-search"></i>
+                            <input class="form-control" placeholder="Search...." type="search">
+                        </div>
+                        <div class="dataTables_length" id="datatable_length" style="float: right;">
+                            <select onchange="setPageSize(this);" style="float: left; height: 47px;" name="datatable_length" aria-controls="datatable" class="form-control form-control-sm">
+                                <option value="10" <?php echo ($pageSize == 10 ? 'selected="selected"' : '') ?>>10</option>
+                                <option value="25" <?php echo ($pageSize == 25 ? 'selected="selected"' : '') ?>>25</option>
+                                <option value="50" <?php echo ($pageSize == 50 ? 'selected="selected"' : '') ?>>50</option>
+                                <option value="100" <?php echo ($pageSize == 100 ? 'selected="selected"' : '') ?>>100</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" id="linkanalysis_details_table">   
+    <div class="col-xl-12 mb-30">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="datatable1" class="table table-striped table-bordered p-0">
+                        <thead>
+                            <tr>
+                                <th style="width: 8.5px; text-align: center;">
+                                    <input id="links_ids_all" onclick="checkUncheckAll('links_ids_all', 'links_ids');" type="checkbox">
+                                </th>
+                                <th style="width: 40.5px; text-align: center;">URL Id</th>
+                                <th style="width: 450.5px;">URL</th>
+                                <th style="width: 85.5px; text-align: center;">Scan Status</th>
+                                <th style="width: 75.5px; text-align: center;">ROBOT.TXT</th>
+                                <th style="width: 70.5px; text-align: center;">Page Size</th>
+                                <th style="width: 60.5px; text-align: center;">Load Time</th>
+                                <th style="width: 75.5px; text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if ($linkDetailsCollection->getSize() > 0): ?>
+                                <?php foreach ($linkDetailsCollection as $linkDetails): ?>
+                                    <tr>
+                                        <td style="text-align: center;"><input type="checkbox" name="links_ids" value="<?php echo $linkDetails->getId(); ?>"></td>
+                                        <td style="text-align: center;">
+                                            <a href="" target="_blank">
+                                                <?php echo $linkDetails->getId(); ?>
+                                            </a>
+                                        </td>
+                                        <td style="word-wrap: break-word; max-width: 450.5px;">
+                                            <a href="<?php echo $linkDetails->getRelatedUrl(); ?>" target="_blank">
+                                                <?php echo $linkDetails->getRelatedUrl(); ?>
+                                            </a>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <?php if ($linkDetails->getStatus() == 2): ?>
+                                                <label class="badge badge-success">Completed</label>
+                                            <?php else: ?>
+                                                <label class="badge badge-danger">Pending</label>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <a href="" target="_blank">
+                                                <?php if ($helper->isListedInRobotTxt($linkDetails->getRelatedUrl(), "NameOfAgent")): ?>
+                                                    <i class="fa fa-check-square" style="color: #007bff; font-size: 20px;"></i>
+                                                <?php else: ?>
+                                                    <label class="badge badge-danger">Disallowed</label>
+                                                <?php endif; ?>
+                                                <!--
+                                                -->
+
+                                            </a>
+                                        </td>
+                                        <td style="text-align: center;" id="status<?php echo $i; ?>">
+                                            <?php echo $linkDetails->getPageSize(); ?>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <a href="" target="_blank">
+                                                <?php echo $linkDetails->getLoadTime(); ?>
+                                            </a>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <!--<a href="javascript:viewDetailsAnalysis('<?php echo $linkDetails->getId(); ?>', '<?php echo $linkDetails->getRelatedUrl(); ?>');" class="btn btn-outline-success btn-sm">
+                                                <i class="fa fa-eye" style="font-size:14px"></i>&nbsp;
+                                                View
+                                            </a>-->
+                                            <a target="_blank" href="<?php echo Mage::getBaseUrl(); ?>analysis-result?linkDetailsId=<?php echo $linkDetails->getId(); ?>" class="btn btn-outline-success btn-sm">
+                                                <i class="fa fa-eye" style="font-size:14px"></i>&nbsp;
+                                                View
+                                            </a>
+                                            <a href="" title="Download Report" data-toggle="tooltip" title="Download Report">
+                                                <i class="fa fa-file-excel-o" style="font-size:18px; padding: 4px;"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="8"><h4>Sorry!, No Records Found</h4></td>
+                                </tr>
+                            <?php endif; ?>
+                            <?php for ($i = 0; $i < 100; $i++): ?>
+
+                            <?php endfor; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div> 
+<div class="row" style="padding-bottom: 10px;">
+    <div class="col-sm-12 col-md-5">
+        <div class="dataTables_info" id="datatable_info" role="status" aria-live="polite">
+            Showing 1 to 10 of <?php echo $linkDetailsCollection->getSize(); ?> entries
+        </div>           
+    </div>
+    <div class="col-sm-12 col-md-7">
+        <div class="dataTables_paginate paging_simple_numbers" id="datatable_paginate" style="float: right;">
+            <ul class="pagination">
+                <?php if ($currPage > 1): ?>
+                    <li class="paginate_button page-item previous" id="datatable_previous">
+                        <a href="javascript: setPageNo('<?php echo ($currPage - 1); ?>');" data-dt-idx="0" tabindex="0" class="page-link">Previous</a>
+                    </li>
+                <?php endif; ?>
+                <?php for ($i = 1; $i <= $noOfPage; $i++): ?>
+                    <li class="paginate_button page-item <?php echo ($i == $currPage ? 'active' : ''); ?>">
+                        <a href="javascript: setPageNo('<?php echo $i; ?>');" aria-controls="datatable" data-dt-idx="<?php echo $i; ?>" tabindex="0" class="page-link"><?php echo $i; ?></a>
+                    </li>
+                <?php endfor; ?>
+                <?php if ($currPage < $noOfPage): ?>
+                    <li class="paginate_button page-item next" id="datatable_next">
+                        <a href="javascript: setPageNo('<?php echo ($currPage + 1); ?>');" data-dt-idx="8" tabindex="0" class="page-link">Next</a>
+                    </li>
+                <?php endif; ?>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var arrHead = new Array();
+    arrHead = ['', 'Links'];
+    
+    var primaryURLCustom = "<?php echo $primaryDomain->getUrl(); ?>";
+
+    function saveManualLinks() {
+        var primaryDomainId = '<?php echo $primaryDomainId; ?>';
+        var text = new Array();
+        jQuery("input[name='array[]']").each(function () {
+            text.push(jQuery(this).val());
+        });
+
+        var statusIsElegibleToSubmit = 0;
+        for (var i = 0; i < text.length; i++) {
+            if(text[i].indexOf(primaryURLCustom) > -1){
+                statusIsElegibleToSubmit = 1;
+            }
+        }
+
+        if (parseInt(statusIsElegibleToSubmit) >= 1) {
+            var textValues = text.join(",");
+            url = '<?php echo Mage::getBaseUrl(); ?>linkanalysis/index/saveSubLinksAndAnalyse?primaryDomainId=' + primaryDomainId + '&sublinks=' + textValues;
+            jQuery("#empTable").hide();
+            jQuery("#pre-loader").css("opacity", '0.8');
+            jQuery("#modal_loading").show();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: ""/*form.serialize()*/,
+                success: function (data)
+                {
+                    jQuery("#modal_loading").hide();
+                    document.location.href = "<?php echo Mage::helper('core/url')->getCurrentUrl(); ?>";
+                }
+            });
+        } else {
+            alert("Sorry! Either Empty OR Wrong URL Found.");
+        }
+    }
+
+    function addDomainLinks() {
+        var empTable = document.createElement('table');
+        empTable.setAttribute('id', 'empTable');
+        var tr = empTable.insertRow(-1);
+        for (var h = 0; h < arrHead.length; h++) {
+            var th = document.createElement('th');          // TABLE HEADER.
+            th.innerHTML = arrHead[h];
+            tr.appendChild(th);
+        }
+
+        var div = document.getElementById('modal_body');
+        div.appendChild(empTable);
+        //-----------------------------------------
+        document.getElementById("modalButtonCommon").click();
+    }
+
+    function addRow() {
+        var empTab = document.getElementById('empTable');
+
+        var rowCnt = empTab.rows.length;        // GET TABLE ROW COUNT.
+        var tr = empTab.insertRow(rowCnt);      // TABLE ROW.
+        tr = empTab.insertRow(rowCnt);
+
+        for (var c = 0; c < arrHead.length; c++) {
+            var td = document.createElement('td');          // TABLE DEFINITION.
+            td = tr.insertCell(c);
+
+            if (c == 0) {           // FIRST COLUMN.
+                // ADD A BUTTON.
+                var button = document.createElement('input');
+
+                // SET INPUT ATTRIBUTE.
+                button.setAttribute('type', 'button');
+                button.setAttribute('value', 'Remove');
+                button.setAttribute('class', 'btn btn-outline-warning btn-sm badge-danger');
+                button.setAttribute('style', 'width:75%;');
+
+
+                // ADD THE BUTTON's 'onclick' EVENT.
+                button.setAttribute('onclick', 'removeRow(this)');
+
+                td.appendChild(button);
+            } else {
+                // CREATE AND ADD TEXTBOX IN EACH CELL.
+                var ele = document.createElement('input');
+                ele.setAttribute('type', 'text');
+                ele.setAttribute('value', '');
+                ele.setAttribute('style', 'width:90%;');
+                ele.setAttribute('name', 'array[]');
+
+                td.appendChild(ele);
+            }
+        }
+    }
+
+    // DELETE TABLE ROW.
+    function removeRow(oButton) {
+        var empTab = document.getElementById('empTable');
+        empTab.deleteRow(oButton.parentNode.parentNode.rowIndex);       // BUTTON -> TD -> TR.
+    }
+
+    function viewDetailsAnalysis(linkDetailsId, relatedUrl) {
+        var url = "<?php echo Mage::getBaseUrl(); ?>linkanalysis/index/linkdetails?linkDetailsId=" + linkDetailsId;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: ""/*form.serialize()*/,
+            success: function (data)
+            {
+                var $result = jQuery(data).find('#content').html();
+                jQuery("#modal_body").html($result);
+                jQuery("#pre-loader").hide();
+                //var objData = jQuery.parseJSON(data);
+
+                document.getElementById("modalButtonCommon").click();
+                jQuery("#linkView").html(relatedUrl);
+            }
+        });
+    }
+
+    function setPageSize(e) {
+        var pageSize = e.value;
+        var url = "<?php echo Mage::getBaseUrl(); ?>link-details?domain=<?php echo $primaryDomainId; ?>&ps=" + pageSize;
+        document.location.href = url;
+    }
+
+    function setPageNo(pageNo) {
+        var url = "<?php echo Mage::getBaseUrl(); ?>link-details?domain=<?php echo $primaryDomainId; ?>&ps=<?php echo $pageSize; ?>&cp=" + pageNo;
+        document.location.href = url;
+    }
+</script>
+<?php /* else: ?>
+  <div class="alert alert-danger" role="alert">
+  Sorry! You are not authorized to access Link Analysis module, Click <a href="#" class="alert-link">here</a> to contact site administrator.
+  </div>
+  <?php endif; */ ?>

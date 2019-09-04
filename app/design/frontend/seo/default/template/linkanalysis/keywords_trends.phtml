@@ -1,0 +1,170 @@
+
+<?php
+$googleTrendsKeywords = '';
+$googleTrendsGeo = 'US';
+$customerId = Mage::getSingleton('customer/session')->getCustomer()->getEntityId();
+$customer = Mage::getModel('customer/customer')->load($customerId);
+if($customer->getCountryCode() != ''){
+    $googleTrendsGeo = $customer->getCountryCode();
+}
+
+
+$googleTrendsTime = 'now 1-H';  //now 4-H,now 1-d,now 7-d,today 1-m,today 3-m
+
+$arrGoogleTrendsKeywordQuery = array();
+
+if (isset($_REQUEST['google_trends_geo'])) {
+    $googleTrendsGeo = $_REQUEST['google_trends_geo'];
+}
+
+if (isset($_REQUEST['google_trends_time'])) {
+    $googleTrendsTime = $_REQUEST['google_trends_time'];
+}
+if (isset($_REQUEST['google_trends_keywords'])) {
+    $googleTrendsKeywords = explode(",", $_REQUEST['google_trends_keywords']);
+    foreach ($googleTrendsKeywords as $googleTrendsKeyword) {
+        array_push($arrGoogleTrendsKeywordQuery, '{"keyword":"' . $googleTrendsKeyword . '","geo":"' . $googleTrendsGeo . '","time":"' . $googleTrendsTime . '"}');
+    }
+}
+?>
+<script type="text/javascript" src="https://ssl.gstatic.com/trends_nrtr/1644_RC01/embed_loader.js"></script>
+<div class="modal-body">
+    <!-- ------- Tab Starts ------------->
+    <div class="tab tab-vertical">
+        <ul class="nav nav-tabs" role="tablist" style="width: 20%;">
+            <li class="nav-item">
+                <a style="text-align: center; text-transform: uppercase;" class="nav-link active show" id="home-09-tab" data-toggle="tab" href="#home-09" role="tab" aria-controls="home-09" aria-selected="true">  Interest over time</a>
+            </li>
+            <li class="nav-item">
+                <a style="text-align: center; text-transform: uppercase;" class="nav-link" id="profile-09-tab" data-toggle="tab" href="#profile-09" role="tab" aria-controls="profile-09" aria-selected="false"> Compared breakdown by subregion </a>
+            </li>
+            <li class="nav-item">
+                <a style="text-align: center; text-transform: uppercase;" class="nav-link" id="portfolio-09-tab" data-toggle="tab" href="#portfolio-09" role="tab" aria-controls="portfolio-09" aria-selected="false">
+                    <?php if(!empty($arrGoogleTrendsKeywordQuery) && count($arrGoogleTrendsKeywordQuery) > 1): ?>
+                        Interest by subregion
+                    <?php else: ?>
+                        Related topics
+                    <?php endif; ?>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a style="text-align: center; text-transform: uppercase;" class="nav-link" id="contact-09-tab" data-toggle="tab" href="#contact-09" role="tab" aria-controls="contact-09" aria-selected="false"> Related queries </a>
+            </li>
+        </ul>
+        <div class="tab-content" style="margin-left: 20%; padding: 10px 10px;">
+            <div class="tab-pane fade active show" id="home-09" role="tabpanel" aria-labelledby="home-09-tab">
+                
+                <script type="text/javascript">
+                    trends.embed.renderExploreWidget(
+                            "TIMESERIES", {
+                                "comparisonItem": [
+                                    <?php echo implode(",", $arrGoogleTrendsKeywordQuery); ?>
+                                ],
+                                "category": 0,
+                                "property": ""
+                            },
+                            {
+                                "exploreQuery": "date=<?php echo rawurlencode($googleTrendsTime); ?>&geo=<?php echo $googleTrendsGeo; ?>&q=<?php echo $_REQUEST['google_trends_keywords']; ?>",
+                                "guestPath": "https://trends.google.com:443/trends/embed/"
+                            }
+                    );
+                </script>
+            </div>
+            <div class="tab-pane fade" id="profile-09" role="tabpanel" aria-labelledby="profile-09-tab">
+                
+                <script type="text/javascript">
+                    trends.embed.renderExploreWidget(
+                            "GEO_MAP", {
+                                "comparisonItem": [
+                                    <?php echo implode(",", $arrGoogleTrendsKeywordQuery); ?>
+                                ],
+                                "category": 0,
+                                "property": ""
+                            }, {
+                        "exploreQuery": "date=<?php echo rawurlencode($googleTrendsTime); ?>&geo=<?php echo $googleTrendsGeo; ?>&q=<?php echo $_REQUEST['google_trends_keywords']; ?>",
+                        "guestPath": "https://trends.google.com:443/trends/embed/"
+                    });
+                </script>
+
+            </div>
+            <div class="tab-pane fade" id="portfolio-09" role="tabpanel" aria-labelledby="portfolio-09-tab">
+                <div class="tab tab-border">
+                    <!-- ------------------------------------>
+                    
+                    <script type="text/javascript">
+                        <?php $i = 0;?>
+                        <?php if(!empty($arrGoogleTrendsKeywordQuery) && count($arrGoogleTrendsKeywordQuery) > 1): ?>
+                            <?php foreach($arrGoogleTrendsKeywordQuery as $keywords): ?>
+                            trends.embed.renderExploreWidget(
+                                "GEO_MAP_<?php echo $i; ?>", 
+                                    {
+                                        "comparisonItem": [
+                                            <?php echo implode(",", $arrGoogleTrendsKeywordQuery); ?>
+                                        ], 
+                                        "category": 0, 
+                                        "property": ""
+                                    }, {
+                                        "exploreQuery": "geo=<?php echo $googleTrendsGeo; ?>&q=<?php echo $_REQUEST['google_trends_keywords']; ?>&date=<?php echo rawurlencode($googleTrendsTime); ?>", 
+                                        "guestPath": "https://trends.google.com:443/trends/embed/"
+                                    }
+                                );
+                                <?php $i++; ?>
+                        <?php endforeach; ?>
+                        <?php else: ?>
+                            trends.embed.renderExploreWidget(
+                                    "RELATED_TOPICS", {
+                                        "comparisonItem":[{
+                                                "keyword":"<?php echo $_REQUEST['google_trends_keywords']; ?>",
+                                                "geo":"<?php echo $googleTrendsGeo; ?>",
+                                                "time":"<?php echo $googleTrendsTime; ?>"
+                                            }],
+                                        "category":0,
+                                        "property":""
+                                    }, {
+                                        "exploreQuery":"geo=<?php echo $googleTrendsGeo; ?>&q=<?php echo $_REQUEST['google_trends_keywords']; ?>&date=<?php echo $googleTrendsTime; ?>",
+                                        "guestPath":"https://trends.google.com:443/trends/embed/"
+                                    }
+                                );
+                        <?php endif; ?>
+                    </script>
+
+
+                </div>
+            </div>
+            <div class="tab-pane fade" id="contact-09" role="tabpanel" aria-labelledby="contact-09-tab">
+                <script type="text/javascript">
+                    <?php $i = 0;?>
+                    <?php if(!empty($arrGoogleTrendsKeywordQuery) && count($arrGoogleTrendsKeywordQuery) > 1): ?>
+                        <?php foreach($arrGoogleTrendsKeywordQuery as $keywords): ?>
+                            trends.embed.renderExploreWidget(
+                                    "RELATED_QUERIES_<?php echo $i; ?>", {
+                                        "comparisonItem":[<?php echo implode(",", $arrGoogleTrendsKeywordQuery); ?>],
+                                        "category":0,
+                                        "property":""
+                                        }, {
+                                        "exploreQuery":"geo=<?php echo $googleTrendsGeo; ?>&q=<?php echo $_REQUEST['google_trends_keywords']; ?>&date=<?php echo $googleTrendsTime; ?>",
+                                        "guestPath":"https://trends.google.com:443/trends/embed/"
+                                    });
+                            <?php $i++; ?>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        trends.embed.renderExploreWidget(
+                                "RELATED_QUERIES", {
+                                    "comparisonItem":[{
+                                            "keyword":"<?php echo $_REQUEST['google_trends_keywords']; ?>",
+                                            "geo":"<?php echo $googleTrendsGeo; ?>",
+                                            "time":"<?php echo $googleTrendsTime; ?>"
+                                        }],
+                                        "category":0,
+                                        "property":""
+                                    }, {
+                                        "exploreQuery":"geo=<?php echo $googleTrendsGeo; ?>&q=<?php echo $_REQUEST['google_trends_keywords']; ?>&date=<?php echo $googleTrendsTime; ?>",
+                                        "guestPath":"https://trends.google.com:443/trends/embed/"
+                                    });
+                    <?php endif; ?>
+                </script>
+            </div>
+        </div>
+    </div>
+    <!-- ------- Tab Ends --------------->
+</div>

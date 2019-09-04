@@ -1,0 +1,533 @@
+<?php
+$sourceTxt = $_REQUEST['source'];
+$username = str_replace(" ", "", $_REQUEST['username']);
+
+if ($sourceTxt == 'Instagram') {
+    $url = 'https://www.instagram.com/' . $username;
+} elseif ($sourceTxt == 'Twitter') {
+    $url = 'https://twitter.com/' . $username;
+}
+
+$modelCollection = Mage::getModel('sma/sma')
+        ->getCollection()
+        ->addFieldToFilter('source', $sourceTxt)
+        ->addFieldToFilter('user_name', $username);
+
+//echo "<pre>"; print_r($modelCollection->getData()); die();
+
+if (!empty($modelCollection) && $modelCollection->getSize() > 0) {
+    foreach ($modelCollection as $user) {
+        $fullName = $user->getFullName();
+        $userName = $user->getUserName();
+        $isVerified = $user->getIsVarified();
+        $biography = $user->getProfileDescription();
+        $profileId = $user->getProfileId();
+        $profile_pic_url = $user->getProfilePicture();
+        $followers = $user->getFollowers();
+        $following = $user->getFollowing();
+        $media = $user->getMedia();
+        $tweets = $user->getTweets();
+        $videos = $user->getVideos();
+        $subscribers = $user->getSubscribers();
+        $views = $user->getViews();
+        $customURL = $user->getCustomUrl();
+        $post = $user->getPosts();
+        $ask_enabled = $user->getAskEnabled();
+        $anon_ask_enabled = $user->getAnonAskEnabled();
+        $is_nsfw = $user->getIsNsfw();
+        $website = $user->getWebsite();
+    }
+}
+
+function convertNo($input) {
+    $result = '';
+    if (is_numeric($input)) {
+        $input = number_format($input, 1);
+        $input_count = substr_count($input, ',');
+        if ($input_count != '0') {
+            if ($input_count == '1') {
+                $result = substr($input, 0, -4) . 'K';
+            } else if ($input_count == '2') {
+                $result = substr($input, 0, -8) . 'M';
+            } else if ($input_count == '3') {
+                $result = substr($input, 0, -12) . 'B';
+            } else {
+                $result = '';
+            }
+        } else {
+            $result = $input;
+        }
+    } else {
+        $result = $input;
+    }
+    return str_replace(",", ".", $result);
+}
+?>
+
+<div class="page-title">
+    <div class="row">
+        <div class="col-sm-6">
+            <h4 class="mb-0"> <?php echo uc_words($sourceTxt); ?>: User Details</h4>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                <li class="breadcrumb-item"><a href="<?php echo Mage::getBaseUrl(); ?>" class="default-color">Home</a></li>
+                <li class="breadcrumb-item">Social Media Audit</li>
+                <li class="breadcrumb-item active">Top <?php echo $sourceTxt; ?></li>
+                <li class="breadcrumb-item active"><?php echo $sourceTxt; ?> User Details</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<?php if (!empty($modelCollection) && $modelCollection->getSize() > 0): ?>
+    <div class="row">
+        <div class="col-xl-12 col-lg-6 col-md-6 mb-30">
+            <div class="card card-statistics h-100">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-xl-2 col-lg-6 col-md-6 mb-30">
+                            <img style="width: 100%; border-radius: 50%; border: solid 2px #ccc; padding: 1px;" src="<?php echo $profile_pic_url; ?>">
+                        </div>
+                        <div class="col-xl-8 col-lg-6 col-md-6 mb-30">
+                            <h6 class="mb-0 sm-mt-5">
+                                <?php if($isVerified >= 1): ?>
+                                    <i data-toggle="tooltip" data-placement="top" title="Verified" class="fa fa-check-circle" style="font-size:15px; margin-right: 10px;"></i>
+                                <?php endif; ?>
+                                <?php echo $fullName; ?>
+                            </h6>
+                            <p class="sm-mb-5 d-block">User name: <?php echo $userName; ?></p>
+                            <p class="sm-mb-5 d-block"><?php echo $biography; ?> </p>
+                        </div>
+                        <div class="col-xl-2 col-lg-6 col-md-6 mb-30">
+                            <a id="profile_link" href="" style="display: none;"></a>
+                            <?php if ($sourceTxt == 'Youtube'): ?>
+                                <button onclick="goToProfile('<?php echo 'https://www.youtube.com/user/' . $customURL; ?>', 'newwindow');" style="width: 100%; margin: 5px; border: solid 2px #ccc; border-radius: 7px;" type="button" class="btn btn-danger"><i class="fa fa-youtube" style="font-size:18px; margin-right: 5px;"></i><?php echo $sourceTxt; ?> Profile</button>
+                            <?php elseif ($sourceTxt == 'Tumblr'): ?>
+                                <button onclick="goToProfile('<?php echo $customURL; ?>', 'newwindow');" style="width: 100%; margin: 5px; border: solid 2px #ccc; border-radius: 7px;" type="button" class="btn btn-danger"><i class="fa fa-tumblr-square" style="font-size:15px; margin-right: 10px;"></i><?php echo $sourceTxt; ?> Profile</button>
+                            <?php elseif ($sourceTxt == 'Instagram'): ?>
+                                <button onclick="goToProfile('<?php echo $url; ?>', 'newwindow');" style="width: 100%; margin: 5px; border: solid 2px #ccc; border-radius: 7px;" type="button" class="btn btn-danger"><i class="fa fa-instagram" style="font-size:15px; margin-right: 10px;"></i>IG Profile</button>
+                            <?php elseif ($sourceTxt == 'Twitch'): ?>
+                                <button onclick="goToProfile('<?php echo $url; ?>', 'newwindow');" style="width: 100%; margin: 5px; border: solid 2px #ccc; border-radius: 7px;" type="button" class="btn btn-danger"><i class="fa fa-twitch" style="font-size:15px; margin-right: 10px;"></i><?php echo $sourceTxt; ?> Profile</button>
+                            <?php elseif ($sourceTxt == 'Twitter'): ?>
+                                <button onclick="goToProfile('<?php echo $url; ?>', 'newwindow');" style="width: 100%; margin: 5px; border: solid 2px #ccc; border-radius: 7px;" type="button" class="btn btn-danger"><i class="fa fa-twitter-square" style="font-size:15px; margin-right: 10px;"></i><?php echo $sourceTxt; ?> Profile</button>
+                            <?php else: ?>
+                                <button onclick="goToProfile('<?php echo $url; ?>', 'newwindow');" style="width: 100%; margin: 5px; border: solid 2px #ccc; border-radius: 7px;" type="button" class="btn btn-danger"><?php echo $sourceTxt; ?> Profile</button>
+                            <?php endif; ?>
+                            <?php if(strlen($website) >= 3): ?>
+                                <button onclick="goToProfile('<?php echo $website; ?>', 'newwindow');" style="width: 100%; margin: 5px; border: solid 2px #ccc; border-radius: 7px;" type="button" class="btn btn-info"><i class="fa fa-check-circle-o" style="font-size:15px; margin-right: 10px;"></i>Website</button>
+                            <?php endif; ?>
+                            <button onclick="goToProfile('<?php echo Mage::getBaseUrl() . 'sma/index/saveAndContinue?username=' . $username . '&sourceTxt=' . $sourceTxt; ?>', '')" style="width: 100%; margin: 5px; border: solid 2px #ccc; border-radius: 7px;" type="button" class="btn btn-secondary"><i class="fa fa-refresh" style="font-size:15px; margin-right: 10px;"></i>Reload</button>
+                            <button onclick="goToProfile('<?php echo Mage::getBaseUrl() . 'sma/index/deleteProfile?username=' . $username . '&sourceTxt=' . $sourceTxt; ?>', '')" style="width: 100%; margin: 5px; border: solid 2px #ccc; border-radius: 7px;" type="button" class="btn btn-success"><i class="fa fa-trash-o" style="font-size:15px; margin-right: 10px;"></i>Delete</button>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
+                            <div class="card card-statistics h-100">
+                                <div class="card-body">
+                                    <div class="clearfix">
+                                        <div class="float-left">
+                                            <span class="text-danger">
+                                                <i class="fa fa-bar-chart-o highlight-icon" aria-hidden="true"></i>
+                                            </span>
+                                        </div>
+                                        <div class="float-right text-right">
+                                            <?php if ($sourceTxt == 'Youtube'): ?>
+                                                <p class="card-text text-dark">Subscribers</p>
+                                                <h4><?php echo $subscribers; ?></h4>
+                                            <?php elseif ($sourceTxt == 'Tumblr'): ?>
+                                                <p class="card-text text-dark">Posts</p>
+                                                <h4><?php echo $post; ?></h4>
+                                            <?php else: ?>
+                                                <p class="card-text text-dark">Followers</p>
+                                                <h4><?php echo convertNo($followers); ?></h4>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
+                            <div class="card card-statistics h-100">
+                                <div class="card-body">
+                                    <div class="clearfix">
+                                        <div class="float-left">
+                                            <span class="text-warning">
+                                                <i class="fa fa-shopping-cart highlight-icon" aria-hidden="true"></i>
+                                            </span>
+                                        </div>
+                                        <div class="float-right text-right">
+                                            <?php if ($sourceTxt == 'Youtube'): ?>
+                                                <p class="card-text text-dark">Views</p>
+                                                <h4><?php echo $views; ?></h4>
+                                            <?php elseif ($sourceTxt == 'Tumblr'): ?>
+                                                <p class="card-text text-dark">Is NSFW?</p>
+                                                <h4><?php echo ($is_nsfw >= 1 ? 'TRUE' : 'FALSE'); ?></h4>
+                                            <?php elseif ($sourceTxt == 'Twitch'): ?>
+                                                <p class="card-text text-dark">Posts</p>
+                                                <h4><?php echo $post; ?></h4>
+                                            <?php else: ?>
+                                                <p class="card-text text-dark">Following</p>
+                                                <h4><?php echo $following; ?></h4>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
+                            <div class="card card-statistics h-100">
+                                <div class="card-body">
+                                    <div class="clearfix">
+                                        <div class="float-left">
+                                            <span class="text-success">
+                                                <i class="fa fa-dollar highlight-icon" aria-hidden="true"></i>
+                                            </span>
+                                        </div>
+                                        <div class="float-right text-right">
+                                            <?php if ($sourceTxt == 'Instagram'): ?>
+                                                <p class="card-text text-dark">Media Uploads</p>
+                                                <h4><?php echo $media; ?></h4>
+                                            <?php elseif ($sourceTxt == 'Twitter'): ?>
+                                                <p class="card-text text-dark">Tweets</p>
+                                                <h4><?php echo $tweets; ?></h4>
+                                            <?php elseif ($sourceTxt == 'Youtube'): ?>
+                                                <p class="card-text text-dark">Videos</p>
+                                                <h4><?php echo $videos; ?></h4>
+                                            <?php elseif ($sourceTxt == 'Twitch'): ?>
+                                                <p class="card-text text-dark">Views</p>
+                                                <h4><?php echo $views; ?></h4>
+                                            <?php elseif ($sourceTxt == 'Tumblr'): ?>
+                                                <p class="card-text text-dark">Ask Enabled?</p>
+                                                <h4><?php echo ($ask_enabled >= 1 ? 'TRUE' : 'FALSE'); ?></h4>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
+                            <div class="card card-statistics h-100">
+                                <div class="card-body">
+                                    <div class="clearfix">
+                                        <div class="float-left">
+                                            <span class="text-primary">
+                                                <i class="fa fa-twitter highlight-icon" aria-hidden="true"></i>
+                                            </span>
+                                        </div>
+                                        <div class="float-right text-right">
+                                            <?php if ($sourceTxt == 'Youtube'): ?>
+                                                <p class="card-text text-dark"><?php echo $sourceTxt; ?> ID</p>
+                                                <h6 style="font-size: .8rem;"><?php echo $profileId; ?></h6>
+                                            <?php elseif ($sourceTxt == 'Tumblr'): ?>
+                                                <p class="card-text text-dark">Anon Ask Enabled?</p>
+                                                <h4><?php echo ($anon_ask_enabled >= 1 ? 'TRUE' : 'FALSE'); ?></h4>
+                                            <?php else: ?>
+                                                <p class="card-text text-dark"><?php echo $sourceTxt; ?> ID</p>
+                                                <h4><?php echo $profileId; ?></h4>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+                            <p style="font-weight: 600; text-align: center;" class="text-secondary">
+                                <a href="javascript:showTab('user_statistics', '<?php echo ucfirst($fullName); ?> Statistics');"><?php echo $fullName; ?>'s Statistics</a>
+                            </p>
+                        </div>
+                        <?php if ($sourceTxt != 'Tumblr'): ?>
+                            <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+                                <p style="font-weight: 600; text-align: center;" class="text-secondary">
+                                    <a href="javascript:showTab('followers_counter', 'Live <?php echo ($sourceTxt == 'Youtube' ? 'Subscribers' : 'Followers'); ?> Counter');">Live <?php echo ($sourceTxt == 'Youtube' ? 'Subscribers' : 'Followers'); ?> Counter</a>
+                                </p>
+                            </div>
+                        <?php endif; ?>
+                        <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+                            <p style="font-weight: 600; text-align: center;" class="text-secondary">
+                                <a href="javascript:showTab('projections', 'Projections');">Projections</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-30">
+        <div class="col-12">
+            <div class="card card-statistics h-100">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <h5 id="statisticsLabel"> <?php echo $sourceTxt; ?> Account Stats Summary ( LAST 15 ENTRIES )</h5>
+                            <div class="table-responsive mb-10" id="user_statistics">
+                                <table class="table center-aligned-table">
+                                    <thead>
+                                        <tr class="text-dark">
+                                            <th style="text-align: center;">No </th>
+                                            <th style="text-align: center;">Date </th>
+                                            <th style="text-align: center;">Followers</th>
+                                            <th style="text-align: center;">Following</th>
+                                            <?php if ($sourceTxt == 'Instagram'): ?>
+                                                <th style="text-align: center;">Media Uploads</th>
+                                            <?php elseif ($sourceTxt == 'Twitter'): ?>
+                                                <th style="text-align: center;">Tweets</th>
+                                                <th style="text-align: center;">Likes</th>
+                                            <?php endif; ?>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $resource = Mage::getSingleton('core/resource');
+                                        $readConnection = $resource->getConnection('core_read');
+                                        $writeConnection = $resource->getConnection('core_write');
+                                        $query = "SELECT * FROM `sma_crontab` WHERE (`source`='" . $sourceTxt . "' AND `user_name`='" . $username . "') AND `customer_id`=" . Mage::getSingleton('customer/session')->getCustomer()->getId() . " ORDER BY `created_at` DESC LIMIT 15;";
+                                        $results = $readConnection->fetchAll($query);
+                                        ?>
+                                        <?php if (!empty($results)): ?>
+                                            <?php $i = 1; ?>
+                                            <?php //$progress = 0; ?>
+                                            <?php foreach ($results as $result): ?>
+                                                <tr>
+                                                    <td style="text-align: center;"><?php echo $i; ?></td>
+                                                    <td style="text-align: center;"><?php echo explode(" ", $result['created_at'])[0]; ?></td>
+                                                    <td style="text-align: center;">
+                                                        <?php echo $result['followers']; ?> 
+                                                        <?php if (!empty($results[$i]['followers']) && $result['followers'] > $results[$i]['followers']): ?>
+                                                            <i class="fa fa-level-up text-success"></i>
+                                                        <?php elseif (!empty($results[$i]['followers']) && $result['followers'] < $results[$i]['followers']): ?>
+                                                            <i class="fa fa-level-down text-warning"></i>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <?php echo $result['following']; ?>
+                                                        <?php if (!empty($results[$i]['following']) && $result['following'] > $results[$i]['following']): ?>
+                                                            <i class="fa fa-level-up text-success"></i>
+                                                        <?php elseif (!empty($results[$i]['following']) && $result['following'] < $results[$i]['following']): ?>
+                                                            <i class="fa fa-level-down text-warning"></i>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <?php if ($sourceTxt == 'Instagram'): ?>
+                                                        <td style="text-align: center;">
+                                                            <?php echo $result['media']; ?>
+                                                            <?php if (!empty($results[$i]['media']) && $result['media'] > $results[$i]['media']): ?>
+                                                                <i class="fa fa-level-up text-success"></i>
+                                                            <?php elseif (!empty($results[$i]['media']) && $result['media'] < $results[$i]['media']): ?>
+                                                                <i class="fa fa-level-down text-warning"></i>
+                                                            <?php endif; ?>
+                                                        </td>
+                                                    <?php elseif ($sourceTxt == 'Twitter'): ?>
+                                                        <td style="text-align: center;">
+                                                            <?php echo $result['tweets']; ?>
+                                                            <?php if (!empty($results[$i]['tweets']) && $result['tweets'] > $results[$i]['tweets']): ?>
+                                                                <i class="fa fa-level-up text-success"></i>
+                                                            <?php elseif (!empty($results[$i]['tweets']) && $result['tweets'] < $results[$i]['tweets']): ?>
+                                                                <i class="fa fa-level-down text-warning"></i>
+                                                            <?php endif; ?>
+                                                        </td>
+                                                        <td style="text-align: center;">
+                                                            <?php echo $result['likes']; ?>
+                                                            <?php if (!empty($results[$i]['likes']) && $result['likes'] > $results[$i]['likes']): ?>
+                                                                <i class="fa fa-level-up text-success"></i>
+                                                            <?php elseif (!empty($results[$i]['likes']) && $result['likes'] < $results[$i]['likes']): ?>
+                                                                <i class="fa fa-level-down text-warning"></i>
+                                                            <?php endif; ?>
+                                                        </td>
+                                                    <?php endif; ?>
+                                                </tr>
+                                                <?php $i++; ?>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+
+                                        <?php endif; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <?php //if ($sourceTxt != 'Tumblr'): ?>
+                            <div class="table-responsive mb-10" id="followers_counter" style="display: none; text-align: center;">
+                                <span style="font-size: 5.5rem; font-weight: 300; line-height: 1.2;" class="display-2" id="followersCountCustom">
+                                    <img src="<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif', array('_secure' => true)); ?>" width="100" height="auro">
+                                </span>
+                                <p style="color: #6c757d !important; margin-top: 10px;" class="text-muted">The counter is updated every 5 seconds</p>
+
+                                <!-- ---------------- Live Count Graph Starts --------------------------->
+                                <script src="https://code.highcharts.com/highcharts.js"></script>
+                                <script src="https://code.highcharts.com/modules/exporting.js"></script>
+                                <script src="https://code.highcharts.com/modules/export-data.js"></script>
+                                <style>
+                                    #container {
+                                        min-width: 310px;
+                                        height: 300px;
+                                        margin: 0 auto;
+                                    }
+                                </style>
+                                <div id="container"></div>
+                            </div>
+                            <script>
+                                var latestCount = 0;
+                                Highcharts.chart('container', {
+                                    chart: {
+                                        type: 'spline',
+                                        animation: Highcharts.svg, // don't animate in old IE
+                                        marginRight: 10,
+                                        events: {
+                                            load: function () {
+                                                console.log = latestCount;
+                                                // set up the updating of the chart each second
+                                                var series = this.series[0];
+                                                setInterval(function () {
+                                                    var x = (new Date()).getTime(), // current time
+                                                            y = latestCount;//Math.random() * 10;
+                                                    series.addPoint([x, y], true, true);
+                                                }, 1000);
+                                            }
+                                        }
+                                    },
+                                    time: {
+                                        useUTC: false
+                                    },
+                                    title: {
+                                        text: ''
+                                    },
+                                    xAxis: {
+                                        type: 'datetime',
+                                        tickPixelInterval: 150
+                                    },
+                                    yAxis: {
+                                        title: {
+                                            text: 'Value'
+                                        },
+                                        plotLines: [{
+                                                value: 0,
+                                                width: 1,
+                                                color: '#808080'
+                                            }]
+                                    },
+                                    tooltip: {
+                                        headerFormat: '<b>{series.name}</b><br/>',
+                                        pointFormat: '{point.x:%Y-%m-%d %H:%M:%S}<br/>{point.y:.2f}'
+                                    },
+                                    legend: {
+                                        enabled: false
+                                    },
+                                    exporting: {
+                                        enabled: false
+                                    },
+                                    series: [{
+                                            name: 'Random data',
+                                            data: (function () {
+                                                // generate an array of random data
+                                                var data = [],
+                                                        time = (new Date()).getTime(),
+                                                        i;
+
+                                                for (i = -19; i <= 0; i += 1) {
+                                                    data.push({
+                                                        x: time + i * 1000,
+                                                        y: Math.random()
+                                                    });
+                                                }
+                                                return data;
+                                            }())
+                                        }]
+                                });
+                            </script>
+                            <!-- ---------------- Live Count Graph Ends ----------------------------->
+                            <?php //endif; ?>
+
+                            <!--<div class="table-responsive mb-10" id="detailedStatistics" style="display: none;">
+                                DETAILED STATICTICS
+                            </div>-->
+
+                            <div class="table-responsive mb-10" id="projections" style="display: none;">
+                                PROJECTIONS
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- ----------------- Static Graph For Summary Count ------------------->
+    <?php
+    $customUsername = $_REQUEST['username'];
+    $customSource = $_REQUEST['source'];
+    $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
+    $query = 'SELECT * FROM `sma_crontab` WHERE (`source`="' . $customSource . '" AND `user_name`="' . $customUsername . '") AND `customer_id`=' . $customerId . ' ORDER BY sma_crontab_id DESC LIMIT 15;';
+    $readConnection = $resource->getConnection('core_read');
+    $results = $readConnection->fetchAll($query);
+    ?>
+    <div class="row">
+        <div class="col-xl-12 col-lg-6 col-md-6 mb-30">
+            <div class="card card-statistics h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Followers, Following Evaluation Chart </h5>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ----------------- Static Graph For Summary Count ------------------->
+<?php else: ?>
+    <div class="row">
+        <div class="col-xl-12 col-lg-6 col-md-6 mb-30">
+            <div class="card card-statistics h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Sorry! No Profile Found </h5>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
+<script>
+    function goToProfile(url, attr) {
+        document.getElementById("profile_link").setAttribute("href", url);
+        if (attr == 'newwindow') {
+            document.getElementById("profile_link").setAttribute("target", "_blank");
+        } else {
+            document.getElementById("profile_link").removeAttribute("target");
+        }
+        document.getElementById("profile_link").click();
+
+    }
+
+    function showTab(tabId, label) {
+        document.getElementById("user_statistics").setAttribute("style", "display:none;");
+        document.getElementById("followers_counter").setAttribute("style", "display:none;");
+        //document.getElementById("detailedStatistics").setAttribute("style", "display:none;");
+        document.getElementById("projections").setAttribute("style", "display:none;");
+
+        document.getElementById("statisticsLabel").innerHTML = label;
+        if (tabId == 'followers_counter') {
+            document.getElementById(tabId).setAttribute("style", "display:block;text-align: center;");
+        } else {
+            document.getElementById(tabId).setAttribute("style", "display:block;");
+        }
+    }
+
+
+    setInterval(function () {
+        var url = "<?php echo Mage::getBaseUrl(); ?>sma/index/liveCount?username=<?php echo $username; ?>&source=<?php echo $sourceTxt; ?>";
+                jQuery.ajax({
+                    type: "POST",
+                    url: url,
+                    data: "",
+                    success: function (data)
+                    {
+                        latestCount = parseFloat(data.replace(/,/g, ''));
+                        document.getElementById("followersCountCustom").innerHTML = data;
+                    }
+                });
+            }, 5000);
+
+</script>

@@ -1,0 +1,310 @@
+<?php $path = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'socicos/'; ?>
+<?php /**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright   Copyright (c) 2006-2018 Magento, Inc. (http://www.magento.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ *//*
+  ?>
+  <div id="messages_product_view"><?php echo $this->getMessagesBlock()->toHtml() ?></div>
+  <div class="page-title">
+  <h1><?php echo Mage::helper('contacts')->__('Contact Us') ?></h1>
+  </div>
+  <form action="<?php echo $this->getFormAction(); ?>" id="contactForm" method="post" class="scaffold-form">
+  <div class="fieldset">
+  <h2 class="legend"><?php echo Mage::helper('contacts')->__('Contact Information') ?></h2>
+  <p class="required"><?php echo Mage::helper('contacts')->__('* Required Fields') ?></p>
+  <ul class="form-list">
+  <li class="fields">
+  <div class="field">
+  <label for="name" class="required"><em>*</em><?php echo Mage::helper('contacts')->__('Name') ?></label>
+  <div class="input-box">
+  <input name="name" id="name" title="<?php echo Mage::helper('core')->quoteEscape(Mage::helper('contacts')->__('Name')) ?>" value="<?php echo $this->escapeHtml($this->helper('contacts')->getUserName()) ?>" class="input-text required-entry" type="text" />
+  </div>
+  </div>
+  <div class="field">
+  <label for="email" class="required"><em>*</em><?php echo Mage::helper('contacts')->__('Email') ?></label>
+  <div class="input-box">
+  <input name="email" id="email" title="<?php echo Mage::helper('core')->quoteEscape(Mage::helper('contacts')->__('Email')) ?>" value="<?php echo $this->escapeHtml($this->helper('contacts')->getUserEmail()) ?>" class="input-text required-entry validate-email" type="email" autocapitalize="off" autocorrect="off" spellcheck="false" />
+  </div>
+  </div>
+  </li>
+  <li>
+  <label for="telephone"><?php echo Mage::helper('contacts')->__('Telephone') ?></label>
+  <div class="input-box">
+  <input name="telephone" id="telephone" title="<?php echo Mage::helper('core')->quoteEscape(Mage::helper('contacts')->__('Telephone')) ?>" value="" class="input-text" type="tel" />
+  </div>
+  </li>
+  <li class="wide">
+  <label for="comment" class="required"><em>*</em><?php echo Mage::helper('contacts')->__('Comment') ?></label>
+  <div class="input-box">
+  <textarea name="comment" id="comment" title="<?php echo Mage::helper('core')->quoteEscape(Mage::helper('contacts')->__('Comment')) ?>" class="required-entry input-text" cols="5" rows="3"></textarea>
+  </div>
+  </li>
+  </ul>
+  </div>
+  <div class="buttons-set">
+  <input type="text" name="hideit" id="hideit" value="" style="display:none !important;" />
+  <button type="submit" title="<?php echo Mage::helper('core')->quoteEscape(Mage::helper('contacts')->__('Submit')) ?>" class="button"><span><span><?php echo Mage::helper('contacts')->__('Submit') ?></span></span></button>
+  </div>
+  </form>
+  <script type="text/javascript">
+  //<![CDATA[
+  var contactForm = new VarienForm('contactForm', true);
+  //]]>
+  </script><?php */ ?>
+
+<!DOCTYPE html>
+<html>
+    <?php echo $this->getLayout()->createBlock('core/template')->setTemplate('catalog/product/head.phtml')->toHtml(); ?>
+
+    <body>
+        <header class="main-header header-style-five">
+
+            <!-- Header Top -->
+            <?php echo $this->getLayout()->createBlock('core/template')->setTemplate('catalog/product/header_top.phtml')->toHtml(); ?>
+        </div>
+        <!-- Header Top End -->
+
+        <!-- Main Box -->
+        <div class="main-box">
+            <div class="auto-container">
+                <div class="outer-container clearfix">
+                    <!--Logo Box-->
+                    <?php echo $this->getLayout()->createBlock('core/template')->setTemplate('catalog/product/logo.phtml')->toHtml(); ?>
+
+                    <!--Nav Outer-->
+                    <div class="nav-outer clearfix">
+
+                        <!-- Main Menu -->
+                        <nav class="main-menu">
+                            <div class="navbar-header">
+                                <!-- Toggle Button -->
+                                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                            </div>
+
+                            <div class="navbar-collapse collapse clearfix">
+                                <?php echo $this->getLayout()->createBlock('core/template')->setTemplate('catalog/product/top_navigation1.phtml')->toHtml(); ?>
+                            </div>
+                        </nav>
+                        <!-- Main Menu End-->
+                    </div>
+                    <!--Nav Outer End-->
+
+                </div>
+            </div>
+        </div>
+
+        <!--Sticky Header-->
+        <div class="sticky-header">
+            <div class="auto-container">
+
+                <div class="outer-container clearfix">
+                    <!--Logo Box-->
+                    <div class="logo-box pull-left">
+                        <div class="logo"><a href="<?php echo Mage::getBaseUrl(); ?>"><img src="<?php echo $path; ?>images/logo-small.png" alt=""></a></div>
+                    </div>
+
+                    <!--Nav Outer-->
+                    <div class="nav-outer clearfix">
+                        <!-- Main Menu -->
+                        <nav class="main-menu">
+                            <div class="navbar-header">
+                                <!-- Toggle Button -->
+                                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                            </div>
+
+                            <div class="navbar-collapse collapse clearfix">
+                                <?php echo $this->getLayout()->createBlock('core/template')->setTemplate('catalog/product/top_navigation2.phtml')->toHtml(); ?>
+                            </div>
+                        </nav>
+                        <!-- Main Menu End-->
+
+                    </div>
+                    <!--Nav Outer End-->
+
+                </div>
+
+            </div>
+        </div>
+        <!--End Sticky Header-->
+
+    </header>
+    <!--End Main Header --><!--Page Title-->
+    <section class="page-title" style="background-image:url(<?php echo $path; ?>images/background/pattern-4.png);">
+        <div class="auto-container">
+            <h1>Contact Us</h1>
+        </div>
+        <!--Page Info-->
+        <div class="page-info">
+            <div class="auto-container">
+                <div class="inner-container">
+                    <ul class="bread-crumb">
+                        <li><a href="<?php echo Mage::getBaseUrl(); ?>">Home</a></li>
+                        <li>Contact Us</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--End Page Info-->
+    </section>
+    <!--End Page Title-->
+
+    <!--Contact Section-->
+    <section class="contact-section">
+        <div class="auto-container">
+            <div class="row clearfix">
+
+                <!--Contact Form Column-->
+                <div class="contact-form-column col-md-8 col-sm-12 col-xs-12">
+                    <div class="inner-column">
+                        <h2>Drop Your Message Here</h2>
+                        <div class="text">Build Your Brand – Get New Business – Do it Your Self <br>
+                            We answer any questions you may have.</div>
+                        <!--Contact Form-->
+                        <div class="contact-form">
+                            <form method="post" action="<?php echo $this->getFormAction(); ?>" id="contact-form" name="contact-form" enctype="multipart/form-data">
+                                <div class="row clearfix">
+                                    <div class="column col-md-6 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <input type="text" name="name" id="name" placeholder="Name*" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="email" name="email" id="email" placeholder="Email*" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" name="subject" id="subject" placeholder="Subject" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="column col-md-6 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <textarea name="comment" id="comment" placeholder="Your Message..."></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="column btn-column col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <button class="theme-btn btn-style-one" type="submit" name="submit-form">Submit Now</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--Info Column-->
+                <div class="contact-info-column col-md-4 col-sm-12 col-xs-12">
+                    <div class="inner-column">
+                        <div class="lower-box">
+                            <ul class="info-list">
+                                <li><span class="icon"><img src="<?php echo $path; ?>images/icons/address-icon.png" alt="" /></span> <strong>Address:</strong> 3rd Floor, SuryaPrema
+                                    #15, Plot No 1 & 2, 1st Cross, Manjunathanagar, Kanakpura Road, Bengaluru, Karnataka 560062 </li>
+                                <!--<li><span class="icon"><img src="images/icons/phone-icon.png" alt="" /></span> <strong>Call Us:</strong><br> +321 4567 89 012 & 79 023</li>-->
+                                <li><span class="icon"><img src="<?php echo $path; ?>images/icons/mail-icon.png" alt="" /></span> <strong>Mail Us:</strong><br>help@socicos.com</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!--End Contact Section-->
+
+    <!--Map Section-->
+    <section class="map-section">
+        <!--Map Outer-->
+        <div class="map-outer">
+            <!--Map Canvas-->
+            <div class="map-canvas"
+                 data-zoom="12"
+                 data-lat="12.8779"
+                 data-lng="77.5426"
+                 data-type="roadmap"
+                 data-hue="#ffc400"
+                 data-title="Envato"
+                 data-icon-path="images/icons/map-marker.png"
+                 data-content="Melbourne VIC 3000, Australia<br><a href='mailto:info@youremail.com'>info@youremail.com</a>">
+            </div>
+        </div>
+    </section>
+    <!--Map Section-->
+
+    <!--Main Footer-->
+</section>
+<!--End Partners Section-->
+
+<!--Main Footer-->
+<?php echo $this->getLayout()->createBlock('core/template')->setTemplate('catalog/product/footer.phtml')->toHtml(); ?>
+<!--Main Footer-->
+<!--Bottom Parallax-->
+
+</div>
+<!--End pagewrapper-->
+
+<!--Scroll to top-->
+<div class="scroll-to-top scroll-to-target" data-target="html"><span class="icon fa fa-angle-double-up"></span></div>
+
+<script src="<?php echo $path; ?>js/jquery.js"></script>
+<!--Revolution Slider-->
+<script src="<?php echo $path; ?>assets/revolution/js/jquery.themepunch.revolution.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/jquery.themepunch.tools.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.actions.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.carousel.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.kenburn.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.layeranimation.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.migration.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.navigation.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.parallax.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.slideanims.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.video.min.js"></script>
+<script src="<?php echo $path; ?>js/main-slider-script.js"></script>
+
+<script src="<?php echo $path; ?>js/jquery.js"></script>
+<script src="<?php echo $path; ?>js/bootstrap.min.js"></script>
+<script src="<?php echo $path; ?>js/jquery.fancybox.pack.js"></script>
+<script src="<?php echo $path; ?>js/jquery.fancybox-media.js"></script>
+<script src="<?php echo $path; ?>js/owl.js"></script>
+<script src="<?php echo $path; ?>js/wow.js"></script>
+<script src="<?php echo $path; ?>js/validate.js"></script>
+<script src="<?php echo $path; ?>js/jquery-ui.js"></script>
+<script src="<?php echo $path; ?>js/knob.js"></script>
+<script src="<?php echo $path; ?>js/slick.js"></script>
+<script src="<?php echo $path; ?>js/appear.js"></script>
+<script src="<?php echo $path; ?>js/script.js"></script>
+<!--<script src="https://www.socicos.com/js/validate.js"></script>-->
+<script src="<?php echo $path; ?>maps/api/js?key=AIzaSyBKS14AnP3HCIVlUpPKtGp7CbYuMtcXE2o"></script>
+<script src="<?php echo $path; ?>js/map-script.js"></script>
+
+<!--Scroll to top-->
+<div class="scroll-to-top scroll-to-target" data-target="html"><span class="icon fa fa-angle-double-up"></span></div>
+
+
+</body>
+</html>

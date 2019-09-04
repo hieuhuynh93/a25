@@ -1,0 +1,1545 @@
+<?php
+$linkDetailsId = $_REQUEST['linkDetailsId'];
+$helper = Mage::helper('linkanalysis/data');
+$linkdetails = Mage::getModel('linkdetails/linkdetails')->load($linkDetailsId);
+$isRobot = $helper->isListedInRobotTxt($linkdetails->getRelatedUrl(), "NameOfAgent");
+
+$metaTitle = $linkdetails->getMetaTitle();
+$metaDescription = $linkdetails->getMetaDescription();
+$keywords = $linkdetails->getMetaKeywords();
+?>
+<script>
+    function deleteKeywords(keyword_ids) {
+        var linkDetailsId = "<?php echo $linkDetailsId; ?>";
+        var ids = [];
+        jQuery.each($("input[name='" + keyword_ids + "']:checked"), function () {
+            ids.push(jQuery(this).val());
+        });
+        var keywordIds = ids.join(",");
+        var url = "<?php echo Mage::getBaseUrl(); ?>linkanalysis/index/deletekeyword?keywords_name=" + keywordIds + "&linkDetailsId=" + linkDetailsId;
+
+        if (keywordIds.length > 0) {
+            jQuery("#pre-loader").css("opacity", '0.8');
+            jQuery("#pre-loader").show();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: "",
+                success: function (data)
+                {
+                    var objData = jQuery.parseJSON(data);
+                    document.getElementById("keywordTableCustom").innerHTML = objData.content;
+                    jQuery("#pre-loader").hide();
+                }
+            });
+        } else {
+            alert("Please select keywords");
+        }
+    }
+
+    function addKeywords(linkDetailsId) {
+        var keywords_name = jQuery("#keywords_name").val();
+        var url = "<?php echo Mage::getBaseUrl(); ?>linkanalysis/index/addkeyword?keywords_name=" + keywords_name + "&linkDetailsId=" + linkDetailsId;
+        if (keywords_name == '' || keywords_name == null) {
+            document.getElementById("submitkeywordname").click();
+        } else {
+            jQuery("#pre-loader").css("opacity", '0.8');
+            jQuery("#pre-loader").show();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: "",
+                success: function (data)
+                {
+                    var objData = jQuery.parseJSON(data);
+                    document.getElementById("keywordTableCustom").innerHTML = objData.content;
+                    jQuery("#pre-loader").hide();
+                }
+            });
+        }
+    }
+
+    function showMetaTitle(metaTitle) {
+        jQuery("#addKeyWordSec").hide();
+        jQuery("#metatitlesection").show();
+        jQuery("#section_title").html("<p style='padding-left:10px;' class='card-text text-dark'><b>META TITLE</b></p>");
+        if (metaTitle.length > 1) {
+            jQuery("#metatitlesection").html(metaTitle);
+        } else {
+            jQuery("#metatitlesection").html('<label style="font-size:13px;padding-bottom: 10px; padding-top: 8px;" class="badge badge-danger">Meta Title Not Found!</label>');
+        }
+    }
+
+    function showMetaDescription(metaDescription) {
+        jQuery("#addKeyWordSec").hide();
+        jQuery("#metatitlesection").show();
+        jQuery("#section_title").html("<p style='padding-left:10px;' class='card-text text-dark'><b>META DESCRIPTION</b></p>");
+        if (metaDescription.length > 1) {
+            jQuery("#metatitlesection").html(metaDescription);
+        } else {
+            jQuery("#metatitlesection").html('<label style="font-size:13px;padding-bottom: 10px;padding-top: 8px;" class="badge badge-danger">Meta Description Not Found!</label>');
+        }
+    }
+
+    function showKeyWords(metaKeywords) {
+        jQuery("#addKeyWordSec").hide();
+        jQuery("#metatitlesection").show();
+        jQuery("#section_title").html("<p style='padding-left:10px;' class='card-text text-dark'><b>META KEYWORDS</b></p>");
+        if (metaKeywords.length > 1) {
+            jQuery("#metatitlesection").html(metaKeywords);
+        } else {
+            jQuery("#metatitlesection").html('<label style="font-size:13px;padding-bottom: 10px; padding-top: 8px;" class="badge badge-danger">Meta Keywords Not Found!</label>');
+        }
+    }
+
+    function addKeyWord(referenceLinkId, metaKeywords) {
+        jQuery("#section_title").html("<p style='padding-left:20px;' class='card-text text-dark'><b>ADD KEYWORDS</b></p>");
+        jQuery("#metatitlesection").hide();
+        jQuery("#addKeyWordSec").show();
+    }
+</script>
+<style>
+    
+
+    .shadow_custom{
+        webkit-box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.1);
+        -moz-box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.1);
+        box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .text-dark{
+        font-weight: 600;
+    }
+
+    .card-body{
+        padding: 10px;
+        padding-bottom: 0px;
+    }
+</style>
+<style>
+    .keywordcheckbox{
+        padding: .3rem; 
+        text-align: center; 
+        width: 30px;
+    }
+
+    .keywordcount{
+        padding: .3rem; 
+        text-align: center; 
+        width: 50px;
+    }
+
+    .keyword_start_analysis{
+        padding: .3rem; 
+        text-align: center; 
+        width: 150px;
+    }
+</style>
+
+<div class="tab tab-vertical">
+    <ul class="nav nav-tabs" role="tablist" style="overflow-x: auto; height: 73vh;">
+        <li class="nav-item" style="text-align: center;">
+            <a class="nav-link active show" id="generalinfo-tab" data-toggle="tab" href="#generalinfo" role="tab" aria-controls="generalinfo" aria-selected="true" style="padding-bottom: 8px;">
+                <p><i class="fa fa-cubes" style="font-size:20px"></i></p>
+                <p>General Information</p>
+            </a>
+        </li>
+        <li class="nav-item" style="text-align: center;">
+            <a class="nav-link" id="socialshare-tab" data-toggle="tab" href="#socialshare" role="tab" aria-controls="socialshare" aria-selected="false" style="padding-bottom: 8px;">
+                <p><i class="fa fa-cubes" style="font-size:20px"></i></p>
+                <p>Social Shares</p>
+            </a>
+        </li>
+        <li class="nav-item" style="text-align: center;">
+            <a class="nav-link" id="index_info-tab" data-toggle="tab" href="#index_info" role="tab" aria-controls="index_info" aria-selected="false" style="padding-bottom: 8px;">
+                <p><i class="fa fa-share-square-o" style="font-size:20px"></i></p>
+                <p>Index Information</p>
+            </a>
+        </li>
+        <li class="nav-item" style="text-align: center;">
+            <a class="nav-link" id="externallink-tab" data-toggle="tab" href="#externallink" role="tab" aria-controls="externallink" aria-selected="false" style="padding-bottom: 8px;">
+                <p><i class="fa fa-share-square-o" style="font-size:20px"></i></p>
+                <p>External Links</p>
+            </a>
+        </li>
+        <li class="nav-item" style="text-align: center;">
+            <a class="nav-link" id="backlink-tab" data-toggle="tab" href="#backlink" role="tab" aria-controls="backlink" aria-selected="false" style="padding-bottom: 8px;">
+                <p><i class="fa fa-wrench" style="font-size:20px"></i></p>
+                <p>Backlink Analysis</p>
+            </a>
+        </li>
+        <li class="nav-item" style="text-align: center;">
+            <a class="nav-link" id="metatag-tab" data-toggle="tab" href="#metatag" role="tab" aria-controls="metatag" aria-selected="false" style="padding-bottom: 8px;">
+                <p><i class="fa fa-cubes" style="font-size:20px"></i></p>
+                <p>Meta Tag</p>
+            </a>
+        </li>
+        <li class="nav-item" style="text-align: center;">
+            <a class="nav-link" id="keyword_analysis-tab" data-toggle="tab" href="#keyword_analysis" role="tab" aria-controls="keyword_analysis" aria-selected="false" style="padding-bottom: 8px;">
+                <p><i class="fa fa-keyboard-o" style="font-size:20px"></i></p>
+                <p>Keyword Analysis</p>
+            </a>
+        </li>
+        <li class="nav-item" style="text-align: center;">
+            <a class="nav-link" id="positiontracking-tab" data-toggle="tab" href="#positiontracking" role="tab" aria-controls="positiontracking" aria-selected="false" style="padding-bottom: 8px;">
+                <p><i class="fa fa-cubes" style="font-size:20px"></i></p>
+                <p>Keyword Position &amp; Trends</p>
+            </a>
+        </li>
+        <li class="nav-item" style="text-align: center;">
+            <a class="nav-link" id="keywordsuggestion-tab" data-toggle="tab" href="#keywordsuggestion" role="tab" aria-controls="keywordsuggestion" aria-selected="false" style="padding-bottom: 8px;">
+                <p><i class="fa fa-cubes" style="font-size:20px"></i></p>
+                <p>Keyword Suggestion</p>
+            </a>
+        </li>
+        <li class="nav-item" style="text-align: center;">
+            <a class="nav-link" id="improvement-tab" data-toggle="tab" href="#improvement" role="tab" aria-controls="improvement" aria-selected="false" style="padding-bottom: 8px;">
+                <p><i class="fa fa-cubes" style="font-size:20px"></i></p>
+                <p>Improvement Suggestion</p>
+            </a>
+        </li>
+        <li class="nav-item" style="text-align: center;">
+            <a class="nav-link" id="graph-tab" data-toggle="tab" href="#graph" role="tab" aria-controls="graph" aria-selected="false">
+                <p><i class="fa fa-bar-chart" style="font-size:24px"></i></p>
+                <p>Graph</p>
+            </a>
+        </li>
+        <li class="nav-item" style="text-align: center;">
+            <a class="nav-link" id="report-tab" data-toggle="tab" href="#report" role="tab" aria-controls="report" aria-selected="false" style="padding-bottom: 8px;">
+                <p><i class="fa fa-cubes" style="font-size:20px"></i></p>
+                <p>Download Report</p>
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade active show" id="generalinfo" role="tabpanel" aria-labelledby="generalinfo-tab">
+            <h6>generalinfo</h6>
+            <div class="row">
+                <div class="col-xl-6 mb-30">
+                    <div class="card card-statistics h-100">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <div class="float-left">
+                                    <span class="text-warning">
+                                        <?php if ($isRobot): ?>
+                                            <i style="color:green;" class="fa fa-check-square-o highlight-icon" aria-hidden="true"></i>
+                                        <?php else: ?>
+                                            <i style="color:#dc3545;" class="fa fa-times-circle-o highlight-icon" aria-hidden="true"></i>
+                                        <?php endif; ?>
+                                    </span>
+                                </div>
+                                <div class="float-right text-right">
+                                    <p class="card-text text-dark">ROBOT.TXT</p>
+                                    <?php if ($isRobot): ?>
+                                        <h4><label class="badge badge-success">AVAILABLE</label></h4>
+                                    <?php else: ?>
+                                        <h4><label class="badge badge-danger">NOT AVAILABLE</label></h4>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <p class="text-muted pt-3 mb-0 mt-2 border-top" style="text-align: center; padding-top: 3px;">
+                                <a style="float: inherit;" href="" class="btn btn-outline-success btn-sm">Show Robot</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6 mb-30">
+                    <div class="card card-statistics h-100">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <div class="float-left">
+                                    <span class="text-success">
+                                        <?php if ($isRobot): ?>
+                                            <i style="color:green;" class="fa fa-check-square-o highlight-icon" aria-hidden="true"></i>
+                                        <?php else: ?>
+                                            <i style="color:#dc3545;" class="fa fa-times-circle-o highlight-icon" aria-hidden="true"></i>
+                                        <?php endif; ?>
+                                    </span>
+                                </div>
+                                <div class="float-right text-right">
+                                    <p class="card-text text-dark">ANALYSIS STATUS</p>
+                                    <?php if ($isRobot): ?>
+                                        <h4><label class="badge badge-success">ALLOW</label></h4>
+                                    <?php else: ?>
+                                        <h4><label class="badge badge-danger">DISALLOW</label></h4>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="padding-top: 0px; margin-top: -20px;">
+                <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+                    <div class="card card-statistics h-100">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <div class="float-left">
+                                    <span class="text-danger">
+                                        <i class="fa fa-bar-chart-o highlight-icon" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="float-right text-right">
+                                    <p class="card-text text-dark">PAGE SIZE</p>
+                                    <h4><?php echo $linkdetails->getPageSize(); ?></h4>
+                                </div>
+                            </div>
+                            <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                                <i class="fa fa-exclamation-circle mr-1" aria-hidden="true"></i> 81% lower growth
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+                    <div class="card card-statistics h-100">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <div class="float-left">
+                                    <span class="text-warning">
+                                        <i class="fa fa-shopping-cart highlight-icon" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="float-right text-right">
+                                    <p class="card-text text-dark">LOAD TIME</p>
+                                    <h4><?php echo strtoupper($linkdetails->getLoadTime()); ?></h4>
+                                </div>
+                            </div>
+                            <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                                <i class="fa fa-bookmark-o mr-1" aria-hidden="true"></i> Total sales
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+                    <div class="card card-statistics h-100">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <div class="float-left">
+                                    <span class="text-success">
+                                        <i class="fa fa-dollar highlight-icon" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="float-right text-right">
+                                    <p class="card-text text-dark">PAGE AUTHORITY</p>
+                                    <h4><?php echo $helper->getPageAuthority($linkdetails->getRelatedUrl()); ?></h4>
+                                </div>
+                            </div>
+                            <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                                <i class="fa fa-calendar mr-1" aria-hidden="true"></i> Sales Per Week 
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="padding-top: 0px; margin-top: -20px;">
+                <div class="col-xl-12 col-lg-12 col-md-12 mb-30">
+                    <div class="card card-statistics h-100">
+                        <div class="card-body">
+                            ghgh
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- -->
+        </div>
+        <div class="tab-pane fade" id="socialshare" role="tabpanel" aria-labelledby="socialshare-tab">
+            <h6>Social Share</h6>
+            <div class="row">
+                <div class="col-xl-4 mb-30 social_custom">
+                    <div class="card card-statistics fb-bg h-100">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <div class="float-left icon-box-fixed">
+                                    <span class="text-white">
+                                        <i class="fa fa-facebook highlight-icon" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="float-right">
+                                    <h4 class="text-white"><?php echo $helper->getFbShareCount($linkdetails->getRelatedUrl()); ?></h4>
+                                    <p class="card-text text-white">Share </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 mb-30 social_custom">
+                    <div class="card card-statistics youtube-bg h-100">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <div class="float-left icon-box-fixed">
+                                    <span class="text-white">
+                                        <i class="fa fa-youtube highlight-icon" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="float-right">
+                                    <h4 class="text-white">1,20,543</h4>
+                                    <p class="card-text text-white">Subscribers </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 mb-30 social_custom">
+                    <div class="card card-statistics twitter-bg h-100">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <div class="float-left icon-box-fixed">
+                                    <span class="text-white">
+                                        <i class="fa fa-twitter highlight-icon" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="float-right">
+                                    <h4 class="text-white">41,652</h4>
+                                    <p class="card-text text-white">Followers </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 mb-30 social_custom">
+                    <div class="card card-statistics instagram-bg h-100">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <div class="float-left icon-box-fixed">
+                                    <span class="text-white">
+                                        <i class="fa fa-instagram highlight-icon" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="float-right">
+                                    <h4 class="text-white">41,652</h4>
+                                    <p class="card-text text-white">Followers </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 mb-30 social_custom">
+                    <div class="card card-statistics linkedin-bg h-100">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <div class="float-left icon-box-fixed">
+                                    <span class="text-white">
+                                        <i class="fa fa-linkedin highlight-icon" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="float-right">
+                                    <h4 class="text-white">41,652</h4>
+                                    <p class="card-text text-white">Followers </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 mb-30 social_custom">
+                    <div class="card card-statistics pinterest-bg h-100">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <div class="float-left icon-box-fixed">
+                                    <span class="text-white">
+                                        <i class="fa fa-pinterest highlight-icon" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="float-right">
+                                    <h4 class="text-white">
+                                        <?php echo $helper->getpinterestShareCount($linkdetails->getRelatedUrl()); ?>
+                                    </h4>
+                                    <p class="card-text text-white">Share </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 mb-30 social_custom">
+                    <div class="card card-statistics google-bg h-100">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <div class="float-left icon-box-fixed">
+                                    <span class="text-white">
+                                        <i class="fa fa-google-plus highlight-icon" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="float-right">
+                                    <h4 class="text-white">41,652</h4>
+                                    <p class="card-text text-white">Followers </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 mb-30 social_custom">
+                    <div class="card card-statistics timblr-bg h-100">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <div class="float-left icon-box-fixed">
+                                    <span class="text-white">
+                                        <i class="fa fa-timblr highlight-icon" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="float-right">
+                                    <h4 class="text-white">41,652</h4>
+                                    <p class="card-text text-white">Followers </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="index_info" role="tabpanel" aria-labelledby="index_info-tab">
+            <h6>Index Information</h6>
+            <div class="row">
+                <div class="col-xl-6 mb-30" style="padding-top: 20px;">
+                    <div class="card card-statistics h-100">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <div class="float-left">
+                                    <span class="text-success">
+                                        <i style="<?php echo ($helper->getGoogleCount($linkdetails->getRelatedUrl()) > 0 ? 'color:green;' : 'color:#dc3545;') ?>" class="<?php echo ($helper->getGoogleCount($linkdetails->getRelatedUrl()) > 0 ? 'fa fa-check-square-o' : 'fa fa-times-circle-o') ?> highlight-icon" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="float-right text-right">
+                                    <p class="card-text text-dark">GOOGLE</p>
+                                    <?php if ($helper->getGoogleCount($linkdetails->getRelatedUrl()) > 0): ?>
+                                        <h4><label class="badge badge-success">INDEXED</label></h4>
+                                    <?php else: ?>
+                                        <h4><label class="badge badge-danger">NOT INDEXED</label></h4>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                                <i class="fa fa-exclamation-circle mr-1" aria-hidden="true"> &nbsp;<?php echo $helper->getGoogleCount($linkdetails->getRelatedUrl()); ?></i> 
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6 mb-30" style="padding-top: 20px;">
+                    <div class="card card-statistics h-100">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <div class="float-left">
+                                    <span class="text-success">
+                                        <i style="<?php echo ($helper->getYahooCount($linkdetails->getRelatedUrl()) > 0 ? 'color:green;' : 'color:#dc3545;') ?>" class="<?php echo ($helper->getYahooCount($linkdetails->getRelatedUrl()) > 0 ? 'fa fa-check-square-o' : 'fa fa-times-circle-o') ?> highlight-icon" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="float-right text-right">
+                                    <p class="card-text text-dark">YAHOO</p>
+                                    <?php if ($helper->getYahooCount($linkdetails->getRelatedUrl()) > 0): ?>
+                                        <h4><label class="badge badge-success">INDEXED</label></h4>
+                                    <?php else: ?>
+                                        <h4><label class="badge badge-danger">NOT INDEXED</label></h4>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                                <i class="fa fa-exclamation-circle mr-1" aria-hidden="true"> &nbsp;<?php echo $helper->getYahooCount($linkdetails->getRelatedUrl()); ?></i> 
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6 mb-30" style="padding-top: 20px;">
+                    <div class="card card-statistics h-100">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <div class="float-left">
+                                    <span class="text-success">
+                                        
+                                    </span>
+                                </div>
+                                <div class="float-right text-right">
+                                    <p class="card-text text-dark">BING</p>
+                                    <?php if ($helper->getBingCount($linkdetails->getRelatedUrl()) > 0): ?>
+                                        <h4><label class="badge badge-success">INDEXED</label></h4>
+                                    <?php else: ?>
+                                        <h4><label class="badge badge-danger">NOT INDEXED</label></h4>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                                <i class="fa fa-exclamation-circle mr-1" aria-hidden="true"> &nbsp;<?php echo $helper->getBingCount($linkdetails->getRelatedUrl()); ?></i> 
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6 mb-30" style="padding-top: 20px;">
+                    <div class="card card-statistics h-100">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <div class="float-left">
+                                    <span class="text-warning">
+                                        <i style="color:green;" class="fa fa-check-square-o highlight-icon" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="float-right text-right">
+                                    <p class="card-text text-dark">YANDEX</p>
+                                    <h4><label class="badge badge-success">INDEXED</label></h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="backlink" role="tabpanel" aria-labelledby="backlink-tab">
+            <div class="row">
+                <h6>Backlink Analysis</h6>
+                <div class="card card-statistics h-100" style="width: 100%;"> 
+                    <div class="card-body">
+                        <div class="row" style="height: 380px; overflow: auto;" id="viewbacklink_custom">
+                            <table class="table table-striped table-bordered p-0">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 10px; text-align: center;">
+                                            <input id="links_ids_all_backlink" onclick="#" type="checkbox">
+                                        </th>
+                                        <th style="width: 24.5px; text-align: center;">SN</th>
+                                        <th style="width: 400px; text-align: center;">URL</th>
+                                        <th style="width: 50.5px; text-align: center;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="text-align: center;"><input name="links_ids" value="4910" type="checkbox"></td>
+                                        <td style="text-align: center;">1</td>
+                                        <td style="word-wrap: break-word;min-width: 100px;max-width: 100px; text-align: left; line-height: 1.6;">
+                                            <a href="https://blogging.com" target="_blank">https://blogging.com</a>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <a class="collapsed btn btn-outline-success btn-sm" data-toggle="collapse" data-parent="#accordion" href="#collapse-occupiers0">View</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4">
+                                            <div id="collapse-occupiers0" class="panel-collapse collapse" style="width: 99%;">
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <div class="col-xl-12 col-lg-12 col-md-12 mb-30" style="padding-left: 0px; padding-right: 0px;">
+                                                            <div class="card card-statistics h-100">
+                                                                <div class="card-body" style="padding: 0px;">
+                                                                    <div class="clearfix">
+                                                                        <table style="width: 100%;">
+                                                                            <tbody><tr class="text-dark">
+                                                                                    <th>PA</th>
+                                                                                    <th>DA</th>
+                                                                                    <th>Follow </th>
+                                                                                    <th>Do Follow</th>
+                                                                                    <th>Link Juice</th>
+                                                                                    <th>Spam Score</th>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td><i class="fa fa-circle text-success"></i></td>
+                                                                                    <td>USA</td>
+                                                                                    <td>2,009 </td>
+                                                                                    <td>5,230</td>
+                                                                                    <td>8.01%</td>
+                                                                                    <td>1</td>
+                                                                                </tr>
+                                                                            </tbody></table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-xl-6 col-lg-6 col-md-6 mb-30" style="padding-top: 15px; padding-left: 0px; padding-right: 3px; float: left;">
+                                                            <div class="card card-statistics h-100">
+                                                                <div class="card-body">
+                                                                    <div class="clearfix">
+                                                                        <div class="float-left">
+                                                                            <span class="text-danger">
+                                                                                <i class="fa fa-bar-chart-o highlight-icon" aria-hidden="true"></i>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="float-right text-right">
+                                                                            <p class="card-text text-dark">External Links</p>
+                                                                            <h4>65,650</h4>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xl-6 col-lg-6 col-md-6 mb-30" style="padding-top: 15px; padding-left: 3px; padding-right: 0px; float: right;">
+                                                            <div class="card card-statistics h-100">
+                                                                <div class="card-body">
+                                                                    <div class="clearfix">
+                                                                        <div class="float-left">
+                                                                            <span class="text-danger">
+                                                                                <i class="fa fa-bar-chart-o highlight-icon" aria-hidden="true"></i>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="float-right text-right">
+                                                                            <p class="card-text text-dark">Alexa Ranking</p>
+                                                                            <h4>65,650 <i class="fa fa-level-up text-success"></i></h4>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <hr>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center;"><input name="links_ids" value="4910" type="checkbox"></td>
+                                        <td style="text-align: center;">1</td>
+                                        <td style="word-wrap: break-word;min-width: 100px;max-width: 100px; text-align: left; line-height: 1.6;">
+                                            <a href="https://blogging.com" target="_blank">https://blogging.com</a>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <a class="collapsed btn btn-outline-success btn-sm" data-toggle="collapse" data-parent="#accordion" href="#collapse-occupiers1">View</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4">
+                                            <div id="collapse-occupiers1" class="panel-collapse collapse" style="width: 99%;">
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <div class="col-xl-12 col-lg-12 col-md-12 mb-30" style="padding-left: 0px; padding-right: 0px;">
+                                                            <div class="card card-statistics h-100">
+                                                                <div class="card-body" style="padding: 0px;">
+                                                                    <div class="clearfix">
+                                                                        <table style="width: 100%;">
+                                                                            <tbody><tr class="text-dark">
+                                                                                    <th>PA</th>
+                                                                                    <th>DA</th>
+                                                                                    <th>Follow </th>
+                                                                                    <th>Do Follow</th>
+                                                                                    <th>Link Juice</th>
+                                                                                    <th>Spam Score</th>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td><i class="fa fa-circle text-success"></i></td>
+                                                                                    <td>USA</td>
+                                                                                    <td>2,009 </td>
+                                                                                    <td>5,230</td>
+                                                                                    <td>8.01%</td>
+                                                                                    <td>1</td>
+                                                                                </tr>
+                                                                            </tbody></table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-xl-6 col-lg-6 col-md-6 mb-30" style="padding-top: 15px; padding-left: 0px; padding-right: 3px; float: left;">
+                                                            <div class="card card-statistics h-100">
+                                                                <div class="card-body">
+                                                                    <div class="clearfix">
+                                                                        <div class="float-left">
+                                                                            <span class="text-danger">
+                                                                                <i class="fa fa-bar-chart-o highlight-icon" aria-hidden="true"></i>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="float-right text-right">
+                                                                            <p class="card-text text-dark">External Links</p>
+                                                                            <h4>65,650</h4>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xl-6 col-lg-6 col-md-6 mb-30" style="padding-top: 15px; padding-left: 3px; padding-right: 0px; float: right;">
+                                                            <div class="card card-statistics h-100">
+                                                                <div class="card-body">
+                                                                    <div class="clearfix">
+                                                                        <div class="float-left">
+                                                                            <span class="text-danger">
+                                                                                <i class="fa fa-bar-chart-o highlight-icon" aria-hidden="true"></i>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="float-right text-right">
+                                                                            <p class="card-text text-dark">Alexa Ranking</p>
+                                                                            <h4>65,650 <i class="fa fa-level-up text-success"></i></h4>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <hr>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center;"><input name="links_ids" value="4910" type="checkbox"></td>
+                                        <td style="text-align: center;">1</td>
+                                        <td style="word-wrap: break-word;min-width: 100px;max-width: 100px; text-align: left; line-height: 1.6;">
+                                            <a href="https://blogging.com" target="_blank">https://blogging.com</a>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <a class="collapsed btn btn-outline-success btn-sm" data-toggle="collapse" data-parent="#accordion" href="#collapse-occupiers2">View</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4">
+                                            <div id="collapse-occupiers2" class="panel-collapse collapse" style="width: 99%;">
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <div class="col-xl-12 col-lg-12 col-md-12 mb-30" style="padding-left: 0px; padding-right: 0px;">
+                                                            <div class="card card-statistics h-100">
+                                                                <div class="card-body" style="padding: 0px;">
+                                                                    <div class="clearfix">
+                                                                        <table style="width: 100%;">
+                                                                            <tbody><tr class="text-dark">
+                                                                                    <th>PA</th>
+                                                                                    <th>DA</th>
+                                                                                    <th>Follow </th>
+                                                                                    <th>Do Follow</th>
+                                                                                    <th>Link Juice</th>
+                                                                                    <th>Spam Score</th>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td><i class="fa fa-circle text-success"></i></td>
+                                                                                    <td>USA</td>
+                                                                                    <td>2,009 </td>
+                                                                                    <td>5,230</td>
+                                                                                    <td>8.01%</td>
+                                                                                    <td>1</td>
+                                                                                </tr>
+                                                                            </tbody></table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-xl-6 col-lg-6 col-md-6 mb-30" style="padding-top: 15px; padding-left: 0px; padding-right: 3px; float: left;">
+                                                            <div class="card card-statistics h-100">
+                                                                <div class="card-body">
+                                                                    <div class="clearfix">
+                                                                        <div class="float-left">
+                                                                            <span class="text-danger">
+                                                                                <i class="fa fa-bar-chart-o highlight-icon" aria-hidden="true"></i>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="float-right text-right">
+                                                                            <p class="card-text text-dark">External Links</p>
+                                                                            <h4>65,650</h4>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xl-6 col-lg-6 col-md-6 mb-30" style="padding-top: 15px; padding-left: 3px; padding-right: 0px; float: right;">
+                                                            <div class="card card-statistics h-100">
+                                                                <div class="card-body">
+                                                                    <div class="clearfix">
+                                                                        <div class="float-left">
+                                                                            <span class="text-danger">
+                                                                                <i class="fa fa-bar-chart-o highlight-icon" aria-hidden="true"></i>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="float-right text-right">
+                                                                            <p class="card-text text-dark">Alexa Ranking</p>
+                                                                            <h4>65,650 <i class="fa fa-level-up text-success"></i></h4>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <hr>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center;"><input name="links_ids" value="4910" type="checkbox"></td>
+                                        <td style="text-align: center;">1</td>
+                                        <td style="word-wrap: break-word;min-width: 100px;max-width: 100px; text-align: left; line-height: 1.6;">
+                                            <a href="https://blogging.com" target="_blank">https://blogging.com</a>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <a class="collapsed btn btn-outline-success btn-sm" data-toggle="collapse" data-parent="#accordion" href="#collapse-occupiers3">View</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4">
+                                            <div id="collapse-occupiers3" class="panel-collapse collapse" style="width: 99%;">
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <div class="col-xl-12 col-lg-12 col-md-12 mb-30" style="padding-left: 0px; padding-right: 0px;">
+                                                            <div class="card card-statistics h-100">
+                                                                <div class="card-body" style="padding: 0px;">
+                                                                    <div class="clearfix">
+                                                                        <table style="width: 100%;">
+                                                                            <tbody><tr class="text-dark">
+                                                                                    <th>PA</th>
+                                                                                    <th>DA</th>
+                                                                                    <th>Follow </th>
+                                                                                    <th>Do Follow</th>
+                                                                                    <th>Link Juice</th>
+                                                                                    <th>Spam Score</th>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td><i class="fa fa-circle text-success"></i></td>
+                                                                                    <td>USA</td>
+                                                                                    <td>2,009 </td>
+                                                                                    <td>5,230</td>
+                                                                                    <td>8.01%</td>
+                                                                                    <td>1</td>
+                                                                                </tr>
+                                                                            </tbody></table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-xl-6 col-lg-6 col-md-6 mb-30" style="padding-top: 15px; padding-left: 0px; padding-right: 3px; float: left;">
+                                                            <div class="card card-statistics h-100">
+                                                                <div class="card-body">
+                                                                    <div class="clearfix">
+                                                                        <div class="float-left">
+                                                                            <span class="text-danger">
+                                                                                <i class="fa fa-bar-chart-o highlight-icon" aria-hidden="true"></i>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="float-right text-right">
+                                                                            <p class="card-text text-dark">External Links</p>
+                                                                            <h4>65,650</h4>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xl-6 col-lg-6 col-md-6 mb-30" style="padding-top: 15px; padding-left: 3px; padding-right: 0px; float: right;">
+                                                            <div class="card card-statistics h-100">
+                                                                <div class="card-body">
+                                                                    <div class="clearfix">
+                                                                        <div class="float-left">
+                                                                            <span class="text-danger">
+                                                                                <i class="fa fa-bar-chart-o highlight-icon" aria-hidden="true"></i>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="float-right text-right">
+                                                                            <p class="card-text text-dark">Alexa Ranking</p>
+                                                                            <h4>65,650 <i class="fa fa-level-up text-success"></i></h4>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <hr>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center;"><input name="links_ids" value="4910" type="checkbox"></td>
+                                        <td style="text-align: center;">1</td>
+                                        <td style="word-wrap: break-word;min-width: 100px;max-width: 100px; text-align: left; line-height: 1.6;">
+                                            <a href="https://blogging.com" target="_blank">https://blogging.com</a>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <a class="collapsed btn btn-outline-success btn-sm" data-toggle="collapse" data-parent="#accordion" href="#collapse-occupiers4">View</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4">
+                                            <div id="collapse-occupiers4" class="panel-collapse collapse" style="width: 99%;">
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <div class="col-xl-12 col-lg-12 col-md-12 mb-30" style="padding-left: 0px; padding-right: 0px;">
+                                                            <div class="card card-statistics h-100">
+                                                                <div class="card-body" style="padding: 0px;">
+                                                                    <div class="clearfix">
+                                                                        <table style="width: 100%;">
+                                                                            <tbody><tr class="text-dark">
+                                                                                    <th>PA</th>
+                                                                                    <th>DA</th>
+                                                                                    <th>Follow </th>
+                                                                                    <th>Do Follow</th>
+                                                                                    <th>Link Juice</th>
+                                                                                    <th>Spam Score</th>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td><i class="fa fa-circle text-success"></i></td>
+                                                                                    <td>USA</td>
+                                                                                    <td>2,009 </td>
+                                                                                    <td>5,230</td>
+                                                                                    <td>8.01%</td>
+                                                                                    <td>1</td>
+                                                                                </tr>
+                                                                            </tbody></table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-xl-6 col-lg-6 col-md-6 mb-30" style="padding-top: 15px; padding-left: 0px; padding-right: 3px; float: left;">
+                                                            <div class="card card-statistics h-100">
+                                                                <div class="card-body">
+                                                                    <div class="clearfix">
+                                                                        <div class="float-left">
+                                                                            <span class="text-danger">
+                                                                                <i class="fa fa-bar-chart-o highlight-icon" aria-hidden="true"></i>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="float-right text-right">
+                                                                            <p class="card-text text-dark">External Links</p>
+                                                                            <h4>65,650</h4>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xl-6 col-lg-6 col-md-6 mb-30" style="padding-top: 15px; padding-left: 3px; padding-right: 0px; float: right;">
+                                                            <div class="card card-statistics h-100">
+                                                                <div class="card-body">
+                                                                    <div class="clearfix">
+                                                                        <div class="float-left">
+                                                                            <span class="text-danger">
+                                                                                <i class="fa fa-bar-chart-o highlight-icon" aria-hidden="true"></i>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="float-right text-right">
+                                                                            <p class="card-text text-dark">Alexa Ranking</p>
+                                                                            <h4>65,650 <i class="fa fa-level-up text-success"></i></h4>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <hr>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="metatag" role="tabpanel" aria-labelledby="metatag-tab">
+            <h6>Meta Tag</h6>
+            <div class="row" style="margin-bottom: -20px;">
+                <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+                    <div class="card card-statistics h-100">
+                        <div class="card-body" style="padding-bottom: 5px;">
+                            <div class="clearfix">
+                                <div class="float-left">
+                                    <span class="text-danger">
+                                        <?php if (strlen($metaTitle) > 0): ?>
+                                            <i style="color:green;" class="fa fa-check-square-o highlight-icon" aria-hidden="true"></i>
+                                        <?php else: ?>
+                                            <i style="color:#dc3545;" class="fa fa-times-circle-o highlight-icon" aria-hidden="true"></i>
+                                        <?php endif; ?>
+                                    </span>
+                                </div>
+                                <div class="float-right text-right">
+                                    <p class="card-text text-dark" style="margin-bottom: -0.3rem;">META TITLE</p>
+                                    <?php if (strlen($metaTitle) > 0): ?>
+                                        <h4><label class="badge badge-success">AVAILABLE</label></h4>
+                                    <?php else: ?>
+                                        <h4><label class="badge badge-danger">NOT AVAILABLE</label></h4>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <p class="text-muted pt-3 mb-0 mt-2 border-top" style="text-align: center; padding-top: 3px;">
+                                <a style="float: inherit;" href="javascript:showMetaTitle('<?php echo $metaTitle; ?>');" class="btn btn-outline-success btn-sm">View Meta Title</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+                    <div class="card card-statistics h-100">
+                        <div class="card-body" style="padding-bottom: 5px;">
+                            <div class="clearfix">
+                                <div class="float-left">
+                                    <span class="text-warning">
+                                        <?php if (strlen($metaDescription) > 0): ?>
+                                            <i style="color:green;" class="fa fa-check-square-o highlight-icon" aria-hidden="true"></i>
+                                        <?php else: ?>
+                                            <i style="color:#dc3545;" class="fa fa-times-circle-o highlight-icon" aria-hidden="true"></i>
+                                        <?php endif; ?>
+                                    </span>
+                                </div>
+                                <div class="float-right text-right">
+                                    <p class="card-text text-dark" style="margin-bottom: -0.3rem;">META DESCRIPTION</p>
+                                    <?php if (strlen($metaDescription) > 0): ?>
+                                        <h4><label class="badge badge-success">AVAILABLE</label></h4>
+                                    <?php else: ?>
+                                        <h4><label class="badge badge-danger">NOT AVAILABLE</label></h4>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <p class="text-muted pt-3 mb-0 mt-2 border-top" style="text-align: center; padding-top: 3px;">
+                                <a style="float: inherit;" href="javascript:showMetaDescription('<?php echo $metaDescription; ?>');" class="btn btn-outline-success btn-sm">View Meta Description</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+                    <div class="card card-statistics h-100">
+                        <div class="card-body" style="padding-bottom: 5px;">
+                            <div class="clearfix">
+                                <div class="float-left">
+                                    <span class="text-success">
+                                        <?php if (strlen($keywords) > 0): ?>
+                                            <i style="color:green;" class="fa fa-check-square-o highlight-icon" aria-hidden="true"></i>
+                                        <?php else: ?>
+                                            <i style="color:#dc3545;" class="fa fa-times-circle-o highlight-icon" aria-hidden="true"></i>
+                                        <?php endif; ?>
+                                    </span>
+                                </div>
+                                <div class="float-right text-right">
+                                    <p class="card-text text-dark" style="margin-bottom: -0.3rem;">META KEYWORDS</p>
+                                    <?php if (strlen($keywords) > 0): ?>
+                                        <h4><label class="badge badge-success">AVAILABLE</label></h4>
+                                    <?php else: ?>
+                                        <h4><label class="badge badge-danger">NOT AVAILABLE</label></h4>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <p class="text-muted pt-3 mb-0 mt-2 border-top" style="text-align: center; padding-left: 10px; padding-top: 3px;">
+                                <a style="float: left;" href="javascript:showKeyWords('<?php echo $keywords; ?>');" class="btn btn-outline-success btn-sm">View Keywords</a>
+                                <a style="float: right;" href="javascript:addKeyWord('<?php $linkDetailsId; ?>', '<?php echo $keywords; ?>');" class="btn btn-outline-warning btn-sm">Add Keywords</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="padding-top: 0px; display: block;">   
+                <div class="col-xl-12 mb-30" style="margin-bottom: 1.125rem !important;">     
+                    <div class="card card-statistics h-100">
+                        <div id="section_title">
+
+                        </div>
+                        <div class="card-body" style="padding-top: 5px; padding-bottom: 0px;">
+                            <!-- ---------- Add Key Word Starts --------------->
+
+                            <?php $existKeywordsArr = explode(",", strlen($linkdetails->getMetaKeywords()) > 1 ? $linkdetails->getMetaKeywords() : ''); ?>
+                            <?php //echo "<pre>"; print_r($linkdetails->getMetaKeywords());  ?>
+                            <div class="row" id="metatitlesection" style="padding-left: 10px;">
+                                <div class="alert alert-warning" id="msgbox_warning" role="alert" style="width: 100%; display: block; padding: .15rem 1.5rem;">Please click on above sections</div>
+                            </div>
+                            <div id="addKeyWordSec" style="display:none;">
+                                <div class="col-sm-12 col-md-6" style="float: left; padding: 0px;">
+                                    <form id="addKeywordFrm" action="">
+                                        <div class="input-group mb-3">
+                                            <input id="keywords_name" name="keywords_name" placeholder="Add Keywords" class="form-control" aria-label="Text input with checkbox" type="search" required="required" style="padding-top: 0px; padding-bottom: 0px;">
+                                            <div class="input-group-prepend" id="addKeyWordBtn">
+                                                <button onclick="addKeywords('<?php echo $linkdetails->getId(); ?>');" class="button" type="button" style="padding: 0px 20px;" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Check for robots.txt">Add</button>
+                                            </div>
+                                        </div>
+                                        <input type="submit" id="submitkeywordname" style="display: none;" value="Submit">
+                                    </form>
+                                </div>
+                                <div class="col-sm-12 col-md-6" style="float: left; padding-left: 20px; padding-right: 0px;">
+                                    <a href="" class="button" style="float: right; padding: 0px 20px;">
+                                        <span>Edit</span>
+                                        <i class="fa fa-refresh" style="font-size:16px"></i>
+                                    </a>
+
+                                    <a href="javascript:deleteKeywords('keyword_checkbox');" class="button" style="float: right; margin-right: 10px; padding: 0px 20px;">
+                                        <span>Delete</span>
+                                        <i class="fa fa-trash-o" style="font-size:16px"></i>
+                                    </a>
+                                </div>
+
+                                <table class="table table-striped table-bordered p-0">
+                                    <thead>
+                                        <tr>
+                                            <td style="padding: .3rem; text-align: center; width: 30px;">
+                                                <input id="links_ids_all_keywords" type="checkbox" onclick="checkUncheckAll('links_ids_all_keywords', 'keyword_checkbox');">
+                                            </td>
+                                            <td style="padding: .3rem; text-align: center; width: 50px;">SL</td>
+                                            <td style="padding: .3rem; text-align: center;">Keyword</td>
+                                            <!--<td style="padding: .3rem; text-align: center; width: 160px;">Action</td>-->
+                                        </tr>
+                                    </thead>
+                                </table>
+                                <div style="height: 130px; overflow: auto; width: 100%; margin-top: -15px;">
+                                    <table class="table table-striped table-bordered p-0" id="keywordTableCustom">
+                                        <tbody>
+                                            <?php if (strlen($linkdetails->getMetaKeywords()) > 0 && count($existKeywordsArr) > 0): ?>
+                                                <?php $keyWordCount = 1; ?>
+                                                <?php foreach ($existKeywordsArr as $existKeyword): ?>
+                                                    <?php if ($keyWordCount > 25): ?>
+                                                    <script>
+                                                        jQuery("#addKeyWordBtn").hide();
+                                                    </script>
+                                                <?php else: ?>
+                                                    <tr>
+                                                        <td class="keywordcheckbox"><input name="keyword_checkbox" value="<?php echo $existKeyword; ?>" type="checkbox"></td>
+                                                        <td class="keywordcount"><?php echo $keyWordCount; ?></td>
+                                                        <td><?php echo $existKeyword; ?></td>
+                                                        <!--<td class="keyword_start_analysis">
+                                                            <a href="" class="btn btn-outline-success btn-sm">Start Analysis</a>
+                                                        </td>-->
+                                                    </tr>
+                                                <?php endif; ?>
+                                                <?php $keyWordCount++; ?>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <tr>
+                                                <td colspan="4">
+                                                    <div class="alert alert-warning" role="alert" style="width: 100%; display: block; padding: .15rem 1.5rem;">Sorry, No Keywords Found!</div>
+                                                </td>
+                                            </tr>   
+                                        <?php endif; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- ---------- Add Key Words Ends ---------------->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="keyword_analysis" role="tabpanel" aria-labelledby="keyword_analysis-tab">
+            <div class="row">
+                <div class="col-sm-12 col-md-4">
+                    <h6>Keyword Analysis</h6>
+                </div>
+                <hr>
+            </div>
+            <div class="row" style="height: 380px; overflow: auto; display: block;" id="viewkeywords_custom">
+                <!-- ------------------------------------------>
+                <div class="card card-statistics h-100" style="width: 100%;"> 
+                    <div class="card-body" style="padding: 1.5rem;">
+                        <div class="row" style="height: 350px" id="keywords_custom">
+                            <table class="table table-striped table-bordered p-0">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 10px; text-align: center;">
+                                            <input id="links_ids_all_backlink" onclick="#" type="checkbox">
+                                        </th>
+                                        <th style="width: 24.5px; text-align: center;">SN</th>
+                                        <th style="width: 400px; text-align: center;">KEYWORDS</th>
+                                        <th style="width: 50.5px; text-align: center;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php $keywords = $linkdetails->getMetaKeywords(); ?>
+                                    <?php if (strlen($keywords) > 1): ?>
+                                        <?php $countTogle = 0; ?>
+                                        <?php $keywordsArrCustom = explode(",", $keywords); ?>
+                                        <?php foreach ($keywordsArrCustom as $kword): ?>
+                                            <?php $countTogle++; ?>
+                                            <tr>
+                                                <td style="text-align: center;"><input name="links_ids" value="4910" type="checkbox"></td>
+                                                <td style="text-align: center;"><?php echo $countTogle; ?></td>
+                                                <td style="word-wrap: break-word;min-width: 100px;max-width: 100px; text-align: left; line-height: 1.6;">
+                                                    <a href="javascript:void(0);" target="_blank"><?php echo $kword; ?></a>
+                                                </td>
+                                                <td style="text-align: center;">
+                                                    <input type="hidden" id="custom_keyword<?php echo $countTogle; ?>" name="custom_keyword<?php echo $countTogle; ?>" value="">
+                                                    <a class="collapsed btn btn-outline-success btn-sm" data-toggle="collapse" data-parent="#accordion" href="#collapse-backlinks<?php echo $countTogle; ?>" onclick="showKeywordSearchUrls('<?php echo $countTogle; ?>', '<?php echo $kword; ?>')">View</a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4" style="clear: both; width: 100%;">
+                                                    <div id="collapse-backlinks<?php echo $countTogle; ?>" class="panel-collapse collapse" style="width: 100%; height: 300px !important; overflow: auto;">
+                                                        <!-- ----------------------------->
+                                                        <center>
+                                                            <img id="rowLoader" src="<?php echo $this->getSkinUrl('images/pre-loader/loader-01.svg', array('_secure' => true)); ?>" alt="">
+                                                        </center>
+                                                        <!-- ----------------------------->
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="4">Sorry!, No Keywords Found!</td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+
+
+                        </div>
+                    </div>
+                </div>
+                <!-- ------------------------------------------->
+            </div>
+            <div class="row" style="height: 380px; overflow: auto; display: none;" id="addkeywords_custom">
+                Add New Keywords
+            </div>
+        </div>
+        <div class="tab-pane fade" id="positiontracking" role="tabpanel" aria-labelledby="positiontracking-tab">
+            <h6>Keyword Position &amp; Trends </h6>
+            <div class="table-responsive">
+                <div id="datatable_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <!-- --------------------------------------------->
+                            <table class="table center-aligned-table mb-0">
+                                <thead>
+                                    <tr class="text-dark">
+                                        <th>S/N</th>
+                                        <th>Keywords</th>
+                                        <th>Google</th>
+                                        <th>Yahoo</th>
+                                        <th>Bing</th>
+                                        <th>Yandex</th>
+                                        <th>G Trends</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php $countKeyword = 1; ?>
+                                    <?php foreach ($keywordsArrCustom as $keywordsCustom): ?>
+                                        <?php
+                                        $searchUrl = $linkdetails->getRelatedUrl();
+                                        $googleRank = $helper->search_rank_api($keywordsCustom, 'google', $searchUrl);
+                                        $yahooRank = $helper->search_rank_api($keywordsCustom, 'yahoo', $searchUrl);
+                                        $bingRank = $helper->search_rank_api($keywordsCustom, 'bing', $searchUrl);
+                                        $yandexRank = 0;
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $countKeyword; ?></td>
+                                            <td><?php echo $keywordsCustom; ?></td>
+                                            <td><?php echo $googleRank; ?></td>
+                                            <td><?php echo $yahooRank; ?></td>
+                                            <td><?php echo $bingRank; ?></td>
+                                            <td><?php echo $yandexRank; ?></td>
+                                            <td><a href="#" class="btn btn-outline-success btn-sm" style="float: left;">View</a></td>
+                                            <td><a href="#" class="btn btn-outline-success btn-sm"><i class="fa fa-refresh" style="font-size:18px"></i></a></td>
+                                        </tr>
+                                        <?php $countKeyword++; ?>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                            <!-- --------------------------------------------->
+                            <?php /* ?><table id="datatable123" class="table table-striped table-bordered p-0 dataTable" role="grid" aria-describedby="datatable_info">
+                              <thead>
+                              <tr role="row">
+                              <th tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" style="width: 50.6px;text-align: center;" aria-sort="ascending" aria-label="Name: activate to sort column descending">S/N</th>
+                              <th tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" style="width: 258.783px;text-align: center;" aria-label="Position: activate to sort column ascending">Keywords</th>
+                              <th tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" style="width: 65px;text-align: center;" aria-label="Office: activate to sort column ascending">Google</th>
+                              <th tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" style="width: 65px;text-align: center;" aria-label="Age: activate to sort column ascending">Yahoo</th>
+                              <th tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" style="width: 65px;text-align: center;" aria-label="Start date: activate to sort column ascending">Bing</th>
+                              <th tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" style="width: 65px;text-align: center;" aria-label="Salary: activate to sort column ascending">Yandex</th>
+                              <th tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" style="width: 100px;text-align: center;" aria-label="Salary: activate to sort column ascending">G Trends</th>
+                              </tr>
+                              </thead>
+                              <tbody>
+                              <?php $countKeyword = 1; ?>
+                              <?php foreach ($keywordsArrCustom as $keywordsCustom): ?>
+                              <?php
+                              $searchUrl = $linkdetails->getRelatedUrl();
+                              $googleRank = $helper->search_rank_api($keywordsCustom, 'google', $searchUrl);
+                              $yahooRank = $helper->search_rank_api($keywordsCustom, 'yahoo', $searchUrl);
+                              $bingRank = $helper->search_rank_api($keywordsCustom, 'bing', $searchUrl);
+                              $yandexRank = 0;
+                              ?>
+                              <tr role="row" class="odd">
+                              <td style="text-align: center;"><?php echo $countKeyword; ?></td>
+                              <td style="text-align: center;"><?php echo $keywordsCustom; ?></td>
+                              <td style="text-align: center;"><?php echo $googleRank; ?></td>
+                              <td style="text-align: center;"><?php echo $yahooRank; ?></td>
+                              <td style="text-align: center;"><?php echo $bingRank; ?></td>
+                              <td style="text-align: center;"><?php echo $yandexRank; ?><td>
+                              <td style="text-align: center;">
+                              <a href="#" class="btn btn-outline-success btn-sm" style="float: left;">View</a>
+                              <!--<a href="#" class="btn btn-outline-success btn-sm">
+                              <i class="fa fa-refresh" style="font-size:18px"></i>
+                              </a>-->
+                              </td>
+                              </tr>
+                              <?php $countKeyword++; ?>
+                              <?php endforeach; ?>
+                              </tbody>
+                              </table><?php */ ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-5">
+                            <div class="dataTables_info" id="datatable_info" role="status" aria-live="polite">
+                                Showing 1 to 10 of 57 entries
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-7">
+                            <div class="dataTables_paginate paging_simple_numbers" id="datatable_paginate">
+                                <ul class="pagination">
+                                    <li class="paginate_button page-item previous disabled" id="datatable_previous">
+                                        <a href="#" aria-controls="datatable" data-dt-idx="0" tabindex="0" class="page-link">Previous</a>
+                                    </li>
+                                    <li class="paginate_button page-item active">
+                                        <a href="#" aria-controls="datatable" data-dt-idx="1" tabindex="0" class="page-link">1</a>
+                                    </li>
+                                    <li class="paginate_button page-item ">
+                                        <a href="#" aria-controls="datatable" data-dt-idx="2" tabindex="0" class="page-link">2</a>
+                                    </li>
+                                    <li class="paginate_button page-item ">
+                                        <a href="#" aria-controls="datatable" data-dt-idx="3" tabindex="0" class="page-link">3</a>
+                                    </li>
+                                    <li class="paginate_button page-item ">
+                                        <a href="#" aria-controls="datatable" data-dt-idx="4" tabindex="0" class="page-link">4</a>
+                                    </li>
+                                    <li class="paginate_button page-item ">
+                                        <a href="#" aria-controls="datatable" data-dt-idx="5" tabindex="0" class="page-link">5</a>
+                                    </li>
+                                    <li class="paginate_button page-item ">
+                                        <a href="#" aria-controls="datatable" data-dt-idx="6" tabindex="0" class="page-link">6</a>
+                                    </li>
+                                    <li class="paginate_button page-item next" id="datatable_next">
+                                        <a href="#" aria-controls="datatable" data-dt-idx="7" tabindex="0" class="page-link">Next</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ----------------------------------->
+        </div>
+        <div class="tab-pane fade" id="externallink" role="tabpanel" aria-labelledby="externallink-tab">
+            <h6>External Links: <b><?php echo count($helper->getExternalLinks($linkdetails->getRelatedUrl())); ?></b></h6>
+            <div class="row">
+                <?php
+                $externalLinkArr = $helper->getExternalLinks($linkdetails->getRelatedUrl());
+                ?>
+                <div class="col-sm-12">
+                    <table class="table table-striped table-bordered p-0 dataTable" role="grid" aria-describedby="datatable_info" style="margin-bottom: 12px;">
+                        <thead style="background-color: #fff; z-index: 99999;">
+                            <tr role="row">
+                                <th tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" style="width: 50.6px;text-align: center;" aria-sort="ascending" aria-label="Name: activate to sort column descending">S/N</th>
+                                <th tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" style="width: 340px;text-align: center;" aria-label="Position: activate to sort column ascending">External Link</th>
+                                <th tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" style="width: 115px;text-align: center;" aria-label="Start date: activate to sort column ascending">Do Follow</th>
+                                <th tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" style="width: 100px;text-align: center;" aria-label="Salary: activate to sort column ascending">No Follow</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div style="overflow: auto; height: 300px; margin-top: -10px;">
+                        <table class="table table-striped table-bordered p-0 dataTable">
+                            <tbody>
+                                <?php foreach ($externalLinkArr as $externalLink): ?>
+                                    <?php echo $externalLink; ?>
+                                <?php endforeach; ?>
+                                <?php /* if (count($externalLinkArr) > 0): ?>
+                                  <?php $count = 1; ?>
+                                  <?php foreach ($externalLinkArr as $externalLink): ?>
+                                  <tr>
+                                  <td><?php echo $count; ?></td>
+                                  <td><?php echo $externalLink; ?></td>
+                                  <td></td>
+                                  <td></td>
+                                  </tr>
+                                  <?php endforeach; ?>
+                                  <?php else: ?>
+                                  <tr>
+                                  <td colspan="4">
+                                  Sorry, No External Link Found!
+                                  </td>
+                                  </tr>
+                                  <?php endif; */ ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 col-md-5">
+                    <div class="dataTables_info" id="datatable_info" role="status" aria-live="polite">
+                        Showing 1 to 10 of 57 entries
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-7">
+                    <div class="dataTables_paginate paging_simple_numbers" id="datatable_paginate">
+                        <ul class="pagination">
+                            <li class="paginate_button page-item previous disabled" id="datatable_previous">
+                                <a href="#" aria-controls="datatable" data-dt-idx="0" tabindex="0" class="page-link">Previous</a>
+                            </li>
+                            <li class="paginate_button page-item active">
+                                <a href="#" aria-controls="datatable" data-dt-idx="1" tabindex="0" class="page-link">1</a>
+                            </li>
+                            <li class="paginate_button page-item ">
+                                <a href="#" aria-controls="datatable" data-dt-idx="2" tabindex="0" class="page-link">2</a>
+                            </li>
+                            <li class="paginate_button page-item ">
+                                <a href="#" aria-controls="datatable" data-dt-idx="3" tabindex="0" class="page-link">3</a>
+                            </li>
+                            <li class="paginate_button page-item ">
+                                <a href="#" aria-controls="datatable" data-dt-idx="4" tabindex="0" class="page-link">4</a>
+                            </li>
+                            <li class="paginate_button page-item ">
+                                <a href="#" aria-controls="datatable" data-dt-idx="5" tabindex="0" class="page-link">5</a>
+                            </li>
+                            <li class="paginate_button page-item next" id="datatable_next">
+                                <a href="#" aria-controls="datatable" data-dt-idx="7" tabindex="0" class="page-link">Next</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="keywordsuggestion" role="tabpanel" aria-labelledby="keywordsuggestion-tab">
+            <div class="row">
+                keywordsuggestion
+            </div>
+        </div>
+        <div class="tab-pane fade" id="improvement" role="tabpanel" aria-labelledby="improvement-tab">
+            <div class="row">
+                Improvement
+            </div>
+        </div>
+        <div class="tab-pane fade" id="graph" role="tabpanel" aria-labelledby="graph-tab">
+            <div class="row">
+                Graph 
+            </div>
+        </div>
+        <div class="tab-pane fade" id="report" role="tabpanel" aria-labelledby="report-tab">
+            <div class="row">
+                <h6>Report Download</h6>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 col-md-12">
+                    <center>
+                        <a class="button" href="http://25saints.com/Masterajib/Project_SEO/index.php/linkdetails/index/downloadspecificlinkreport" style="border-radius: 5px;"> 
+                            <p><i class="fa fa-cloud-download" style="font-size:36px"></i></p>
+                            <p><span> Download Complete Report</span> </p>
+                        </a>
+                    </center>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showScroll(id) {
+        setTimeout(function () {
+            document.getElementById(id).setAttribute("style", "width: 100%; height: 220px !important; overflow: auto;");
+        }, 2000);
+    }
+
+    function showKeywordSearchUrls(id, keywords_name) {
+        var textBoxVal = document.getElementById("custom_keyword" + id);
+        if (textBoxVal.value == '' || textBoxVal.value == null) {
+            var url = "<?php echo Mage::getBaseUrl(); ?>linkanalysis/index/keywordsearchurl?keywords_name=" + keywords_name;
+            jQuery("#rowLoader").css("opacity", '0.8');
+            //jQuery("#pre-loader").show();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: "",
+                success: function (data)
+                {
+                    //jQuery("#pre-loader").hide();
+                    //jQuery("#collapse-backlinks" + id).val(data);
+                    document.getElementById("collapse-backlinks"+id).innerHTML = data;
+                    textBoxVal.value = keywords_name;
+                    setTimeout(function () {
+                        document.getElementById("collapse-backlinks" + id).setAttribute("style", "width: 100%; height: 220px !important; overflow: auto;");
+                    }, 2000);
+                }
+            });
+        } else {
+            setTimeout(function () {
+                document.getElementById("collapse-backlinks" + id).setAttribute("style", "width: 100%; height: 220px !important; overflow: auto;");
+            }, 2000);
+        }
+    }
+
+</script>

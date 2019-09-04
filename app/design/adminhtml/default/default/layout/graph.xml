@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <graph_adminhtml_graph_index>
+        <reference name="content">
+            <block type="graph/adminhtml_graph" name="graph" />
+        </reference>
+    </graph_adminhtml_graph_index>
+</layout>

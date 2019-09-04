@@ -1,0 +1,1381 @@
+<?php if (Mage::getSingleton('customer/session')->isLoggedIn()): ?>
+    <?php
+    $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
+
+    $igUserCollection = Mage::getModel('influencerusers/influencerusers')
+            ->getCollection()
+            ->addFieldToFilter('platform', '2')
+            ->addFieldToFilter('customer_id', $customerId)
+            ->addFieldToFilter('status', '1');
+
+    $schedulePostCollection = Mage::getModel('schedulepost/schedulepost')
+            ->getCollection()
+            ->addFieldToFilter('customer_id', $customerId)
+            ->addFieldToFilter('status', '1')
+            ->setOrder('schedulepost_id', 'DESC');
+
+
+    $emojiesCollection = Mage::getModel('emojis/emojis')
+            ->getCollection()
+            ->addFieldToFilter('status', '1');
+
+    $htmlEmoji = "";
+    //$count = 0;
+    foreach ($emojiesCollection as $emojiesColl) {
+        $htmlEmoji .= "<a class='captionemoji' href='javascript:setEmojiInCaption(" . $emojiesColl->getDec() . ")'>&#" . $emojiesColl->getDec() . "</a>";
+    }
+
+    $reffer = $_REQUEST['reffer'];
+    
+    $lastPostResponse = '';
+    ?>
+    <!-- ------------- Model For Caption Starts ------------------>
+    <?php
+    /* $captionCollection = Mage::getModel('caption/caption')
+      ->getCollection()
+      ->addFieldToFilter('customer_id', $customerId)
+      ->addFieldToFilter('status', '1'); */
+    ?>
+    <!-- -------------------- File Manager Modal Starts ----------------->
+    <button id="modalFileManagerButton" style="display: none;" type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button> 
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title"><div class="mb-30">
+                            <h6>File Manager</h6>
+                        </div>
+                    </div>
+                    <button id="fileManagerCloseButton" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalFileManagerBody"></div>
+                <div class="modal-footer">
+                    <button onclick="addFilemanagerFiles()" type="button" class="btn btn-secondary">Insert</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- -------------------- File Manager Modal Ends ------------------->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title"><div class="mb-30">
+                            <h6>Saved Caption List</h6>
+                        </div>
+                    </div>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-xl-12 mb-30">
+                        <center>
+                            <img style="display: block;" id="modal_loading" src="<?php echo $this->getSkinUrl('images/pre-loader/loader-01.svg', array('_secure' => true)); ?>" alt="">
+                        </center>
+                        <ul class="list-unstyled" id="listCaptionCustom">
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function setCaption(captionTxt, captionElement) {
+            var temp = document.getElementById(captionElement).value;
+            captionTxt = temp + " " + captionTxt;
+            document.getElementById(captionElement).value = captionTxt;
+        }
+    </script>
+    <!-- ------------- Model For Caption Ends ------------------- -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <div class="page-title">
+        <div class="row">
+            <div class="col-sm-12">
+                <h6 class="mb-0"> 
+                    Social Media Management - Post
+                    <span class="zmdi zmdi-menu ti-align-right" style="font-size:23px;cursor:pointer; float: right;" onclick="openNav()"></span>
+                    <div id="mySidenav" class="sidenav">
+                        <div class="col-xl-12 mb-30">
+                            <a href="javascript:closeNav();">
+                                <i class="fa fa-close" style="font-size:24px; color: #506d7d;"></i>
+                            </a>
+                            <span class="mt-10 mb-10 text-muted pl-4 font-medium menu-title">MENU</span>
+                        </div>
+                        <hr>
+                    </div>
+                </h6>
+
+            </div>
+            <?php /* ?><div class="col-sm-5">
+              <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+              <li class="breadcrumb-item"><a href="<?php echo Mage::getBaseUrl(); ?>" class="default-color">Home</a></li>
+              <li class="breadcrumb-item active">Post </li>
+              </ol>
+              </div><?php */ ?>
+        </div>
+    </div>
+    <div class="row">
+        <style>
+            .imageSpace{
+                background-image:url('http://www.masterajib.com/sms/maxresdefault.jpg'); 
+                height: 220px; 
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: contain;
+                margin-top: 13px;
+            }
+        </style>
+        <div class="col-xl-7 mb-30">
+            <div class="card card-statistics">
+                <div class="card-body">
+                    <table>
+                        <tr>
+                            <td>
+                                <img style="width: 35%;" src="<?php echo $this->getSkinUrl('images/instalogo.png', array('_secure' => true)); ?>">
+                                <hr>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <!-- -------------- User Ends ------------------>
+                        <center>
+                            <img style="display: none;" id="instabox-loader" src="<?php echo $this->getSkinUrl('images/pre-loader/loader-01.svg', array('_secure' => true)); ?>" alt="">
+                        </center>
+                        <div class="tab round" id="insta_box_container">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item">
+                                    <a onclick="setSection('simple_post')" class="nav-link active show" id="home-07-tab" data-toggle="tab" href="#home-07" role="tab" aria-controls="home-07" aria-selected="true"> <i class="fa fa-home"></i> <label id="postLable" style="margin-bottom: 0rem;">Post</label></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setSection('story')" class="nav-link" id="profile-07-tab" data-toggle="tab" href="#profile-07" role="tab" aria-controls="profile-07" aria-selected="false"><i class="fa fa-user"></i> <label id="storyLable" style="margin-bottom: 0rem;">Story </label></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setSection('carrousal')" class="nav-link" id="portfolio-07-tab" data-toggle="tab" href="#portfolio-07" role="tab" aria-controls="portfolio-07" aria-selected="false"><i class="fa fa-picture-o"></i> <label id="carrousalLable" style="margin-bottom: 0rem;">Carousel </label></a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a onclick="setSection('postlist')" class="nav-link" id="portfolio-070-tab" data-toggle="tab" href="#portfolio-070" role="tab" aria-controls="portfolio-070" aria-selected="false"><i class="fa fa-picture-o"></i> <label id="carrousalLable" style="margin-bottom: 0rem;">Post List </label></a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div class="tab-pane fade active show" id="home-07" role="tabpanel" aria-labelledby="home-07-tab">
+
+                                </div>
+                                <div class="tab-pane fade" id="profile-07" role="tabpanel" aria-labelledby="profile-07-tab">
+
+                                </div>
+                                <div class="tab-pane fade" id="portfolio-07" role="tabpanel" aria-labelledby="portfolio-07-tab">
+
+                                </div>
+
+                                <div class="tab-pane fade" id="portfolio-070" role="tabpanel" aria-labelledby="portfolio-070-tab">
+                                    <div id="postlist">
+                                        <div class="card-body" style="padding: 0px;">
+                                            <div class="d-block d-md-flex justify-content-between">
+                                                <div class="d-block d-md-flex clearfix sm-mt-20" style="width: 100%;">
+                                                    <div class="clearfix">
+                                                        <div class="box">
+                                                            <select class="fancyselect sm-mb-20 mr-20" style="display: none;">
+                                                                <option value="1">Post Type</option>
+                                                                <option value="2">Simple Post</option>
+                                                                <option value="3">Story</option>
+                                                                <option value="4">Carrousal</option>
+                                                            </select><div class="nice-select fancyselect sm-mb-20 mr-20" tabindex="0"><span class="current">Some option</span><ul class="list"><li data-value="1" class="option selected">Some option</li><li data-value="2" class="option">Another option</li><li data-value="3" class="option">A option</li><li data-value="4" class="option">Potato</li></ul></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="widget-search ml-0 clearfix" style="width: 100%;">
+                                                        <i class="fa fa-search"></i>
+                                                        <input style="width: 100%;" type="search" class="form-control" placeholder="Search....">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="table-responsive mt-15">
+                                                <table class="table center-aligned-table mb-0" id="post_list_table">
+                                                    <thead>
+                                                        <tr class="text-dark">
+                                                            <th><input type="checkbox"></th>
+                                                            <th>User</th>
+                                                            <th>Post date</th>
+                                                            <th>Post Type</th>
+                                                            <th>Status</th>
+                                                            <th></th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($schedulePostCollection as $schedulePost): ?>
+                                                            <tr>
+                                                                <td><input value="<?php echo $schedulePost->getId(); ?>" type="checkbox"></td>
+                                                                <td><img style="border: solid 1px #ccc; padding: 1px; border-radius: 50%;" src="<?php echo Mage::getModel('influencerusers/influencerusers')->load($schedulePost->getInfluencerusersId())->getProfilePicture(); ?>" width="40" height="40"></td>
+                                                                <td><?php echo $schedulePost->getCreatedTime(); ?></td>
+                                                                <td><?php echo $schedulePost->getPostType(); ?></td>
+                                                                <td><?php echo ($schedulePost->getResponse() == '' ? '<label class="badge badge-danger">Failed</label>' : '<label class="badge badge-success">Success</label>'); ?></td>
+                                                                <td><a href="javascript:setPreviewInApp('<?php echo $schedulePost->getResponse(); ?>');" class="btn btn-outline-success btn-sm">View</a></td>
+                                                                <td><a href="javascript:deletePost('<?php echo $schedulePost->getId(); ?>');" class="btn btn-outline-warning btn-sm"><i class="fa fa-trash-o" style="font-size:16px"></i></a></td>
+                                                            </tr>
+                                                            <?php $lastPostResponse = $schedulePost->getResponse(); ?>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- --------------- Form Starts ---------------->
+                                <?php /* ?><form method="post" action="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true); ?>lib/ssm/instagram/examples/uploadPhoto.php" enctype="multipart/form-data"><?php */ ?>
+                                <form id="uploadPostForm" method="post" action="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true); ?>lib/ssm/instagram/examples/doPost.php" enctype="multipart/form-data">
+                                    <input id="section" type="hidden" name="section" value="simple_post">
+                                    <input type="hidden" name="files" id="filesCustom">
+                                    <input type="hidden" name="fileManagerFileIds" id="fileManagerFileIds">
+                                    <div class="add-image" style="border: solid 1px #ccc; width: 100%; min-height: 75px; padding: 3px;" id="fileManagerPreview">
+
+                                    </div>
+                                    <div style="margin-top: 5px;">
+                                        <a href="javascript:launchFileManager();" class="btn btn-outline-success btn-sm" style="margin-top: 7px;"><i id="fileManagerIcon" class="fa fa-folder-o" style="font-size: 14px; margin-right: 5px;"></i>File Manager</a>
+                                        <input accept="image/*" onchange="loadFile(event, 'localfile')" type="file" name="localfile" id="localfile" style="display: none;">
+                                        <a id="btnMedia" href="javascript:document.getElementById('localfile').click();" class="btn btn-outline-success btn-sm" style="margin-top: 7px;">Upload Media</a>
+                                    </div>
+
+                                    <div style="width: 100%; margin-top: 10px;">
+                                        <table style="width: 100%;">
+                                            <tr>
+                                                <td style="width: 90%; text-align: center; vertical-align: top;">
+                                                    <textarea id="captiontxt" name="captiontxt" rows="3" style="width: 100%; height: 90px;" placeholder="Add a caption"></textarea>
+                                                </td>
+                                                <td style="width: 10%; vertical-align: top; text-align: right;">
+                                                    <div style="width: 100%;">
+                                                        <!-- ----------------------->
+
+                                                        <!-- ----------------------->
+                                                        <p>
+                                                            <!--<a href="javascript:launchEmojiModel();" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Get Expressions">-->
+                                                            <a data-html="true" data-container="body" data-toggle="popover" data-placement="left" data-content="<?php echo $htmlEmoji; ?>" data-original-title="Emojis" title="Emojis" aria-describedby="popover403501" href="javascript:void(0);" class="btn btn-outline-success btn-sm">
+                                                                <i class="fa fa-adjust" style="font-size:14px"></i>
+                                                            </a>
+                                                        </p>
+                                                        <p>
+                                                            <a onclick="getAllCaption()" data-toggle="modal" data-target="#exampleModalCenter" href="javascript:void(0);" class="btn btn-outline-success btn-sm">
+                                                                <i data-toggle="tooltip" data-placement="bottom" title="Get Caption" class="fa fa-hdd-o" style="font-size:14px"></i>
+                                                            </a>
+                                                        </p>
+                                                        <p>
+                                                            <a id="saveCaption" href="javascript:saveCaption(); " class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Save Caption">
+                                                                <i class="fa fa-floppy-o" style="font-size:14px"></i>
+                                                            </a>
+                                                        </p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <!-- --------------- Location Replace Starts ------------>
+                                            <!-- --------------- Location Replace Ends -------------->
+                                            <tr>
+                                                <td colspan="2">
+                                                    <hr>
+                                                    <div class="accordion" id="accordion4">
+                                                        <div class="accordion-group">
+                                                            <div class="accordion-heading">
+                                                                <a class="accordion-toggle" data-toggle="collapse" href="#collapseAdvanceOption">
+                                                                    <div class="custom-control custom-checkbox" style="margin-bottom: 10px;">
+                                                                        <input onclick="checkUncheck('chkBoxAdvanceOpt')" type="checkbox" class="custom-control-input" id="chkBoxAdvanceOpt">
+                                                                        <label style="font-weight: 600; cursor: pointer;" class="custom-control-label text-success" for="chkBoxAdvanceOpt">
+                                                                            <i class="fa fa-group" style="font-size:16px;color:#28a956; margin-right: 5px;"></i>
+                                                                            Advance Options
+                                                                        </label>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
+                                                            <div id="collapseAdvanceOption" class="accordion-body collapse in">
+                                                                <div class="input-group" style="margin-top: 5px;">
+                                                                    <div class="input-group-prepend" style="width: 100%;">
+                                                                        <div class="input-group-text" id="searchingProcess">
+                                                                            <i style="font-size: 20px;" class="fa fa-map-marker" aria-hidden="true"></i>
+                                                                        </div>
+                                                                        <input autocomplete="off" id="location" onkeyup="getInstagramLocation(event, this)" class="form-control" name="location" placeholder="Enter Location" type="text" style="height: 40px;padding: 3px 0px; padding-left: 5px;" />
+                                                                        <input type="hidden" name="locationLatLong" id="locationLatLong">
+                                                                    </div>
+                                                                    <small id="locationLbl" class="form-text text-muted">Enter Location</small>
+                                                                </div>
+                                                                <div class="input-group" id="locationListFrmGroup"></div>
+
+                                                                <div class="input-group" style="height: 110px;" id="afterLocationDiv">
+                                                                    <textarea id="commentText" name="commentText" rows="3" style="width: 100%;" placeholder="Add your first comment"></textarea>
+                                                                    <div class="controls" style="padding-top: 5px;">
+                                                                        <a href="javascript:launchEmojiModel();" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Get Expression">
+                                                                            <i class="fa fa-adjust" style="font-size:16px"></i>
+                                                                        </a>
+                                                                        <a href="#" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Get Caption">
+                                                                            <i class="fa fa-hdd-o" style="font-size:16px"></i>
+                                                                        </a>
+                                                                        <a href="#" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Save Caption">
+                                                                            <i class="fa fa-floppy-o" style="font-size:16px"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                                <hr>
+                                                                <!-- ----------- Vertical Tab Starts -------------->
+                                                                <input type="hidden" name="polltype" id="polltype" value="ab_poll">
+                                                                <div class="tab tab-vertical" id="advanceOptionTr" style="display: none;">
+                                                                    <ul class="nav nav-tabs" role="tablist">
+                                                                        <li class="nav-item" style="margin-bottom: 5px;">
+                                                                            <a onclick="setYESNOPollImages();" class="nav-link active show" id="home-09-tab" data-toggle="tab" href="#home-09" role="tab" aria-controls="home-09" aria-selected="true">  Y / N POLL</a>
+                                                                        </li>
+                                                                        <li class="nav-item" style="margin-bottom: 5px;">
+                                                                            <a onclick="setSliderPolImages();" class="nav-link" id="profile-09-tab" data-toggle="tab" href="#profile-09" role="tab" aria-controls="profile-09" aria-selected="false"> SLIDER POLL </a>
+                                                                        </li>
+                                                                        <li class="nav-item" style="margin-bottom: 5px;">
+                                                                            <a onclick="setCountDownImages();" class="nav-link" id="portfolio-09-tab" data-toggle="tab" href="#portfolio-09" role="tab" aria-controls="portfolio-09" aria-selected="false"> COUNTDOWN</a>
+                                                                        </li>
+                                                                        <li class="nav-item" style="margin-bottom: 5px;">
+                                                                            <a onclick="setQuestionPolImages();" class="nav-link" id="contact-09-tab" data-toggle="tab" href="#contact-09" role="tab" aria-controls="contact-09" aria-selected="false">  QUESTION</a>
+                                                                        </li>
+                                                                        <li class="nav-item" style="margin-bottom: 5px;">
+                                                                            <a class="nav-link" id="contact-10-tab" data-toggle="tab" href="#contact-10" role="tab" aria-controls="contact-10" aria-selected="false"> HIGHLIGHT </a>
+                                                                        </li>
+                                                                        <li class="nav-item" style="margin-bottom: 5px;">
+                                                                            <a class="nav-link" id="contact-11-tab" data-toggle="tab" href="#contact-11" role="tab" aria-controls="contact-11" aria-selected="false"> QUIZ </a>
+                                                                        </li>
+                                                                        <li class="nav-item" style="margin-bottom: 5px;">
+                                                                            <a class="nav-link" id="contact-12-tab" data-toggle="tab" href="#contact-12" role="tab" aria-controls="contact-12" aria-selected="false"> HASHTAG </a>
+                                                                        </li>
+                                                                        <li class="nav-item" style="margin-bottom: 5px;">
+                                                                            <a class="nav-link" id="contact-13-tab" data-toggle="tab" href="#contact-13" role="tab" aria-controls="contact-13" aria-selected="false"> STIKERS </a>
+                                                                        </li>
+                                                                        <li class="nav-item" style="margin-bottom: 5px;">
+                                                                            <a class="nav-link" id="contact-14-tab" data-toggle="tab" href="#contact-14" role="tab" aria-controls="contact-14" aria-selected="false"> MENTION </a>
+                                                                        </li>
+                                                                        <li class="nav-item" style="margin-bottom: 5px;">
+                                                                            <a onclick="setLinkOnImages();" class="nav-link" id="contact-15-tab" data-toggle="tab" href="#contact-15" role="tab" aria-controls="contact-15" aria-selected="false"> LINK </a>
+                                                                        </li>
+                                                                    </ul>
+                                                                    <div class="tab-content" style="padding: 15px 10px;">
+                                                                        <div class="tab-pane fade active show" id="home-09" role="tabpanel" aria-labelledby="home-09-tab">
+                                                                            <!-- ----------------- A/B Poll Starts -------------------->
+                                                                            <h6>YES/NO Poll</h6><hr>
+                                                                            <ul class="list-unstyled" style="height: 255px; overflow: auto;" id="abcontainer">
+
+                                                                            </ul>
+                                                                            <!-- ----------------- A?B Poll Ends ---------------------->
+                                                                        </div>
+                                                                        <div class="tab-pane fade" id="profile-09" role="tabpanel" aria-labelledby="profile-09-tab">
+                                                                            <!-- -------------- Slider Poll Starts ------------------->
+                                                                            <div class="tab nav-border" style="position: relative;">
+                                                                                <h5 class="card-title">Slider Poll</h5>
+                                                                                <div style="height: 255px; overflow: auto;" class="tab-pane fade active show" id="months" role="tabpanel" aria-labelledby="months-tab">
+                                                                                    <table id="tblSliderPoll">
+                                                                                        <?php for ($i = 0; $i < 10; $i++): ?>
+                                                                                            <tr>
+                                                                                                <td><img style="width: 40px; height: 40px; border: solid 1px #ccc; padding: 1px; border-radius: 5px;" class="img-fluid" src="https://www.socicos.com/media/users/1/DP/582880.jpg" alt=""></td>
+                                                                                                <td><input style="padding: 10px 10px 10px 20px;" name="sliderPollTopic[]" type="text" class="form-control" placeholder="Enter Topic"></td>
+                                                                                            </tr>
+                                                                                        <?php endfor; ?>
+                                                                                    </table>
+                                                                                </div>
+                                                                            </div>
+                                                                            <!-- -------------- Slider Poll Ends --------------------->
+                                                                        </div>
+                                                                        <div class="tab-pane fade" id="portfolio-09" role="tabpanel" aria-labelledby="portfolio-09-tab">
+                                                                            <h6>Countdown</h6><hr>
+                                                                            <table id="countDownContainer">
+
+                                                                            </table>
+                                                                        </div>
+                                                                        <div class="tab-pane fade" id="contact-09" role="tabpanel" aria-labelledby="contact-09-tab">
+                                                                            <h6>Questions</h6><hr>
+                                                                            <table id="questionPollContainer">
+
+                                                                            </table>
+                                                                        </div>
+                                                                        <div class="tab-pane fade" id="contact-10" role="tabpanel" aria-labelledby="contact-10-tab">
+                                                                            <h6>Highlights</h6><hr>
+                                                                        </div>
+                                                                        <div class="tab-pane fade" id="contact-11" role="tabpanel" aria-labelledby="contact-11-tab">
+                                                                            <h6>Quiz</h6><hr>
+                                                                        </div>
+                                                                        <div class="tab-pane fade" id="contact-12" role="tabpanel" aria-labelledby="contact-12-tab">
+                                                                            <h6>Countdown</h6><hr>
+                                                                        </div>
+                                                                        <div class="tab-pane fade" id="contact-13" role="tabpanel" aria-labelledby="contact-13-tab">
+                                                                            <h6>Stikers</h6><hr>
+                                                                        </div>
+                                                                        <div class="tab-pane fade" id="contact-14" role="tabpanel" aria-labelledby="contact-14-tab">
+                                                                            <h6>Mentions</h6><hr>
+                                                                        </div>
+                                                                        <div class="tab-pane fade" id="contact-15" role="tabpanel" aria-labelledby="contact-15-tab">
+                                                                            <h6>Links</h6><hr>
+                                                                            <table id="linkContainer">
+
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- ----------- vertical Tab Ends ----------------->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td colspan="2">
+                                                    <hr>
+                                                    <div class="accordion" id="accordion3">
+                                                        <div class="accordion-group">
+                                                            <div class="accordion-heading">
+                                                                <a class="accordion-toggle" data-toggle="collapse" href="#collapseuser">
+                                                                    <div class="custom-control custom-checkbox" style="margin-bottom: 10px;">
+                                                                        <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                                                        <label style="font-weight: 600; cursor: pointer;" class="custom-control-label text-success" for="customCheck1">
+                                                                            <i class="fa fa-group" style="font-size:16px;color:#28a956; margin-right: 5px;"></i>
+                                                                            Select Users
+                                                                        </label>
+                                                                        <div id="userErrorNotice" class="invalid-feedback">Please select users...</div>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
+                                                            <div id="collapseuser" class="accordion-body collapse in">
+                                                                <div class="d-block d-md-flex justify-content-between" style="width: 100%;">
+                                                                    <div class="d-block d-md-flex clearfix sm-mt-20" style="width: 100%;">
+                                                                        <div class="widget-search ml-0 clearfix" style="width: 100%;">
+                                                                            <i class="fa fa-search"></i>
+                                                                            <input type="search" class="form-control" placeholder="Search....">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <?php if ($igUserCollection->getSize() > 0): ?>
+                                                                    <div class="table-responsive mt-15" style="height: 250px;">
+                                                                        <table class="table center-aligned-table mb-0">
+                                                                            <thead>
+                                                                                <tr class="text-dark">
+                                                                                    <th><input id="ig_user" name="ig_user" value="15" type="checkbox" style="margin-right: 5px;"></th>
+                                                                                    <th>Image</th>
+                                                                                    <th>Name & User Name</th>
+                                                                                    <th></th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <?php foreach ($igUserCollection as $igUser): ?>
+                                                                                    <tr>
+                                                                                        <td><input onclick="selectUser('ig_user<?php echo $igUser->getId(); ?>', 'loader<?php echo $igUser->getId(); ?>')" id="ig_user<?php echo $igUser->getId(); ?>" name="ig_user" value="<?php echo $igUser->getId(); ?>" type="checkbox" style="margin-right: 5px;" <?php echo ($igUser->getPassword() == '' ? 'disabled' : ''); ?>></td>
+                                                                                        <td><img style="border: solid #ccc 1px; padding: 1px;" class="img-fluid mr-15 avatar-small" src="<?php echo $igUser->getProfilePicture(); ?>" alt=""></td>
+                                                                                        <td>
+                                                                                            <p><?php echo (strlen($igUser->getName()) > 20 ? substr($igUser->getName(), 0, 20) . ' ...' : $igUser->getName()); ?></p>
+                                                                                            <p>
+                                                                                                <?php
+                                                                                                if ($igUser->getPassword() == '' || strlen($igUser->getPassword()) <= 3) {
+                                                                                                    echo '<label class="badge badge-danger">Please Update Password</label>';
+                                                                                                } else {
+                                                                                                    echo $igUser->getUsername();
+                                                                                                    echo '<a style="float: right;padding-right: 10px;padding-top: 2px;" href="javascript:updatePassword(' . $igUser->getId() . '); "></a>';
+                                                                                                }
+                                                                                                ?>
+                                                                                            </p>
+                                                                                            <p style="font-size: 12px; font-weight: 500; color: orchid; display: none;" id="postProcessing<?php echo $igUser->getId(); ?>">
+                                                                                                <i class="fa fa-spinner fa-spin" style="font-size: 16px; margin-right: 7px; float: left; margin-top: 1px;"></i>
+                                                                                                <label>Posting . . .</label>
+                                                                                            </p>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <?php if ($igUser->getPassword() == '' || strlen($igUser->getPassword()) <= 3): ?>
+                                                                                                <a style="width: 100%;" href="javascript:updatePassword('<?php echo $igUser->getId(); ?>')" class="btn btn-outline-warning btn-sm">Update Password</a>
+                                                                                            <?php else: ?>
+                                                                                                <a style="width: 100%;" href="#" class="btn btn-outline-success btn-sm">Get Media</a>
+                                                                                            <?php endif; ?>
+
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                <?php endforeach; ?>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                <?php else: ?>
+                                                                    Sorry, No Users Found!
+                                                                <?php endif; ?>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td colspan="2">
+                                                    <hr>
+                                                    <div class="accordion" id="accordion5">
+                                                        <div class="accordion-group">
+                                                            <div class="accordion-heading">
+                                                                <a onclick="saveOrPost(this)" aria-expanded="<?php echo ($reffer == "schedule" ? "true" : "false"); ?>" class="accordion-toggle" data-toggle="collapse" href="#collapseScheduleOption">
+                                                                    <div class="custom-control custom-checkbox" style="margin-bottom: 10px;">
+                                                                        <input type="checkbox" class="custom-control-input" id="chkBoxSchedule">
+                                                                        <label style="font-weight: 600; cursor: pointer;" class="custom-control-label text-success" for="customCheck2">
+                                                                            <i class="fa fa-group" style="font-size:16px;color:#28a956; margin-right: 5px;"></i>
+                                                                            Schedule Options
+                                                                        </label>
+                                                                    </div>
+                                                                </a>
+                                                                <input type="hidden" id="chkBoxScheduleInput" value="<?php echo ($reffer == "schedule" ? "1" : "0"); ?>">
+                                                            </div>
+                                                            <div id="collapseScheduleOption" class="accordion-body collapse in <?php echo ($reffer == "schedule" ? "show" : ""); ?>">
+                                                                <input id="scheduledate" type="date" name="scheduledate">
+                                                                <input id="scheduletime" type="time" name="scheduletime">
+                                                            </div>
+                                                        </div>
+                                                    </div> 
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td style="text-align: right;" colspan="2">
+                                                    <hr>
+                                                    <a id="previewButton" data-toggle="modal" data-target=".bd-example-modal-lg" href="javascript:void(0);" class="button" style="height: 40px; padding-top: 7px;">
+                                                        <span>Preview</span>
+                                                    </a>
+                                                    <?php if ($reffer == "schedule"): ?>
+                                                        <a id="postButton" href="javascript:document.getElementById('frmSubmitBtn').click();" class="button" style="height: 40px; padding-top: 7px;">
+                                                            <span id="submitBtnTitle">Save</span>
+                                                        </a>
+                                                    <?php else: ?>
+                                                        <a id="postButton" href="javascript:document.getElementById('frmSubmitBtn').click();" class="button" style="height: 40px; padding-top: 7px;">
+                                                            <span id="submitBtnTitle">Post</span>
+                                                        </a>
+                                                    <?php endif; ?>
+
+                                                    <?php /* ?><a id="schedulePostButton" href="javascript:setSchedulePost();" class="button" style="height: 40px; padding-top: 7px;">
+                                                      <span>Save</span>
+                                                      </a><?php */ ?>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <input type="submit" id="frmSubmitBtn" style="display: none;">
+                                </form>
+                                <!-- --------------- Form Ends ------------------>
+                            </div>
+                        </div>
+                        </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-5 mb-30">
+            <div class="card card-statistics">
+                <div class="card-body">
+                    <iframe id="previewIframe" frameborder="0" height="650" src="<?php echo 'https://www.instagram.com/p/'.$lastPostResponse.'/embed'; ?>" width="100%"></iframe>
+                    <!--<div>
+                        <span style="float: left; margin-right: 15px;">
+                            <img style="border: solid 1px #ccc; padding: 1px; border-radius: 50%;" width="40" height="40" src="https://instagram.fccu4-1.fna.fbcdn.net/vp/ed1b2d0845aad122f6ebffafe8ed31f4/5D7FC90F/t51.2885-19/s150x150/53915083_334640240520561_3751798901087141888_n.jpg?_nc_ht=instagram.fccu4-1.fna.fbcdn.net">
+                        </span>
+                        <span>
+                            <p style="font-weight: 600; color: #262626;font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; font-size: 14px;">masterajib</p>
+                            <p style="color: #262626;font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; font-size: 12px;margin-top: -4px;">Kasba Bosepulur Sitala Mandir</p>
+                        </span>
+                    </div>
+                    <div class="imageSpace" id="imageSpace">
+
+                    </div>
+                    <div>
+                        <img style="width: 100px; padding-top: 10px;" src="<?php echo $this->getSkinUrl('images/test.png', array('_secure' => true)); ?>">
+                    </div>-->
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+
+        </div>
+    </div>
+    <script>
+
+        var destinationGlobal = 'socicos_directory';
+        function setDestination(destination) {
+            destinationGlobal = destination;
+        }
+
+        function deletePost(postId) {
+            var url = '<?php echo Mage::getBaseUrl(); ?>schedulepost/index/deletepost';
+            jQuery("#pre-loader").css("opacity", '0.8');
+            jQuery("#pre-loader").show();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: {postId:postId},
+                success: function (data)
+                {
+                  //  var $result = jQuery(data).find('#post_list_table').html();
+                  //  jQuery("#post_list_table").html($result);
+                  //  jQuery("#pre-loader").hide();
+                  document.getElementById("portfolio-070-tab").click();
+                }
+            });
+        }
+
+        function setPreviewInApp(posturlkey) {
+            var urlendkey = "embed";
+            document.getElementById('previewIframe').src = "https://www.instagram.com/p/" + posturlkey + "/" + urlendkey;
+        }
+
+        function addFilemanagerFiles() {
+            var img = "";
+            var section = document.getElementById("section").value;
+            var ids = [];
+            jQuery.each($("input[name='team[]']:checked"), function () {
+                ids.push(jQuery(this).val());
+            });
+
+            document.getElementById("localfile").value = '';
+
+            var fileIds = ids.join(",");
+            document.getElementById("fileManagerFileIds").value = fileIds;
+            var arrImages = fileIds.split(",");
+
+            var images = ["jpg", "jpeg", "png", "gif"];
+            var videos = ["mp4", "mpeg", "avi"];
+
+            if (destinationGlobal == 'my_uploads') {
+                if (section == 'simple_post') {
+                    for (var i = 0; i < arrImages.length; i++) {
+                        var filename = document.getElementById("myUploadFileImg" + arrImages[i]).src;
+                        var fileExtension = filename.substr((filename.lastIndexOf('.') + 1));
+                        var indexImage = images.indexOf(fileExtension);
+                        if (indexImage >= 0) {
+                            img = '<img src="' + document.getElementById("myUploadFileImg" + arrImages[i]).src + '" class="customImgPreview">';
+                        }
+
+                        var indexVideo = videos.indexOf(fileExtension);
+                        if (indexVideo >= 0) {
+                            img = '<video controls="" width="" height="60px"><source src="' + document.getElementById("myUploadFileImg" + arrImages[i]).src + '" type="video/mp4"><div class="file-preview-other"><span class="file-icon-4x"><i class="glyphicon glyphicon-file"></i></span></div></video>';
+                        }
+                    }
+                } else {
+                    for (var i = 0; i < arrImages.length; i++) {
+                        //img = img + '<img src="'+document.getElementById("myUploadFileImg"+arrImages[i]).src+'" class="customImgPreview">';
+                        var filename = document.getElementById("myUploadFileImg" + arrImages[i]).src;
+                        var fileExtension = filename.substr((filename.lastIndexOf('.') + 1));
+                        var indexImage = images.indexOf(fileExtension);
+                        if (indexImage >= 0) {
+                            img = img + '<img src="' + document.getElementById("myUploadFileImg" + arrImages[i]).src + '" class="customImgPreview">';
+                        }
+
+                        var indexVideo = videos.indexOf(fileExtension);
+                        if (indexVideo >= 0) {
+                            img = img + '<video controls="" width="" height="60px"><source src="' + document.getElementById("myUploadFileImg" + arrImages[i]).src + '" type="video/mp4"><div class="file-preview-other"><span class="file-icon-4x"><i class="glyphicon glyphicon-file"></i></span></div></video>';
+                        }
+                    }
+                }
+            } else if (destinationGlobal == 'socicos_directory') {
+                if (section == 'simple_post') {
+                    for (var i = 0; i < arrImages.length; i++) {
+                        //img = '<img src="'+document.getElementById("socicosDirImage"+arrImages[i]).src+'" class="customImgPreview">';
+                        var filename = document.getElementById("socicosDirImage" + arrImages[i]).src;
+                        var fileExtension = filename.substr((filename.lastIndexOf('.') + 1));
+                        var indexImage = images.indexOf(fileExtension);
+                        if (indexImage >= 0) {
+                            img = '<img src="' + document.getElementById("socicosDirImage" + arrImages[i]).src + '" class="customImgPreview">';
+                        }
+
+                        var indexVideo = videos.indexOf(fileExtension);
+                        if (indexVideo >= 0) {
+                            img = '<video controls="" width="" height="60px"><source src="' + document.getElementById("socicosDirImage" + arrImages[i]).src + '" type="video/mp4"><div class="file-preview-other"><span class="file-icon-4x"><i class="glyphicon glyphicon-file"></i></span></div></video>';
+                        }
+                    }
+                } else {
+                    for (var i = 0; i < arrImages.length; i++) {
+                        //img = img + '<img src="'+document.getElementById("socicosDirImage"+arrImages[i]).src+'" class="customImgPreview">';
+                        var filename = document.getElementById("socicosDirImage" + arrImages[i]).src;
+                        var fileExtension = filename.substr((filename.lastIndexOf('.') + 1));
+                        var indexImage = images.indexOf(fileExtension);
+                        if (indexImage >= 0) {
+                            img = img + '<img src="' + document.getElementById("socicosDirImage" + arrImages[i]).src + '" class="customImgPreview">';
+                        }
+
+                        var indexVideo = videos.indexOf(fileExtension);
+                        if (indexVideo >= 0) {
+                            img = img + '<video controls="" width="" height="60px"><source src="' + document.getElementById("socicosDirImage" + arrImages[i]).src + '" type="video/mp4"><div class="file-preview-other"><span class="file-icon-4x"><i class="glyphicon glyphicon-file"></i></span></div></video>';
+                        }
+                    }
+                }
+            }
+            jQuery("#fileManagerPreview").html(img);
+            document.getElementById("fileManagerCloseButton").click();
+        }
+
+        function launchFileManager() {
+            var url = "<?php echo Mage::getBaseUrl(); ?>file_manager";
+            jQuery("#fileManagerIcon").switchClass("fa-folder-o", "fa-spinner fa-spin");
+
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: "",
+                success: function (data)
+                {
+                    var $result = jQuery(data).find('#filemanager_content').html();
+                    jQuery("#modalFileManagerBody").html($result);
+                    document.getElementById("modalFileManagerButton").click();
+
+                    jQuery("#fileManagerIcon").switchClass("fa-spinner fa-spin", "fa-folder-o");
+                }
+            });
+        }
+
+        function getAllCaption() {
+            //alert('hi');
+            var url = "<?php echo Mage::getBaseUrl(); ?>caption/index/getallcaption";
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: "",
+                success: function (data)
+                {
+                    document.getElementById("listCaptionCustom").innerHTML = data;
+                    jQuery("#modal_loading").hide();
+                }
+            });
+        }
+
+        function saveCaption() {
+            var caption = jQuery("#captiontxt").val();
+            caption_name = caption.substring(1, 10);
+            document.getElementById("saveCaption").innerHTML = '<i class="fa fa-spinner fa-spin" style="font-size:24px; margin-right: 10px;"></i> Adding Caption . . .';
+            var url = "<?php echo Mage::getBaseUrl(); ?>caption/index/savecaption";
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: {caption: caption, caption_name: caption_name},
+                success: function (data)
+                {
+                    //updatePage();
+                    /*var objData = jQuery.parseJSON(data);
+                     if (objData.status == 1) {
+                     document.getElementById("captionLabel").innerHTML = '<i class="fa fa-check" style="font-size:24px; margin-right: 10px;"></i> Caption Added Successfully . . .';
+                     } else {
+                     document.getElementById("captionLabel").innerHTML = objData.msg;
+                     }
+                     updatePage();
+                     swal("Caption Added Successfully");*/
+                    document.getElementById("saveCaption").innerHTML = '<i class="fa fa-floppy-o" style="font-size:14px"></i>';
+                }
+            });
+        }
+
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true); ?>lib/ssm/instagram/examples/doPost.php";
+
+        function saveOrPost(e) {
+            var chkBoxScheduleInput = document.getElementById("chkBoxScheduleInput").value;
+            if (chkBoxScheduleInput == 0) {
+                document.getElementById("chkBoxScheduleInput").setAttribute("value", "1");
+                document.getElementById("submitBtnTitle").innerHTML = "Save";
+            } else {
+                document.getElementById("chkBoxScheduleInput").setAttribute("value", "0");
+                document.getElementById("submitBtnTitle").innerHTML = "Post";
+            }
+
+        }
+
+        function checkUncheck(id) {
+            var objChkBox = document.getElementById(id);
+            if (objChkBox.checked == true) {
+                objChkBox.checked = false;
+            } else {
+                objChkBox.checked = true;
+            }
+        }
+
+        function setSchedulePost() {
+            var scheduledate = document.getElementById("scheduledate").value;
+            var scheduletime = document.getElementById("scheduletime").value;
+            var url = "";
+            if (scheduledate != '' || scheduledate != null || scheduletime != '' || scheduletime != null) {
+
+            } else {
+
+            }
+        }
+
+        function setLinkOnImages() {
+            var customImgPreview = document.getElementsByClassName("customImgPreview");
+            var src = "";
+            var html = '';
+            for (var i = 0; i < customImgPreview.length; i++) {
+                src = customImgPreview[i].src;
+                html = html + '<tr><td><img style="width: 40px; height: 40px; border: solid 1px #ccc; padding: 1px; border-radius: 5px;" class="img-fluid" src="' + src + '" alt=""></td><td><input style="padding: 10px 10px 10px 20px;" name="link[]" type="text" class="form-control" placeholder="Enter Link"></td></tr>';
+
+            }
+            document.getElementById("linkContainer").innerHTML = html;
+        }
+
+        function setCountDownImages() {
+            var customImgPreview = document.getElementsByClassName("customImgPreview");
+            var src = "";
+            var html = '';
+            for (var i = 0; i < customImgPreview.length; i++) {
+                src = customImgPreview[i].src;
+                html = html + '<tr><td><img style="width: 40px; height: 40px; border: solid 1px #ccc; padding: 1px;" src="' + src + '"></td><td><input name="countdowntopics[]" style="height: 40px;" type="text" class="form-control" placeholder="Type anything"></td></tr><tr><td colspan="2"><div style="margin-top: 4px;" class="input-group date display-years" data-date-format="dd-mm-yyyy" data-date="12-5-2019"><input name="countdowndate[]" style="padding-top: 0px; padding-bottom: 0px; height: 40px;" class="form-control" type="date" placeholder="12-5-2019"><span style="padding: 0px 20px;" class="input-group-addon"><i class="fa fa-calendar"></i></span></div></td></tr><tr><td colspan="2"><hr style="margin-top: .5rem; margin-bottom: .5rem;"></td></tr>';
+
+            }
+            document.getElementById("countDownContainer").innerHTML = html;
+        }
+
+        function setQuestionPolImages() {
+            var customImgPreview = document.getElementsByClassName("customImgPreview");
+            var src = "";
+            var html = '';
+            for (var i = 0; i < customImgPreview.length; i++) {
+                src = customImgPreview[i].src;
+                html = html + '<tr><td><img style="width: 40px; height: 40px; border: solid 1px #ccc; padding: 1px; border-radius: 5px;" class="img-fluid" src="' + src + '" alt=""></td><td><input style="padding: 10px 10px 10px 20px;" name="questionPoll[]" type="text" class="form-control" placeholder="Enter Question"></td></tr>';
+
+            }
+            document.getElementById("questionPollContainer").innerHTML = html;
+        }
+
+        function setYESNOPollImages() {
+            var customImgPreview = document.getElementsByClassName("customImgPreview");
+            var src = "";
+            var html = '';
+            for (var i = 0; i < customImgPreview.length; i++) {
+                src = customImgPreview[i].src;
+                html = html + '<li style="0.3rem !important;"><div class="media" style="width: 99%;"><div class="position-relative"><img style="width: 50px; border-radius:3px;border: solid 1px #ccc;padding: 1px;" class="img-fluid mr-15 avatar-small" src="' + src + '" alt=""></div><div class="media-body"><input type="text" name="abtopic[]" class="form-control" placeholder="Type Topics" style="margin: 3px; height: 35px; border-radius: 5px;"><p><input type="text" name="abyes[]" class="form-control" placeholder="YES" style="width: 45%; float: left;margin: 3px; height: 35px; border-radius: 5px;"><input type="text" name="abno[]" class="form-control" placeholder="NO" style="width: 45%; float: right;margin-top: 3px; height: 35px; border-radius: 5px; margin-bottom: 3px;"></p></div></div><div class="divider dotted mt-20"></div></li>';
+
+            }
+            document.getElementById("abcontainer").innerHTML = html;
+        }
+
+        function setSliderPolImages() {
+            var customImgPreview = document.getElementsByClassName("customImgPreview");
+            var src = "";
+            var html = '';
+            for (var i = 0; i < customImgPreview.length; i++) {
+                src = customImgPreview[i].src;
+                html = html + '<tr><td><img style="width: 40px; height: 40px; border: solid 1px #ccc; padding: 1px; border-radius: 5px;" class="img-fluid" src="' + src + '" alt=""></td><td><input style="padding: 10px 10px 10px 20px;" name="sliderPollTopic[]" type="text" class="form-control" placeholder="Enter Topic"></td></tr>';
+            }
+            document.getElementById("tblSliderPoll").innerHTML = html;
+        }
+
+        function setEmojiInCaption(emojiCode) {
+            var captiontxt = document.getElementById("captiontxt").value;
+            captiontxt = captiontxt + "&#" + emojiCode;
+            //document.getElementById("captiontxt").value = captiontxt;
+            //document.getElementById("captiontxt").innerHTML = captiontxt;
+            //alert(captiontxt);
+            jQuery("#captiontxt").html(captiontxt);
+        }
+
+        function setLocation(count) {
+            var locationName = document.getElementById("customRadioLbl" + count).innerHTML;
+            document.getElementById("location").value = locationName.replace(/<\/?[^>]+(>|$)/g, " ");
+            //document.getElementById("locationList").setAttribute("style", "display:none;");
+
+            var latLong = document.getElementById("customRadio" + count).value;
+            //alert(latLong);background-color: #f6f7f8;
+            document.getElementById("locationLatLong").value = latLong;
+
+            var allListArr = document.getElementsByClassName("locationListOptions");
+            for (var i = 0; i < allListArr.length; i++) {
+                allListArr[i].setAttribute("style", "background-color: #fff;");
+            }
+            document.getElementById("locationListOptions" + count).setAttribute("style", "background-color: #f6f7f8;");
+        }
+
+        function getInstagramLocation(event, e) {
+            var place = e.value;
+            var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true); ?>lib/ssm/instagram/examples/getLocation.php?place=" + place;
+            if (jQuery('#locationList').length > 0) {
+                jQuery("#locationList").show();
+            }
+            if (place.length >= 3 && event.keyCode != 8) {
+                jQuery("#locationLbl").html('<i class="fa fa-spinner fa-spin" style="font-size:18px; margin-right:5px;"></i> Searching location...');
+
+                //jQuery("searchingProcess").html('<i style="font-size: 20px;" class="fa fa-spinner fa-spin" aria-hidden="true"></i>');
+
+                jQuery.ajax({
+                    type: "POST",
+                    url: url,
+                    dataType: "text",
+                    data: "",
+                    success: function (data)
+                    {
+                        //var objData = jQuery.parseJSON(data);
+                        //alert(objData.html);
+                        //jQuery("searchingProcess").html('<i style="font-size: 20px;" class="fa fa-map-marker" aria-hidden="true"></i>');
+                        jQuery("#locationLbl").html('');
+                        document.getElementById("locationListFrmGroup").innerHTML = data;
+                        document.getElementById("afterLocationDiv").setAttribute("style", "margin-top:200px; height:110px;");
+                    }
+                });
+            }
+        }
+
+        function launchEmojiModel() {
+            document.getElementById("emojiModalBtn").click();
+        }
+
+        function setEmoji(emojiCode) {
+            var captiontxt = document.getElementById("captiontxt").value;
+            captiontxt = captiontxt + emojiCode;
+            document.getElementById("captiontxt").value = captiontxt;
+        }
+
+        function doPost(frmObj, arrUserIds, index, url) {
+            jQuery("#instabox-loader").css("opacity", '1');
+            jQuery("#instabox-loader").show();
+            jQuery("#insta_box_container").hide();
+
+            jQuery("#postProcessing" + arrUserIds[index]).show();
+
+            jQuery.ajax({
+                url: url + "?userid=" + arrUserIds[index],
+                type: "POST",
+                data: new FormData(frmObj),
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    jQuery("#postProcessing" + arrUserIds[index]).hide();
+                    index++;
+                    if (index == arrUserIds.length) {
+                        jQuery("#instabox-loader").hide();
+                        jQuery("#insta_box_container").show();
+                        if (obj.status == "ok") {
+                            swal("Congratulation!", "Successfully Posted!", "success");
+                        } else {
+                            swal("Sorry!", "Error in Posting", "error");
+                        }
+
+                    } else {
+                        doPost(frmObj, arrUserIds, index, url);
+                    }
+
+                },
+                error: function () {}
+            });
+        }
+
+        jQuery(document).ready(function (e) {
+            jQuery("#uploadPostForm").on('submit', (function (e) {
+                e.preventDefault();
+                var ids = [];
+                jQuery.each($("input[name='ig_user']:checked"), function () {
+                    ids.push(jQuery(this).val());
+                });
+
+                var userIds = ids.join(",");
+
+                if (userIds == '' || userIds == null) {
+                    jQuery("#instabox-loader").hide();
+                    jQuery("#userErrorNotice").show();
+                    swal("Sorry!", "Please select user", "error");
+                } else {
+                    jQuery("#instabox-loader").css("opacity", '0.8');
+                    jQuery("#instabox-loader").show();
+                    jQuery("#insta_box_container").hide();
+                    var arrUserIds = userIds.split(",");
+
+                    //------------------------------------
+                    var chkBoxScheduleInput = document.getElementById("chkBoxScheduleInput").value;
+                    if (chkBoxScheduleInput == 0) {
+                        url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true); ?>lib/ssm/instagram/examples/doPost.php";
+                    } else {
+                        url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true); ?>lib/ssm/instagram/examples/doSchedule.php";
+                    }
+                    //------------------------------------
+                    doPost(this, arrUserIds, 0, url);
+                }
+
+                /*var result = doPost(this);
+                 if (parseInt(result) == 1) {
+                 swal("Congratulation!", "Successfully Posted!", "success");
+                 } else {
+                 swal("Sorry!", data, "error");
+                 }
+                 jQuery("#pre-loader").hide();*/
+            }));
+        });
+
+        var loadFile = function (event, sourceId) {
+            var images = ["jpg", "jpeg", "png", "gif"];
+            var videos = ["mp4", "mpeg", "avi"];
+            var filename = document.getElementById(sourceId).value;
+            var fileExtension = filename.substr((filename.lastIndexOf('.') + 1));
+            var fileManagerPreview = document.getElementById("fileManagerPreview");
+            var previewImageArr = document.getElementsByClassName("preview-image");
+            var indexImage = images.indexOf(fileExtension);
+
+
+
+            if (indexImage >= 0) {
+                var img = '';
+                for (var i = 0; i < event.target.files.length; i++) {
+                    img = img + '<img src="' + URL.createObjectURL(event.target.files[i]) + '" class="customImgPreview">';
+                }
+
+                fileManagerPreview.innerHTML = img;
+                /*previewImageArr[0].innerHTML = '<img width="100%" src="' + URL.createObjectURL(event.target.files[0]) + '">';*/
+            }
+            var indexVideo = videos.indexOf(fileExtension);
+            if (indexVideo >= 0) {
+                var img = '<video controls="" width="" height="60px"><source src="' + URL.createObjectURL(event.target.files[0]) + '" type="video/mp4"><div class="file-preview-other"><span class="file-icon-4x"><i class="glyphicon glyphicon-file"></i></span></div></video>';
+                fileManagerPreview.innerHTML = img;
+                previewImageArr[0].innerHTML = '<video controls="" width="100%" height="auto"><source class="previewVideo" src="' + URL.createObjectURL(event.target.files[0]) + '" type="video/mp4"><div class="file-preview-other"><span class="file-icon-4x"><i class="glyphicon glyphicon-file"></i></span></div></video>';
+            }
+
+            //setPreview();
+
+            setYESNOPollImages();
+        };
+
+        function setPreview() {
+            var section = document.getElementById("section").value;
+            var images = ["jpg", "jpeg", "png", "gif"];
+            var videos = ["mp4", "mpeg", "avi"];
+
+            if (section == "simple_post") {
+                var image = document.getElementById("localfile").value;//document.getElementsByClassName("customImgPreview")[0];
+                if (image == '' || image == null) {
+                    image = document.getElementsByClassName("customImgPreview")[0];
+                    var filename = image.src;
+                } else {
+                    var filename = image;
+                }
+                var imageSpace = document.getElementById("imageSpace");
+
+                var fileExtension = filename.substr((filename.lastIndexOf('.') + 1));
+
+                var indexImage = images.indexOf(fileExtension);
+                if (indexImage >= 0) {
+                    imageSpace.setAttribute("style", "background-image: url('" + filename + "');");
+                } else {
+                    var videoSrc = document.getElementsByClassName("previewVideo")[0].src;
+                    filename = videoSrc;
+                    fileExtension = filename.substr((filename.lastIndexOf('.') + 1));
+                    var indexVideo = videos.indexOf(fileExtension);
+                    if (indexVideo >= 0) {
+
+                        imageSpace.innerHTML = '<video controls="" width="100%" height="auto"><source src="' + videoSrc + '" type="video/mp4"><div class="file-preview-other"><span class="file-icon-4x"><i class="glyphicon glyphicon-file"></i></span></div></video>';
+                    }
+                }
+
+                //alert(filename);
+
+            } else if (section == "story") {
+
+            } else if (section == "carrousal") {
+
+            }
+        }
+
+    </script>
+
+    <script>
+        function setSection(sectionName) {
+            if (sectionName == 'simple_post') {
+                document.getElementById("uploadPostForm").setAttribute("style", "display:block;");
+                document.getElementById("postlist").setAttribute("style", "display:none;");
+                document.getElementById("advanceOptionTr").setAttribute("style", "display:none");
+
+                document.getElementById('section').value = 'simple_post';
+                document.getElementById("localfile").removeAttribute("multiple");
+                document.getElementById('localfile').setAttribute('name', 'localfile');
+                document.getElementById("btnMedia").innerHTML = "Upload Media";
+            } else if (sectionName == 'story') {
+                document.getElementById("uploadPostForm").setAttribute("style", "display:block;");
+                document.getElementById("postlist").setAttribute("style", "display:none;");
+                document.getElementById("advanceOptionTr").setAttribute("style", "display:table-row");
+
+                document.getElementById('section').value = 'story';
+                document.getElementById('localfile').setAttribute('multiple', 'multiple');
+                document.getElementById('localfile').setAttribute('name', 'localfile[]');
+                document.getElementById("btnMedia").innerHTML = "Upload Multiple Media";
+            } else if (sectionName == 'carrousal') {
+                document.getElementById("uploadPostForm").setAttribute("style", "display:block;");
+                document.getElementById("postlist").setAttribute("style", "display:none;");
+                document.getElementById("advanceOptionTr").setAttribute("style", "display:table-row");
+
+                document.getElementById('section').value = 'carrousal';
+                document.getElementById('localfile').setAttribute('multiple', 'multiple');
+                document.getElementById('localfile').setAttribute('name', 'localfile[]');
+                document.getElementById("btnMedia").innerHTML = "Upload Multiple Media";
+            } else {
+
+                var url = '<?php echo Mage::getBaseUrl(); ?>smm-post-instagram';
+                jQuery("#pre-loader").css("opacity", '0.8');
+                jQuery("#pre-loader").show();
+                jQuery.ajax({
+                    type: "POST",
+                    url: url,
+                    data: "",
+                    success: function (data)
+                    {
+                        var $result = jQuery(data).find('#post_list_table').html();
+                        jQuery("#post_list_table").html($result);
+                        document.getElementById("uploadPostForm").setAttribute("style", "display:none;");
+                        document.getElementById("postlist").setAttribute("style", "display:block;");
+                        jQuery("#pre-loader").hide();
+                    }
+                });
+            }
+        }
+    </script>
+    <style>
+
+        .nav-link{
+            font-size: .85rem;
+        }
+
+        .invalid-feedback {
+            display: none;
+            width: 100%;
+            margin-top: .25rem;
+            font-size: 90%;
+            color: #dc3545;
+        }
+
+        .popover-header {
+            padding: .1rem .75rem;
+        }
+
+        .captionemoji{
+            font-size: 18px;
+            padding: 3px;
+        }
+
+        .captionemoji:hover{
+            font-size: 18px;
+            padding: 3px;
+            background-color: #f7f7f7;
+        }
+
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            right: 0;
+            background-color: #282a39;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+        .sidenav a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        @media screen and (max-height: 450px) {
+            .sidenav {padding-top: 15px;}
+            .sidenav a {font-size: 18px;}
+        }
+    </style>
+    <script>
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "200px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
+    </script>
+    <style>
+        ul, ol {
+            padding-left: 0px;
+        }
+
+        .locationList{
+            list-style-type:none;
+            background: #fff; 
+            width: 100%; 
+            position: absolute; 
+            z-index: 9; 
+            border-top: solid 1px #ccc;
+            border-left: solid 1px #ccc;
+            border-right: solid 1px #ccc;
+        }
+
+        .locationListOptions{
+            border-bottom: solid 1px #ccc; 
+            padding-top: 4px;
+            height: 50px;
+        }
+
+        .locationListOptions:hover{
+            background-color: #f6f7f8;
+        }
+
+        .emoji1{
+            font-size:1.8rem; 
+            padding: 2px;
+            /*-webkit-transition: width 1s;*/
+            cursor: pointer;
+
+        }
+
+        .emoji1:hover{
+            /*font-size:2.0rem;*/
+        }
+
+        .customImgPreview{
+            width: 109px;
+            border: solid 1px #ccc; 
+            padding: 3px; 
+            border-radius: 5px; 
+            margin: 1px; 
+            vertical-align: middle;
+            height: 65px;
+        }
+
+        .image-checkbox{
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            width: 150px;
+        }
+
+        .image-checkbox:hover{
+            box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+        }
+
+        .input-group{
+            height: 40px;
+        }
+        #show-hide-address{
+            display: none;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .add-image{
+            padding: 10px;
+            text-align: left;
+            color: #eaeaea;
+            text-transform: uppercase;
+            float: left;
+        }
+
+        .w50{
+            width: 50%;
+        }
+
+        .tab .nav.nav-tabs li a {
+            padding: 6px 17px;
+        }
+
+        .innericon-active{
+            color:#84BA3F !important;
+        }
+
+        .innericon:hover{
+            color:#84BA3F;
+        }
+        .innericon {
+            box-sizing: border-box;
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border-radius: 100%;
+            background: #f7f7f7;
+            background-image: none;
+            background-origin: padding-box;
+            background-image: none;
+            background-origin: padding-box;
+            line-height: 24px;
+            color: #666;
+            font-size: 18px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-bottom-color: rgb(204, 204, 204);
+            border-bottom-color: rgb(204, 204, 204);
+            border-bottom-color: #bbb;
+            background-origin: border-box;
+            background-image: -webkit-linear-gradient(top,#fff,#eee);
+            background-image: linear-gradient(to bottom,#fff,#eee);
+            text-shadow: 0 1px 0 #fff;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .line-no-text{
+            margin-bottom: 3px;
+            height: 13px;
+            background: #f5f5f5;
+        }
+
+        .caption-info{
+            padding-top: 10px;
+        }
+
+        .preview-image{
+            height: 217px;
+            background-size: cover;
+            background-position: center center;
+            background-color: #f5f5f5;
+            overflow: hidden;
+            position: relative;
+            padding-top: 10px;
+        }
+
+        .post-info{
+            padding: 10px 20px;
+            word-break: break-all;
+        }
+
+        .pull-left {
+            float: left !important;
+        }
+
+        .pull-right {
+            float: right !important;
+        }
+
+        .preview-comment {
+            position: relative;
+            border-top: 1px solid #eee;
+            padding: 15px 50px;
+            color: #999;
+            background: url(<?php echo $this->getSkinUrl('images/heart-icon.png', array('_secure' => true)); ?>) no-repeat 20px;
+        }
+
+        .item{
+            float: left;
+            margin-right: 25px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .nav-link{
+            margin-right: 4px;
+        }
+
+        .tab .nav.nav-tabs li a {
+            padding: 6px 14px !important;
+        }
+    </style>
+<?php else: ?>
+    <?php $url = Mage::getUrl('customer/account/login'); ?>
+    <?php Mage::app()->getFrontController()->getResponse()->setRedirect($url); ?>
+<?php endif; ?>

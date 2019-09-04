@@ -1,0 +1,337 @@
+<?php $path = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'socicos/'; ?>
+<!DOCTYPE html>
+<html>
+    <?php echo $this->getLayout()->createBlock('core/template')->setTemplate('catalog/product/head.phtml')->toHtml(); ?>
+    <body>
+        <header class="main-header header-style-five">
+
+            <!-- Header Top -->
+            <?php echo $this->getLayout()->createBlock('core/template')->setTemplate('catalog/product/header_top.phtml')->toHtml(); ?>
+        </div>
+        <!-- Header Top End -->
+
+        <!-- Main Box -->
+        <div class="main-box">
+            <div class="auto-container">
+                <div class="outer-container clearfix">
+                    <!--Logo Box-->
+                    <?php echo $this->getLayout()->createBlock('core/template')->setTemplate('catalog/product/logo.phtml')->toHtml(); ?>
+                    <!--Nav Outer-->
+                    <div class="nav-outer clearfix">
+
+                        <!-- Main Menu -->
+                        <nav class="main-menu">
+                            <div class="navbar-header">
+                                <!-- Toggle Button -->
+                                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                            </div>
+
+                            <div class="navbar-collapse collapse clearfix">
+                                <?php echo $this->getLayout()->createBlock('core/template')->setTemplate('catalog/product/top_navigation1.phtml')->toHtml(); ?>
+                            </div>
+                        </nav>
+                        <!-- Main Menu End-->
+                    </div>
+                    <!--Nav Outer End-->
+
+                </div>
+            </div>
+        </div>
+
+        <!--Sticky Header-->
+        <div class="sticky-header">
+            <div class="auto-container">
+
+                <div class="outer-container clearfix">
+                    <!--Logo Box-->
+                    <div class="logo-box pull-left">
+                        <div class="logo"><a href="<?php echo Mage::getBaseUrl(); ?>"><img src="<?php echo $path; ?>images/logo-small.png" alt=""></a></div>
+                    </div>
+
+                    <!--Nav Outer-->
+                    <div class="nav-outer clearfix">
+                        <!-- Main Menu -->
+                        <nav class="main-menu">
+                            <div class="navbar-header">
+                                <!-- Toggle Button -->
+                                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                            </div>
+
+                            <div class="navbar-collapse collapse clearfix">
+                                <?php echo $this->getLayout()->createBlock('core/template')->setTemplate('catalog/product/top_navigation2.phtml')->toHtml(); ?>
+                            </div>
+                        </nav>
+                        <!-- Main Menu End-->
+
+                    </div>
+                    <!--Nav Outer End-->
+
+                </div>
+
+            </div>
+        </div>
+        <!--End Sticky Header-->
+
+    </header>
+    <!--End Main Header --><section class="page-title" style="background-image:url(<?php echo $path; ?>images/background/pattern-4.png);">
+        <div class="auto-container">
+            <h1>RESOURCES</h1>
+        </div>
+        <!--Page Info-->
+        <div class="page-info">
+            <div class="auto-container">
+                <div class="inner-container">
+                    <ul class="bread-crumb">
+                        <li><a href="<?php echo Mage::getBaseUrl(); ?>">Home</a></li>
+                        <li>Resources</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--End Page Info-->
+    </section>
+    <!--End Page Title-->
+
+    <!--Blog Page Section-->
+    <section class="blog-page-section">
+        <div class="auto-container">
+            <div class="row clearfix">
+                <!--News Block-->
+                <div class="news-block col-md-4 col-sm-6 col-xs-12">
+                    <div class="inner-box">
+                        <div class="image">
+                            <a href="<?php echo Mage::getBaseUrl(); ?>socialmediamanagement"><img src="<?php echo $path; ?>images/resource/social media management.png" alt="" /></a>
+                        </div>
+                        <div class="lower-content">
+                            <div class="upper">
+                                <!--<div class="post-date">February 26th, 2018</div>-->
+                                <h3><a href="<?php echo Mage::getBaseUrl(); ?>socialmediamanagement">SOCIAL MEDIA MANAGEMENT</a></h3>
+                            </div>
+                            <div class="more">
+                                <a href="<?php echo Mage::getBaseUrl(); ?>socialmediamanagement" class="read-more"><span class="fa fa-chevron-circle-right"></span> Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="news-block col-md-4 col-sm-6 col-xs-12">
+                    <div class="inner-box">
+                        <div class="image">
+                            <a href="<?php echo Mage::getBaseUrl(); ?>leadgeneration"><img src="<?php echo $path; ?>images/resource/lead generation.png" alt="" /></a>
+                        </div>
+                        <div class="lower-content">
+                            <div class="upper">
+                                <!-- <div class="post-date">January 14th, 2018</div>-->
+                                <h3><a href="<?php echo Mage::getBaseUrl(); ?>leadgeneration">LEAD GENERATION</a></h3>
+                            </div>
+                            <div class="more">
+                                <a href="<?php echo Mage::getBaseUrl(); ?>leadgeneration" class="read-more"><span class="fa fa-chevron-circle-right"></span> Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--News Block-->
+                <div class="news-block col-md-4 col-sm-6 col-xs-12">
+                    <div class="inner-box">
+                        <div class="image">
+                            <a href="<?php echo $path; ?>Management/contentmarketing"><img src="<?php echo $path; ?>images/resource/content marketing.png" alt="" /></a>
+                        </div>
+                        <div class="lower-content">
+                            <div class="upper">
+                                <!-- <div class="post-date">January 14th, 2018</div>-->
+                                <h3><a href="<?php echo $path; ?>Management/contentmarketing">CONTENT MARKETING</a></h3>
+                            </div>
+                            <div class="more">
+                                <a href="<?php echo $path; ?>Management/contentmarketing" class="read-more"><span class="fa fa-chevron-circle-right"></span> Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="news-block col-md-4 col-sm-6 col-xs-12">
+                    <div class="inner-box">
+                        <div class="image">
+                            <a href="<?php echo Mage::getBaseUrl(); ?>mobilemarketing"><img src="<?php echo $path; ?>images/resource/mobile web marketing.png" alt="" /></a>
+                        </div>
+                        <div class="lower-content">
+                            <div class="upper">
+                                <!-- <div class="post-date">January 14th, 2018</div>-->
+                                <h3><a href="<?php echo Mage::getBaseUrl(); ?>mobilemarketing">MOBILE WEB MARKETING</a></h3>
+                            </div>
+                            <div class="more">
+                                <a href="<?php echo Mage::getBaseUrl(); ?>mobilemarketing" class="read-more"><span class="fa fa-chevron-circle-right"></span> Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="news-block col-md-4 col-sm-6 col-xs-12">
+                    <div class="inner-box">
+                        <div class="image">
+                            <a href="<?php echo Mage::getBaseUrl(); ?>influencermarketing"><img src="<?php echo $path; ?>images/resource/influencer marketing.png" alt="" /></a>
+                        </div>
+                        <div class="lower-content">
+                            <div class="upper">
+                                <!-- <div class="post-date">January 14th, 2018</div>-->
+                                <h3><a href="<?php echo Mage::getBaseUrl(); ?>influencermarketing">INFLUENCER MARKETING</a></h3>
+                            </div>
+                            <div class="more">
+                                <a href="<?php echo Mage::getBaseUrl(); ?>influencermarketing" class="read-more"><span class="fa fa-chevron-circle-right"></span> Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="news-block col-md-4 col-sm-6 col-xs-12">
+                    <div class="inner-box">
+                        <div class="image">
+                            <a href="<?php echo Mage::getBaseUrl(); ?>websitedesigndevelopement"><img src="<?php echo $path; ?>images/resource/web design and development.png" alt="" /></a>
+                        </div>
+                        <div class="lower-content">
+                            <div class="upper">
+                                <!-- <div class="post-date">January 14th, 2018</div>-->
+                                <h3><a href="<?php echo Mage::getBaseUrl(); ?>websitedesigndevelopement">WEBSITE DESIGN & DEVELOPMENT</a></h3>
+                            </div>
+                            <div class="more">
+                                <a href="<?php echo Mage::getBaseUrl(); ?>websitedesigndevelopement" class="read-more"><span class="fa fa-chevron-circle-right"></span> Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="news-block col-md-4 col-sm-6 col-xs-12">
+                    <div class="inner-box">
+                        <div class="image">
+                            <a href="<?php echo Mage::getBaseUrl(); ?>emailidmobile"><img src="<?php echo $path; ?>images/resource/Email & Mobile no. Database.png" alt="" /></a>
+                        </div>
+                        <div class="lower-content">
+                            <div class="upper">
+                                <!-- <div class="post-date">January 14th, 2018</div>-->
+                                <h3><a href="<?php echo Mage::getBaseUrl(); ?>emailidmobile">EMAIL ID & MOBILE NO. DATABASE</a></h3>
+                            </div>
+                            <div class="more">
+                                <a href="<?php echo Mage::getBaseUrl(); ?>emailidmobile" class="read-more"><span class="fa fa-chevron-circle-right"></span> Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="news-block col-md-4 col-sm-6 col-xs-12">
+                    <div class="inner-box">
+                        <div class="image">
+                            <a href="<?php echo Mage::getBaseUrl(); ?>digitalmarketing"><img src="<?php echo $path; ?>images/resource/Digital marketing tools.png" alt="" /></a>
+                        </div>
+                        <div class="lower-content">
+                            <div class="upper">
+                                <!-- <div class="post-date">January 14th, 2018</div>-->
+                                <h3><a href="<?php echo Mage::getBaseUrl(); ?>digitalmarketing">DIGITAL MARKETING TOOLS</a></h3>
+                            </div>
+                            <div class="more">
+                                <a href="<?php echo Mage::getBaseUrl(); ?>digitalmarketing" class="read-more"><span class="fa fa-chevron-circle-right"></span> Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="news-block col-md-4 col-sm-6 col-xs-12">
+                    <div class="inner-box">
+                        <div class="image">
+                            <a href="<?php echo Mage::getBaseUrl(); ?>tasktracking"><img src="<?php echo $path; ?>images/resource/task tracker.png" alt="" /></a>
+                        </div>
+                        <div class="lower-content">
+                            <div class="upper">
+                                <!-- <div class="post-date">January 14th, 2018</div>-->
+                                <h3><a href="<?php echo Mage::getBaseUrl(); ?>tasktracking">TASK TRACKING & REMINDERS</a></h3>
+                            </div>
+                            <div class="more">
+                                <a href="<?php echo Mage::getBaseUrl(); ?>tasktracking" class="read-more"><span class="fa fa-chevron-circle-right"></span> Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="news-block col-md-4 col-sm-6 col-xs-12">
+                    <div class="inner-box">
+                        <div class="image">
+                            <a href="<?php echo Mage::getBaseUrl(); ?>smsmarketing"><img src="<?php echo $path; ?>images/resource/SMS marketing.png" alt="" /></a>
+                        </div>
+                        <div class="lower-content">
+                            <div class="upper">
+                                <!-- <div class="post-date">January 14th, 2018</div>-->
+                                <h3><a href="<?php echo Mage::getBaseUrl(); ?>smsmarketing">SMS MARKETING</a></h3>
+                            </div>
+                            <div class="more">
+                                <a href="<?php echo Mage::getBaseUrl(); ?>smsmarketing" class="read-more"><span class="fa fa-chevron-circle-right"></span> Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="news-block col-md-4 col-sm-6 col-xs-12">
+                    <div class="inner-box">
+                        <div class="image">
+                            <a href="<?php echo Mage::getBaseUrl(); ?>affiliatemarketing"><img src="<?php echo $path; ?>images/resource/Affiliate Marketing.png" alt="" /></a>
+                        </div>
+                        <div class="lower-content">
+                            <div class="upper">
+                                <!-- <div class="post-date">January 14th, 2018</div>-->
+                                <h3><a href="<?php echo Mage::getBaseUrl(); ?>affiliatemarketing">AFFILIATE MARKETING</a></h3>
+                            </div>
+                            <div class="more">
+                                <a href="<?php echo Mage::getBaseUrl(); ?>affiliatemarketing" class="read-more"><span class="fa fa-chevron-circle-right"></span> Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section></section>
+<!--End Partners Section-->
+
+<!--Main Footer-->
+<?php echo $this->getLayout()->createBlock('core/template')->setTemplate('catalog/product/footer.phtml')->toHtml(); ?>
+<!--Main Footer-->
+<!--Bottom Parallax-->
+
+</div>
+<!--End pagewrapper-->
+
+<!--Scroll to top-->
+<div class="scroll-to-top scroll-to-target" data-target="html"><span class="icon fa fa-angle-double-up"></span></div>
+
+<script src="<?php echo $path; ?>js/jquery.js"></script>
+<!--Revolution Slider-->
+<script src="<?php echo $path; ?>assets/revolution/js/jquery.themepunch.revolution.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/jquery.themepunch.tools.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.actions.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.carousel.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.kenburn.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.layeranimation.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.migration.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.navigation.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.parallax.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.slideanims.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.video.min.js"></script>
+<script src="<?php echo $path; ?>js/main-slider-script.js"></script>
+
+<script src="<?php echo $path; ?>js/jquery.js"></script>
+<script src="<?php echo $path; ?>js/bootstrap.min.js"></script>
+<script src="<?php echo $path; ?>js/jquery.fancybox.pack.js"></script>
+<script src="<?php echo $path; ?>js/jquery.fancybox-media.js"></script>
+<script src="<?php echo $path; ?>js/owl.js"></script>
+<script src="<?php echo $path; ?>js/wow.js"></script>
+<script src="<?php echo $path; ?>js/validate.js"></script>
+<script src="<?php echo $path; ?>js/jquery-ui.js"></script>
+<script src="<?php echo $path; ?>js/knob.js"></script>
+<script src="<?php echo $path; ?>js/slick.js"></script>
+<script src="<?php echo $path; ?>js/appear.js"></script>
+<script src="<?php echo $path; ?>js/script.js"></script>
+<!--<script src="<?php echo $path; ?>js/validate.js"></script>-->
+<script src="http://maps.google.com/maps/api/js?key=AIzaSyBKS14AnP3HCIVlUpPKtGp7CbYuMtcXE2o"></script>
+<script src="<?php echo $path; ?>js/map-script.js"></script>
+
+<!--Scroll to top-->
+<div class="scroll-to-top scroll-to-target" data-target="html"><span class="icon fa fa-angle-double-up"></span></div>
+
+
+</body>
+</html>

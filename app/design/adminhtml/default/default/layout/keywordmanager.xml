@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <keywordmanager_adminhtml_keywordmanager_index>
+        <reference name="content">
+            <block type="keywordmanager/adminhtml_keywordmanager" name="keywordmanager" />
+        </reference>
+    </keywordmanager_adminhtml_keywordmanager_index>
+</layout>

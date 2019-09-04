@@ -1,0 +1,135 @@
+<?php
+/**
+ * Customer login form template
+ *
+ * @see app/design/frontend/base/default/template/customer/form/login.phtml
+ */
+/** @var $this Mage_Customer_Block_Form_Login *//*
+  ?>
+  <div class="account-login<?php if (!$this->helper('customer')->isRegistrationAllowed()) echo ' login-only' ?>">
+  <div class="page-title">
+  <h1><?php if ($this->helper('customer')->isRegistrationAllowed()): ?>
+  <?php echo $this->__('Login or Create an Account') ?>
+  <?php else: ?>
+  <?php echo $this->__('Login'); ?>
+  <?php endif; ?></h1>
+  </div>
+  <?php echo $this->getMessagesBlock()->toHtml() ?>
+  <form action="<?php echo $this->getPostActionUrl() ?>" method="post" id="login-form" class="scaffold-form">
+  <?php echo $this->getBlockHtml('formkey'); ?>
+  <div class="col2-set">
+  <?php if ($this->helper('customer')->isRegistrationAllowed()): ?>
+  <div class="col-1 new-users">
+  <div class="content">
+  <h2><?php echo $this->__('New Here?') ?></h2>
+  <p class="form-instructions"><?php echo $this->__('Registration is free and easy!') ?></p>
+  <ul class="benefits">
+  <li><?php echo $this->__('Faster checkout') ?></li>
+  <li><?php echo $this->__('Save multiple shipping addresses') ?></li>
+  <li><?php echo $this->__('View and track orders and more') ?></li>
+  </ul>
+  </div>
+  <div class="buttons-set">
+  <a title="<?php echo $this->quoteEscape($this->__('Create an Account')) ?>" class="button" href="<?php echo Mage::helper('persistent')->getCreateAccountUrl($this->getCreateAccountUrl()) ?>"><span><span><?php echo $this->__('Create an Account') ?></span></span></a>
+  </div>
+  </div>
+  <?php endif; ?>
+  <?php // This column should be col-1 if the registration column is not displayed ?>
+  <div class="<?php if ($this->helper('customer')->isRegistrationAllowed()): ?>col-2<?php else: ?>col-1<?php endif; ?> registered-users">
+  <div class="content fieldset">
+  <h2><?php echo $this->__('Already registered?') ?></h2>
+  <p class="form-instructions"><?php echo $this->__('If you have an account with us, please log in.') ?></p>
+  <p class="required"><?php echo $this->__('* Required Fields') ?></p>
+  <ul class="form-list">
+  <li>
+  <label for="email" class="required"><em>*</em><?php echo $this->__('Email Address') ?></label>
+  <div class="input-box">
+  <input type="email" autocapitalize="off" autocorrect="off" spellcheck="false" name="login[username]" value="<?php echo $this->escapeHtml($this->getUsername()) ?>" id="email" class="input-text required-entry validate-email" title="<?php echo $this->quoteEscape($this->__('Email Address')) ?>" />
+  </div>
+  </li>
+  <li>
+  <label for="pass" class="required"><em>*</em><?php echo $this->__('Password') ?></label>
+  <div class="input-box">
+  <input type="password" name="login[password]" class="input-text required-entry validate-password" id="pass" title="<?php echo $this->quoteEscape($this->__('Password')) ?>" />
+  </div>
+  </li>
+  <?php echo $this->getChildHtml('form.additional.info'); ?>
+  <li>
+  <a href="<?php echo $this->getForgotPasswordUrl() ?>" class="f-left"><?php echo $this->__('Forgot Your Password?') ?></a>
+  </li>
+  <?php echo $this->getChildHtml('persistent.remember.me'); ?>
+  </ul>
+  <?php echo $this->getChildHtml('persistent.remember.me.tooltip'); ?>
+  </div>
+  <div class="buttons-set">
+  <button type="submit" class="button" title="<?php echo $this->quoteEscape($this->__('Login')) ?>" name="send" id="send2"><span><span><?php echo $this->__('Login') ?></span></span></button>
+  </div>
+  </div>
+  </div>
+  <?php if (Mage::helper('checkout')->isContextCheckout()): ?>
+  <input name="context" type="hidden" value="checkout" />
+  <?php endif; ?>
+  </form>
+  <script type="text/javascript">
+  //<![CDATA[
+  var dataForm = new VarienForm('login-form', true);
+  //]]>
+  </script>
+  </div><?php */
+?>
+<?php $path = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'socicos/'; ?>
+<section class="height-100vh d-flex align-items-center page-section-ptb login" style="background-image: url(<?php echo $path . 'assets/images/login-bg.jpg'; ?>);" >
+    <div class="container">
+        <form action="<?php echo $this->getPostActionUrl() ?>" method="post" id="login-form" class="scaffold-form">
+            <?php echo $this->getBlockHtml('formkey'); ?>
+            <div class="row justify-content-center no-gutters vertical-align">
+                <div class="col-lg-4 col-md-6 login-fancy-bg bg" style="background-image: url(<?php echo $path . 'assets/images/login-inner-bg.jpg'; ?>);">
+                    <!--<div class="login-fancy">
+                        <h2 class="text-white mb-20">Welcome To</h2>
+                        <p class="mb-20 text-white">Create tailor-cut websites with the exclusive multi-purpose responsive template along with powerful features.</p>
+                        <ul class="list-unstyled  pos-bot pb-30">
+                            <li class="list-inline-item"><a class="text-white" href="#"> Terms of Use</a> </li>
+                            <li class="list-inline-item"><a class="text-white" href="#"> Privacy Policy</a></li>
+                        </ul>
+                    </div> -->
+                    <div class="login-fancy">
+                        <h2 class="text-white" style="margin-left: -12px;">Welcome <br> To</h2>
+                        <p class="mb-30 text-white" style="margin-left: -12px;"><img src="<?php echo $path; ?>assets/images/logosmall.png" style="max-height: 100px;" width="80%"></p>
+                        <p class="text-white" style="font-size: 15px;">Provide automation tools for effective analytics and strategies in one click.</p>
+                        <ul class="list-unstyled  pos-bot pb-30">
+                            <li class="list-inline-item"><a class="text-white" href="#"> Terms of Use</a> </li>
+                            <li class="list-inline-item"><a class="text-white" href="#"> Privacy Policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 bg-white">
+                    <div class="login-fancy pb-40 clearfix">
+                        <h3 class="mb-30">Sign In To Admin</h3>
+                        <?php echo $this->getMessagesBlock()->toHtml() ?>
+                        <div class="section-field mb-20">
+                            <label class="mb-10" for="email">Email* </label>
+                            <input id="email" class="web form-control" type="text" placeholder="User name" name="login[username]">
+                        </div>
+                        <div class="section-field mb-20">
+                            <label class="mb-10" for="pass">Password* </label>
+                            <input id="pass" class="Password form-control" type="password" placeholder="Password" name="login[password]">
+                        </div>
+                        <div class="section-field">
+                            <div class="remember-checkbox mb-30">
+                                <input type="checkbox" class="form-control" name="two" id="two" />
+                                <label for="two"> Remember me</label>
+                                <a href="password-recovery.html" class="float-right">Forgot Password?</a>
+                            </div>
+                        </div>
+                        <button style="display: none;" type="submit" class="button" title="<?php echo $this->quoteEscape($this->__('Login')) ?>" name="send" id="loginBtn"><span><span><?php echo $this->__('Login') ?></span></span></button>
+                        <a href="javascript:document.getElementById('loginBtn').click();" class="button">
+                            <span>Log in</span>
+                            <i class="fa fa-check"></i>
+                        </a>
+                        <p class="mt-20 mb-0">Don't have an account? <a href="<?php echo Mage::getUrl('customer/account/create'); ?>"> Create one here</a></p>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>

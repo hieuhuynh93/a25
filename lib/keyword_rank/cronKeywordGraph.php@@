@@ -1,0 +1,333 @@
+<?php
+
+ini_set('display_errors', 1);
+set_time_limit(0);
+$msg = '';
+require('../../app/Mage.php');
+
+require_once 'all_functions.php';
+
+Mage::init();
+Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
+
+
+
+$arrayOfAllKeywords = array();
+
+$linkDetailsCollection = Mage::getModel('linkdetails/linkdetails')
+        ->getCollection();
+        //->addFieldToFilter('linkanalysis_id', '3')
+        //->addFieldToFilter('linkdetails_id', '1');
+//echo "<pre>"; print_r($linkDetailsCollection->getData());
+//die();
+
+foreach ($linkDetailsCollection as $linkDetails) {
+    $linkdetails_id = $linkDetails->getLinkdetailsId();
+    $linkanalysis_id = $linkDetails->getLinkanalysisId();
+    $domainArr = parse_url($linkDetails->getRelatedUrl());
+    //$domain = (strlen($domainArr['scheme']) >= 4 ? $domainArr['scheme'] . '://' : '') . $domainArr['host'];
+    $domain = Mage::getModel('linkanalysis/linkanalysis')->load($linkanalysis_id)->getUrl();
+    
+    $keywordsArr = array_unique(explode(",", $linkDetails->getMetaKeywords()));
+    $countryCode = Mage::getModel('customer/customer')->load($linkDetails->getCustomerId())->getCountryCode();
+    foreach ($keywordsArr as $keyword) {
+        if (strlen($keyword) >= 3) {
+            //--------------------------------------------
+            //$domain = 'https://www.w3schools.com/';
+            //$keyword = "PHP";
+
+            $google = googleRank($domain, $keyword);
+            $yahoo = yahooRank($domain, $keyword);
+            $bing = bingRank($domain, $keyword);
+
+            $dt = explode("-", date("d-m-y"));
+            $graphModel = Mage::getModel('graph/graph');
+            $graphModel->setLinkanalysisId($linkdetails_id);
+            $graphModel->setLinkdetailsId($linkanalysis_id);
+            $graphModel->setElementName($keyword);
+            $graphModel->setElementType(1);
+            $graphModel->setGoogleRank(($google[1] != '' || $google[1] > 0 ? $google[1] : 0));
+            $graphModel->setYahooRank(($yahoo[1] != '' || $yahoo[1] > 0 ? $yahoo[1] : 0));
+            $graphModel->setBingRank(($bing[1] != '' || $bing[1] > 0 ? $bing[1] : 0));
+            $graphModel->setYandexRank(0);
+            $graphModel->setDay($dt[0]);
+            $graphModel->setMonth($dt[1]);
+            $graphModel->setYear($dt[2]);
+            $graphModel->setStatus(1);
+            try {
+                //echo "<pre>"; print_r($graphModel->getData());
+                $graphModel->save();
+            } catch (Exception $ex) {
+                echo $ex;
+            }
+            //-------------------------------------------
+        }
+    }
+}
+
+function get_domain_only($url) {
+    $url = str_replace("www.", "", $url);
+    $url = str_replace("WWW.", "", $url);
+
+    if (!preg_match("@^https?://@i", $url) && !preg_match("@^ftps?://@i", $url)) {
+        $url = "http://" . $url;
+    }
+
+
+    $parsed = @parse_url($url);
+
+    return $parsed['host'];
+}
+
+function getCenterText($str1, $str2, $data) {
+    $data = explode($str1, $data);
+    $data = explode($str2, $data[1]);
+    return Trim($data[0]);
+}
+
+function getContentFromSearchEngine($url, $proxy = '') {
+
+    $ch = curl_init(); // initialize curl handle
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_VERBOSE, 0);
+    curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible;)");
+    curl_setopt($ch, CURLOPT_AUTOREFERER, false);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
+    curl_setopt($ch, CURLOPT_REFERER, 'http://' . $url);
+    curl_setopt($ch, CURLOPT_URL, $url); // set url to post to
+    curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); // allow redirects
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); // return into a variable
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30); // times out after 50s
+    curl_setopt($ch, CURLOPT_POST, 0); // set POST method
+
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    $content = curl_exec($ch); // run the whole process	
+
+
+    /*     * **If it returns http code without 200 means caught by google, or redirect to captcha page**** */
+
+    $get_info = curl_getinfo($ch);
+    $httpcode = $get_info['http_code'];
+
+    if ($httpcode != '200') {
+        return 0;
+    }
+
+    curl_close($ch);
+
+    /** Remove html tag line <br> <b> in the email * */
+    $content = str_replace("<b>", "", $content);
+    $content = str_replace("</b>", "", $content);
+    $content = str_replace("</br>", "", $content);
+    $content = str_replace("<br>", "", $content);
+    $content = str_replace("<br/>", "", $content);
+
+    /*     * * These are specially for the bing search engine ** */
+    $content = str_replace("<strong>", "", $content);
+    $content = str_replace("</strong>", "", $content);
+    $content = str_replace(",", "", $content);
+
+    return $content;
+}
+
+function curlGET_Text($url) {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: text/plain"));
+    $html = curl_exec($ch);
+    curl_close($ch);
+    return $html;
+}
+
+function googleRank($searchDomain, $keyword, $position = 50, $googleDomain = 'google.co.in') {
+
+    $currentPage = 1;
+    $resPerPage = 0;
+    $totalCount = 1;
+
+    $googleUrl = "https://www." . $googleDomain . "/search?hl=en&q=" . urlencode($keyword);
+
+    $data = curlGET_Text($googleUrl);
+
+    while (true) {
+
+        $dom = new DOMDocument();
+        @$dom->loadHTML($data);
+
+        $xpath = new DOMXPath($dom);
+
+        $hrefs = $xpath->evaluate('//div[@id="ires"]//ol//div[@class="g"]//h3[@class="r"]//a');
+        $linkcount = $hrefs->length;
+
+        for ($i = 0; $i < $linkcount; $i++) {
+
+            $href = $hrefs->item($i);
+            $url = $href->getAttribute('href');
+
+            $searchDomain = "http://" . clean_url($searchDomain);
+            $searchDomainArr = parse_url($searchDomain);
+            $searchDomain = $searchDomainArr['host'];
+
+            $url = clean_with_www($url);
+
+            if (!strstr($url, $searchDomain)) {
+                
+            } else {
+                $searchDetails = array(
+                    $url,
+                    $totalCount);
+                return $searchDetails;
+                exit;
+            }
+            if ($totalCount == $position) {
+                return;
+                exit;
+            }
+            $totalCount++;
+        }
+
+        if (!strstr($data, "Next")) {
+
+            break;
+        }
+
+        sleep(rand(2, 4));
+        $resPerPage = $resPerPage + 10;
+        $currentPage++;
+        flush();
+        $googleUrl = "https://www." . $googleDomain . "/search?hl=en&q=" . urlencode($keyword) .
+                "&start=" . $resPerPage . "&sa=N";
+        $data = curlGET_Text($googleUrl);
+    }
+}
+
+function yahooRank($searchDomain, $keyword, $position = 50, $yahooDomain = 'yahoo.com') {
+    $data = $resData = $yahooUrl = '';
+
+    $yahooTLD = clean_url($yahooDomain);
+    $yahooTLD = explode(".", $yahooTLD);
+    $yahooTLD = $yahooTLD[1];
+
+    if ($yahooTLD == 'com')
+        $yahooTLD = '';
+    else
+        $yahooTLD = $yahooTLD . '.';
+
+    $currentPage = 1;
+    $resPerPage = 0;
+    $totalCount = 1;
+
+    $rn = $resPerPage == '0' ? '' : $resPerPage;
+
+    $yahooUrl = "https://" . $yahooTLD . "search." . $yahooDomain . "/search?p=" .
+            urlencode($keyword) . "&b=" . $rn . "1";
+
+    $data = curlGET_Text($yahooUrl);
+    $resData = getCenterText('<ol class="mb-15 reg searchCenterMiddle">', '</ol>', $data);
+    $resPerPage = 10;
+    while (true) {
+
+        $dom = new DOMDocument();
+        @$dom->loadHTML($resData);
+
+        $xpath = new DOMXPath($dom);
+        $hrefs = $dom->getElementsByTagName('a');
+
+
+        $linkcount = $hrefs->length;
+
+        for ($i = 0; $i < $linkcount; $i++) {
+
+            $href = $hrefs->item($i);
+            $url = $href->getAttribute('href');
+            $searchDomain = clean_url($searchDomain);
+            $url = clean_url($url);
+
+            if (!strstr($url, $searchDomain)) {
+                
+            } else {
+                $searchDetails = array(
+                    $url,
+                    $totalCount);
+                return $searchDetails;
+                exit;
+            }
+            if ($totalCount == $position) {
+                return;
+                exit;
+            }
+            $totalCount++;
+        }
+
+        if (!strstr($data, "Next")) {
+            break;
+        }
+
+        sleep(rand(3, 5));
+        $resPerPage = $resPerPage + 10;
+        $currentPage++;
+        flush();
+        $yahooUrl = "https://" . $yahooTLD . "search." . $yahooDomain . "/search?p=" .
+                urlencode($keyword) . "&b=" . $resPerPage;
+        $data = curlGET_Text($yahooUrl);
+        $resData = getCenterText('<ol class="mb-15 reg searchCenterMiddle">', '</ol>', $data);
+    }
+}
+
+function bingRank($site, $keyword, $page_number = 0, $proxy = '', $country = "", $language = "") {
+
+    $keyword = urlencode($keyword);
+
+    if ($page_number) {
+        $start = $page_number * 10 + 1;
+        $page_str = "&first={$start}";
+    } else {
+        $page_str = "";
+    }
+
+    $localization_string = "";
+
+    if ($country != "") {
+        $country = strtolower($country);
+        $localization_string .= "&cc={$country}";
+    }
+
+    $url = "https://www.bing.com/search?q={$keyword}&count=100&ie=utf-8&oe=utf-8{$page_str}{$localization_string}";
+    $content = getContentFromSearchEngine($url);
+
+    $response = array();
+
+    if ($content) {
+
+        preg_match_all('#<cite>(.*?)</cite>#', $content, $matches);
+
+        $check_domain = get_domain_only($site);
+
+        $search_link_domain = array();
+        $search_link = array();
+        foreach ($matches[1] as $info) {
+            $search_link_domain[] = get_domain_only($info);
+            $search_link[] = $info;
+        }
+
+        $position = array_search($check_domain, $search_link_domain);
+
+        if ($position !== FALSE) {
+            $position = $position + 1;
+        } else
+            $position = "0";
+
+        $response = array($site, $position);
+
+        return $response;
+    }
+}
+
+?>

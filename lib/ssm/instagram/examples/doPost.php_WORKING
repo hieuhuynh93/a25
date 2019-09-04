@@ -1,0 +1,202 @@
+<?php
+
+ini_set('display_errors', 1);
+set_time_limit(0);
+umask(0);
+error_reporting(E_ALL);
+require('/var/www/html/app/Mage.php');
+
+require __DIR__ . '/../vendor/autoload.php';
+
+Mage::app();
+Mage::getSingleton("core/session", array("name" => "frontend"));
+$session = Mage::getSingleton("customer/session");
+date_default_timezone_set('UTC');
+$url = Mage::getBaseUrl() . 'smm-post-instagram';
+
+$helper = Mage::helper('websiteaudit/data');
+
+if ($session->isLoggedIn()) {
+    $customerData = $session->getCustomer();
+    $customerId = $customerData->getId();
+
+    $captionText = $_REQUEST['captiontxt'];
+    $section = $_REQUEST['section'];
+    $userId = $_REQUEST['userid'];
+
+    $modelUser = Mage::getModel('influencerusers/influencerusers')->load($userId);
+    $username = $modelUser->getUsername();
+    $password = $modelUser->getPassword();
+    $debug = true;
+    $truncatedDebug = false;
+    $ig = new \InstagramAPI\Instagram($debug, $truncatedDebug);
+    try {
+        $ig->login($username, $password);
+    } catch (\Exception $e) {
+        echo 'Something went wrong: ' . $e->getMessage() . "\n";
+        exit(0);
+    }
+
+    if ($section == 'simple_post') {
+        if (isset($_FILES['localfile']['name']) && strlen($_FILES['localfile']['name']) >= 5) {
+            $image = $_FILES['localfile']['name'];
+            $category = "0" . DS . $customerId;
+
+            $path = Mage::getBaseDir('media') . DS . "media_library" . DS . $category . DS;
+            $uploader = new Mage_Core_Model_File_Uploader(
+                    array(
+                'name' => $_FILES['localfile']['name'],
+                'type' => $_FILES['localfile']['type'],
+                'tmp_name' => $_FILES['localfile']['tmp_name'],
+                'error' => $_FILES['localfile']['error'],
+                'size' => $_FILES['localfile']['size']
+                    )
+            );
+            $uploader->setAllowRenameFiles(true);
+            $uploader->setFilesDispersion(false);
+
+            $ext = pathinfo($image, PATHINFO_EXTENSION); //getting image extension
+            $filename = rand(99999, 9999999999) . "." . $ext;
+            $uploader->save($path, $filename);
+
+            $file = '/var/www/html/media/media_library/' . $category . '/' . $filename;
+
+            $ext = pathinfo($file, PATHINFO_EXTENSION);
+            $arrImages = array("jpg", "png");
+            $arrVideos = array("mp4", "avi");
+
+            if (in_array($ext, $arrImages)) {
+                try {
+                    $photoFilename = $file;
+                    $photo = new \InstagramAPI\Media\Photo\InstagramPhoto($photoFilename);
+                    $ig->timeline->uploadPhoto($photo->getFile(), ['caption' => $captionText]);
+                } catch (\Exception $e) {
+                    echo 'Something went wrong: ' . $e->getMessage() . "\n";
+                }
+            } elseif (in_array($ext, $arrVideos)) {
+                try {
+                    $videoFilename = $file;
+                    $video = new \InstagramAPI\Media\Video\InstagramVideo($videoFilename);
+                    $ig->timeline->uploadVideo($video->getFile(), ['caption' => $captionText]);
+                } catch (Exception $ex) {
+                    echo 'Something went wrong: ' . $e->getMessage() . "\n";
+                }
+            }
+        }
+    } elseif ($section == 'story') {
+        if (!empty($_FILES['localfile']['name'])) {
+            $fileArr = array();
+            for ($i = 0; $i < count($_FILES['localfile']['name']); $i++) {
+                $image = $_FILES['localfile']['name'][$i];
+                $category = "0" . DS . $customerId;
+
+                $path = Mage::getBaseDir('media') . DS . "media_library" . DS . $category . DS;
+                $uploader = new Mage_Core_Model_File_Uploader(
+                        array(
+                    'name' => $_FILES['localfile']['name'][$i],
+                    'type' => $_FILES['localfile']['type'][$i],
+                    'tmp_name' => $_FILES['localfile']['tmp_name'][$i],
+                    'error' => $_FILES['localfile']['error'][$i],
+                    'size' => $_FILES['localfile']['size'][$i]
+                        )
+                );
+                $uploader->setAllowRenameFiles(true);
+                $uploader->setFilesDispersion(false);
+
+                $ext = pathinfo($image, PATHINFO_EXTENSION); //getting image extension
+                $filename = rand(99999, 9999999999) . "." . $ext;
+                $uploader->save($path, $filename);
+
+                $file = '/var/www/html/media/media_library/' . $category . '/' . $filename;
+                array_push($fileArr, $file);
+            }
+            if (count($fileArr) > 1) {
+                $metadata = [
+                    'story_sliders' => [
+                        // Note that you can only do one story poll in this array.
+                        [
+                            'question' => '',//'Is this API great?', // Story poll question. You need to manually to draw it on top of your image.
+                            'viewer_vote' => 0, // Don't change this value.
+                            'viewer_can_vote' => false, // Don't change this value.
+                            'slider_vote_count' => 0, // Don't change this value.
+                            'slider_vote_average' => 0, // Don't change this value.
+                            'background_color' => '#ffffff',
+                            'text_color' => '#000000',
+                            'emoji' => '😍',
+                            'x' => 0.5, // Range: 0.0 - 1.0. Note that x = 0.5 and y = 0.5 is center of screen.
+                            'y' => 0.5004223, // Also note that X/Y is setting the position of the CENTER of the clickable area
+                            'width' => 0.7777778, // Clickable area size, as percentage of image size: 0.0 - 1.0
+                            'height' => 0.22212838, // ...
+                            'rotation' => 0.0,
+                            'is_sticker' => true, // Don't change this value.
+                        ],
+                    ],
+                ];
+                foreach ($fileArr as $fileCustom) {
+                    try {
+                        $photoFilename = $fileCustom;
+                        $photo = new \InstagramAPI\Media\Photo\InstagramPhoto($photoFilename, ['targetFeed' => \InstagramAPI\Constants::FEED_STORY]);
+                        $ig->story->uploadPhoto($photo->getFile(), $metadata);
+                    } catch (Exception $ex) {
+                        echo 'Something went wrong: '.$e->getMessage()."\n";
+                    }
+                }
+            } else {
+                try {
+                    $location = $ig->location->search('22.5726', '88.3639')->getVenues()[0];
+                } catch (\Exception $e) {
+                    echo 'Something went wrong: ' . $e->getMessage() . "\n";
+                }
+                $metadata = [
+                    // (optional) Captions can always be used, like this:
+                    'caption' => '',//'#test This is a great API!', //$captionText,
+                    // (optional) To add a hashtag, do this:
+                    'hashtags' => [
+                        // Note that you can add more than one hashtag in this array.
+                        [
+                            'tag_name' => 'test', // Hashtag WITHOUT the '#'! NOTE: This hashtag MUST appear in the caption.
+                            'x' => 0.5, // Range: 0.0 - 1.0. Note that x = 0.5 and y = 0.5 is center of screen.
+                            'y' => 0.5, // Also note that X/Y is setting the position of the CENTER of the clickable area.
+                            'width' => 0.24305555, // Clickable area size, as percentage of image size: 0.0 - 1.0
+                            'height' => 0.07347973, // ...
+                            'rotation' => 0.0,
+                            'is_sticker' => false, // Don't change this value.
+                            'use_custom_title' => false, // Don't change this value.
+                        ],
+                    // ...
+                    ],
+                    // (optional) To add a location, do BOTH of these:
+                    'location_sticker' => [
+                        'width' => 0.89333333333333331,
+                        'height' => 0.071281859070464776,
+                        'x' => 0.5,
+                        'y' => 0.2,
+                        'rotation' => 0.0,
+                        'is_sticker' => true,
+                        'location_id' => $location->getExternalId(),
+                    ],
+                    'location' => $location,
+                        // (optional) You can use story links ONLY if you have a business account with >= 10k followers.
+                        // 'link' => 'https://github.com/mgp25/Instagram-API',
+                ];
+                try {
+                    echo $photoFilename = $fileArr[0];
+                    //
+                    // Also note that it has lots of options, so read its class documentation!
+                    $photo = new \InstagramAPI\Media\Photo\InstagramPhoto($photoFilename, ['targetFeed' => \InstagramAPI\Constants::FEED_STORY]);
+                    $ig->story->uploadPhoto($photo->getFile(), $metadata);
+
+                    // NOTE: Providing metadata for story uploads is OPTIONAL. If you just want
+                    // to upload it without any tags/location/caption, simply do the following:
+                    // $ig->story->uploadPhoto($photo->getFile());
+                } catch (\Exception $e) {
+                    echo 'Something went wrong: ' . $e->getMessage() . "\n";
+                }
+            }
+        }
+    } elseif ($section == 'carrousal') {
+        
+    }
+} else {
+    
+}

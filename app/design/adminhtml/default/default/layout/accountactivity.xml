@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <accountactivity_adminhtml_accountactivity_index>
+        <reference name="content">
+            <block type="accountactivity/adminhtml_accountactivity" name="accountactivity" />
+        </reference>
+    </accountactivity_adminhtml_accountactivity_index>
+</layout>

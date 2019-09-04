@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Masterajib_Codebazzar>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Masterajib_Codebazzar>
+    </modules>
+</config> 

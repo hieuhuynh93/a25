@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <caption_adminhtml_caption_index>
+        <reference name="content">
+            <block type="caption/adminhtml_caption" name="caption" />
+        </reference>
+    </caption_adminhtml_caption_index>
+</layout>

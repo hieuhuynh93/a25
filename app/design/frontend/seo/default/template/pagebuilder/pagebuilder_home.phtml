@@ -1,0 +1,140 @@
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="max-width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="exampleModalLabel">
+                    <div class="mb-30" style="margin-bottom: 5px !important;">
+                        <h6>Create New Page</h6>
+                    </div>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- ---------------------->
+                <ul class="list-unstyled">
+                    <li class="mb-20">
+                        <a href="<?php echo Mage::helper('cms/page')->getPageUrl(11); ?>">
+                            <div class="media">
+                                <div class="position-relative">
+                                    <img class="img-fluid mr-15 avatar-small" src="<?php echo $this->getSkinUrl('images/item/01.png', array('_secure' => true)); ?>" alt="">
+                                </div> 
+                                <div class="media-body">
+                                    <h6 class="mt-0 mb-0">Standard Page</h6>
+                                    <p>Fully featured pages that support A/B testing, custom code and more. </p>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="divider dotted mt-20"></div>
+                    </li>
+                    <li class="mb-20">
+                        <a href="javascript:void(0);">
+                            <div class="media">
+                                <div class="position-relative clearfix">
+                                    <img class="img-fluid mr-15 avatar-small" src="<?php echo $this->getSkinUrl('images/item/02.png', array('_secure' => true)); ?>" alt="">
+                                </div> 
+                                <div class="media-body">
+                                    <h6 class="mt-0 mb-0">AMP Page</h6>
+                                    <p>AMP pages that load quickly, but have some code and feature limitations. </p>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="divider dotted mt-20"></div>
+                    </li>
+                    <li class="mb-20">
+                        <a href="javascript:void(0);">
+                            <div class="media">
+                                <div class="position-relative">
+                                    <img class="img-fluid mr-15 avatar-small" src="<?php echo $this->getSkinUrl('images/item/03.png', array('_secure' => true)); ?>" alt="">
+                                </div> 
+                                <div class="media-body">
+                                    <h6 class="mt-0 mb-0">Upload Instapage File</h6>
+                                    <p> Select this option to upload an .instapage file. </p>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="divider dotted mt-20"></div>
+                    </li>
+                </ul>
+                <!-- ---------------------->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="page-title">
+    <div class="row">
+        <div class="col-sm-4">
+            <h4 class="mb-0"> Page Builder</h4>
+        </div>
+        <div class="col-sm-8">
+            <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                <li class="breadcrumb-item"><a href="index.html" class="default-color">Home</a></li>
+                <li class="breadcrumb-item">Dashboard</li>
+                <li class="breadcrumb-item active">Page Builder</li>
+            </ol>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-12 mb-30">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModal">Create a page</button>
+                <button type="button" class="btn btn-secondary">Create a Group</button>
+                <div class="row">   
+                    <div class="col-xl-12 mb-30">     
+                        <div class="card card-statistics h-100">
+                            <div class="table-responsive">
+                                <table id="datatable" class="table table-striped table-bordered p-0">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 30px;"></th>
+                                            <th style="width: 300px; text-align: center;">Name</th>
+                                            <th style="width: 200px; text-align: center;">Conv. Rate / All Time</th>
+                                            <th style="width: 150px; text-align: center;">Conversions</th>
+                                            <th style="width: 50px; text-align: center;"></th>
+                                            <th style="width: 150px; text-align: center;">
+                                                <div class="btn-group mb-1">
+                                                    <button type="button" class="btn btn-info">Last 7 Days</button>
+                                                    <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <span class="sr-only">Last 7 Days</span>
+                                                    </button>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item" href="#">Last 7 Days</a>
+                                                        <a class="dropdown-item" href="#">Last 14 Days</a>
+                                                        <a class="dropdown-item" href="#">Last 30 Days</a>
+                                                        <div class="dropdown-divider"></div>
+                                                        <a class="dropdown-item" href="#">View All</a>
+                                                    </div>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php for ($i = 1; $i < 100; $i++): ?>
+                                            <tr>
+                                                <td></td>
+                                                <td>System Architect</td>
+                                                <td style="text-align: center;">Edinburgh</td>
+                                                <td style="text-align: center;">61</td>
+                                                <td style="text-align: center;">Led</td>
+                                                <td style="text-align: center;">2011/04/25</td>
+                                            </tr>
+                                        <?php endfor; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>   
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

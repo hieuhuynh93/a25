@@ -1,0 +1,9 @@
+a:5:{i:0;s:272:"Error in file: "/home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Seotoolsaccountactivity/sql/seotoolsaccountactivity_setup/mysql4-install-0.1.0.php" - SQLSTATE[42S01]: Base table or view already exists: 1050 Table 'seotoolsaccountactivity' already exists";i:1;s:1076:"#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/Resource/Setup.php(644): Mage::exception('Mage_Core', 'Error in file: ...')
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/Resource/Setup.php(421): Mage_Core_Model_Resource_Setup->_modifyResourceDb('install', '', '0.1.0')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/Resource/Setup.php(327): Mage_Core_Model_Resource_Setup->_installResourceDb('0.1.0')
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/Resource/Setup.php(235): Mage_Core_Model_Resource_Setup->applyUpdates()
+#4 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(428): Mage_Core_Model_Resource_Setup::applyAllUpdates()
+#5 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(354): Mage_Core_Model_App->_initModules()
+#6 /home3/a25sarsj/public_html/mag_seo/html/app/Mage.php(686): Mage_Core_Model_App->run(Array)
+#7 /home3/a25sarsj/public_html/mag_seo/html/index.php(83): Mage::run('', 'store')
+#8 {main}";s:3:"url";s:58:"/mag_seo/html/index.php/analysis-result?linkDetailsId=6051";s:11:"script_name";s:23:"/mag_seo/html/index.php";s:4:"skin";s:7:"default";}

@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <filemanager_adminhtml_filemanager_index>
+        <reference name="content">
+            <block type="filemanager/adminhtml_filemanager" name="filemanager" />
+        </reference>
+    </filemanager_adminhtml_filemanager_index>
+</layout>

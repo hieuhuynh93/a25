@@ -1,0 +1,179 @@
+<?php
+$showType = '1';
+if (isset($_REQUEST['show_type'])) {
+    $showType = $_REQUEST['show_type'];
+}
+
+$templateCollection = Mage::getModel('pagebuilder/pagebuilder')
+        ->getCollection()
+        ->addFieldToFilter('status', '1')
+        ->addFieldToFilter('template_type', $showType);
+
+//echo "<pre>"; print_r($templateCollection->getData()); die();
+
+$mediaURL = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA);
+$baseURLWithoutIndex = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true);
+?>
+<!-- ------------------------ Modal Starts ------------------------->
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="max-width: 1000px !important;">
+        <div class="modal-content" style="width: 100%;">
+            <form action="http://25saints.com/Masterajib/Project_SEO/index.php/templates">
+                <div class="modal-header">
+                    <div class="modal-title">
+                        <div class="mb-30" style="margin-bottom: 5px !important;">
+                            <h5>Name Your Page</h5>
+                        </div>
+                    </div>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <iframe frameborder="0" src="" width="100%" height="400" id="frame_template"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnSubmit" type="submit" class="btn btn-primary" style="display: none;">Submit</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button onclick="updateTemplate()" type="button" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- ------------------------ Modal Ends --------------------------->
+<div class="page-title">
+    <div class="row">
+        <div class="col-sm-4">
+            <h4 class="mb-0"> Standard Page - Templates</h4>
+        </div>
+        <div class="col-sm-8">
+            <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                <li class="breadcrumb-item"><a href="index.html" class="default-color">Home</a></li>
+                <li class="breadcrumb-item">Dashboard</li>
+                <li class="breadcrumb-item active">Page Builder</li>
+                <li class="breadcrumb-item active">Page</li>
+                <li class="breadcrumb-item active">Create Template</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-12 col-lg-6 col-md-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body" style="padding: 0px;">
+                <div class="clearfix" style="padding-left: 5px; padding-right: 5px; padding-top: 5px;">
+                    <div class="col-xl-1 col-lg-6 col-md-6 mb-3" style="float: left;">
+                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                        <label style="padding-left: 5px; padding-top: 2px;" class="form-check-label" for="exampleCheck1">All</label>
+                    </div>
+                    <div class="col-xl-2 col-lg-6 col-md-6 mb-3" style="float: left;">
+                        <input type="checkbox" class="form-check-input" id="exampleCheck2">
+                        <label style="padding-left: 5px; padding-top: 2px;" class="form-check-label" for="exampleCheck1">Lead Generation</label>
+                    </div>
+                    <div class="col-xl-2 col-lg-6 col-md-6 mb-3" style="float: left;">
+                        <input type="checkbox" class="form-check-input" id="exampleCheck2">
+                        <label style="padding-left: 5px; padding-top: 2px;" class="form-check-label" for="exampleCheck1">Two - Step</label>
+                    </div>
+                    <div class="col-xl-2 col-lg-6 col-md-6 mb-3" style="float: left;">
+                        <input type="checkbox" class="form-check-input" id="exampleCheck2">
+                        <label style="padding-left: 5px; padding-top: 2px;" class="form-check-label" for="exampleCheck1">Click Through</label>
+                    </div>
+                    <div class="col-xl-2 col-lg-6 col-md-6 mb-3" style="float: left;">
+                        <input type="checkbox" class="form-check-input" id="exampleCheck2">
+                        <label style="padding-left: 5px; padding-top: 2px;" class="form-check-label" for="exampleCheck1">Thank You</label>
+                    </div>
+                    <div class="col-xl-1 col-lg-6 col-md-6 mb-3" style="float: left;">
+                        <input type="checkbox" class="form-check-input" id="exampleCheck2">
+                        <label style="padding-left: 5px; padding-top: 2px;" class="form-check-label" for="exampleCheck1">E-Book</label>
+                    </div>
+                    <div class="col-xl-1 col-lg-6 col-md-6 mb-3" style="float: left;">
+                        <input type="checkbox" class="form-check-input" id="exampleCheck2">
+                        <label style="padding-left: 5px; padding-top: 2px;" class="form-check-label" for="exampleCheck1">Event</label>
+                    </div>
+                    <div class="col-xl-1 col-lg-6 col-md-6 mb-3" style="float: left;">
+                        <input type="checkbox" class="form-check-input" id="exampleCheck2">
+                        <label style="padding-left: 5px; padding-top: 2px;" class="form-check-label" for="exampleCheck1">App</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <?php foreach ($templateCollection as $template): ?>
+        <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+            <div class="card card-statistics h-100">
+                <div class="card-body" style="padding: 0px;">
+                    <div class="clearfix">
+                        <a onclick="setTemplateId('<?php echo $template->getId(); ?>')" href="javascript:void(0);">
+                            <img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) . 'pagebuilder_templates/' . $template->getFilename(); ?>" width="100%">
+                        </a>
+                    </div>
+                    <p class="text-muted pt-3 mb-0 mt-2 border-top" style="text-align: center;">
+                        <a onclick="setTemplateId('<?php echo $template->getId(); ?>')" class="button button-border x-small" href="javascript:void(0);">
+                            <i class="fa fa-cube mr-1" aria-hidden="true"></i>
+                            PREVIEW 
+                        </a>
+
+                    </p>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+</div>
+
+<input id="btnModelTemplate" type="button" style="display: none;" data-toggle="modal" data-target=".bd-example-modal-lg">
+
+<script>
+
+    function updateTemplate() {
+        var page_name = document.getElementById("page_name").value;
+        var template_id = document.getElementById("template_id").value;
+        if (page_name == '' || page_name == null) {
+            document.getElementById("btnSubmit").click();
+        } else {
+            document.location.href = '<?php echo Mage::helper('cms/page')->getPageUrl(12); ?>?template_id=' + template_id + '&page_name=' + page_name;
+        }
+
+    }
+
+    function setTemplateId(templateId) {
+        var templateURL = "<?php echo $baseURLWithoutIndex; ?>pagebuilder_templates/core/" + templateId + "/index.php?template_id=" + templateId;
+        //alert(templateURL);
+        //document.getElementById("frame_template").setAttribute("src", templateURL);
+        //document.getElementById("btnModelTemplate").click();
+        document.location.href = templateURL;
+    }
+</script>
+
+
+<textarea id="myfield"></textarea>
+<script>
+    window.onload = function ()
+    {
+        tinyMCE.init({
+            mode: "exact",
+            elements: "myfield",
+            theme: "advanced",
+            plugins: "inlinepopups,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras",
+            theme_advanced_buttons1: "newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
+            theme_advanced_buttons2: "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor",
+            theme_advanced_buttons3: "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,emotions,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen",
+            theme_advanced_buttons4: "insertlayer,moveforward,movebackward,absolute,|,styleprops,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking",
+            theme_advanced_toolbar_location: "top",
+            theme_advanced_toolbar_align: "left",
+            theme_advanced_path_location: "bottom",
+            extended_valid_elements: "a[name|href|target|title|onclick],img[class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name],hr[class|width|size|noshade],font[face|size|color|style],span[class|align|style]",
+            theme_advanced_resize_horizontal: 'true',
+            theme_advanced_resizing: 'true',
+            apply_source_formatting: 'true',
+            convert_urls: 'false',
+            force_br_newlines: 'true',
+            doctype: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'
+
+        });
+    };
+</script>

@@ -1,0 +1,1605 @@
+<?php
+$domainId = $_REQUEST['uid'];
+$websiteAudit = Mage::getModel('websiteaudit/websiteaudit')->load($domainId);
+$generalInformation = json_decode($websiteAudit->getGeneralInformation(), true);
+?>
+<div class="page-title">
+    <div class="row">
+        <div class="col-sm-6">
+            <h4 class="mb-0"> Website Audit : <?php echo $websiteAudit->getUrl(); ?></h4>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                <li class="breadcrumb-item"><a href="<?php echo Mage::getBaseUrl(); ?>" class="default-color">Home</a></li>
+                <li class="breadcrumb-item"><a href="<?php echo Mage::getBaseUrl(); ?>websiteaudit">Website Audit</a></li>
+                <li class="breadcrumb-item active">Website Audit Results</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<!-- ---------------------------------------------->
+<style>
+    .acd-group{
+        color: #ffffff;
+        background: #84ba3f;
+        padding: 12px 24px !important;
+        font-weight: 500;
+        font-size: 1.143rem;
+        padding: 12px 0;
+        border-radius: 3px;
+    }
+    .column-left row {
+        margin-top: 20px;
+    }
+    .panel-body .row {
+        margin-top: 20px;
+    }
+    #resultSocialMediaAnalysis .row{
+        width: 100%;
+    }
+    /*.semi-highlight-icon{
+        font-size: 2em;
+        padding: 0 10px;
+    }*/
+</style>
+
+<div class="row">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a class="acd-heading" data-toggle="collapse" data-parent="#accordion" href="#general_information" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #05b3f2; border-bottom: 3px solid #05b3f2">
+                    <i class="fa fa-line-chart" style="font-size:16px; margin-right: 10px;"></i>General Information
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderIndexCount" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="general_information" class="panel-collapse collapse show">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-3 col-md-6 mb-30">
+                                <div class="card card-statistics h-100">
+                                    <div class="card-body p-0">
+                                        <div class="bg-success" style="background-color: #fff !important;">
+                                            <img src="<?php echo $generalInformation['desktop_screenshot']; ?>" width="100%">
+                                        </div>
+                                        <div class="p-3 bg-white">
+                                            <div class="row">
+                                                <div class="col-sm-6 col-6 align-self-center">
+                                                    <h5>Website Score</h5>
+                                                </div>
+                                                <div class="col-sm-6 col-6 align-self-center text-right">
+                                                    <span class="round-chart mb-0" data-percent="<?php echo $generalInformation['score']; ?>" data-size="80" data-color="#28a745"> <span class="percent"></span> </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 mb-30">
+                                <div class="card card-statistics h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title pb-0 mb-15 border-0">Website Status </h5>
+                                        <div class="table-responsive">
+                                            <table class="table center-aligned-table mb-0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="width: 10%;"><i class="fa fa-check-square-o" style="font-size:24px"></i></td>
+                                                        <td style="width: <?php echo $generalInformation['success']; ?>;"><?php echo $generalInformation['success']; ?> passed of verification steps</td>
+                                                        <td style="width: 50%;">
+                                                            <div class="progress progress-small mt-2">
+                                                                <div class="skill2-bar bg-info" role="progressbar" style="width: <?php echo $generalInformation['success']; ?>" aria-valuenow="41" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width: 10%;"><i class="fa fa-warning" style="font-size:24px"></i></td>
+                                                        <td style="width: <?php echo $generalInformation['warning']; ?>;"><?php echo $generalInformation['warning']; ?> of verification steps</td>
+                                                        <td style="width: 50%;">
+                                                            <div class="progress progress-small mt-2">
+                                                                <div class="skill2-bar bg-warning" role="progressbar" style="width: <?php echo $generalInformation['warning']; ?>" aria-valuenow="14" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width: 10%;"><i class="fa fa-times-circle-o" style="font-size:24px"></i></td>
+                                                        <td style="width: <?php echo $generalInformation['errors']; ?>;"><?php echo $generalInformation['errors']; ?> of verification steps</td>
+                                                        <td style="width: 50%;">
+                                                            <div class="progress progress-small mt-2">
+                                                                <div class="skill2-bar bg-danger" role="progressbar" style="width: <?php echo $generalInformation['errors']; ?>" aria-valuenow="8" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <p style="float: right; padding-top: 50px;">
+                                                <a href="#" class="btn btn-outline-success btn-sm">Download</a>
+                                                <a href="#" class="btn btn-outline-success btn-sm">Share</a>
+                                                <a href="#" class="btn btn-outline-success btn-sm">Add to bookmark</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 mb-30">
+                                <div class="card card-statistics">
+                                    <div class="card-body" style="padding: 0px !important;">
+                                        <img style="height: 320px;" src="<?php echo $generalInformation['mobile_screenshot']; ?>" width="100%">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+
+<div class="row">
+    <input type="hidden" id="WhoisInformation" value="0">
+    <input type="hidden" id="IpInformation" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getWhoIs', 'WhoisInformation', 'rowLoaderWhoisInformation', 'resultWhoisInformation')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#whois_information" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #b3203d; border-bottom: 3px solid #b3203d">
+                    <i class="fa fa-google" style="font-size:16px; margin-right: 10px;"></i>Whois Information and IP information
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderWhoisInformation" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="whois_information" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-6 mb-10">
+                                <div class="tab nav-border" style="position: relative;">
+                                    <div class="tab-content" id="myTabContentInternal">
+                                        <div class="tab-pane fade active show" id="months" role="tabpanel" aria-labelledby="months-tab">
+                                            <div id="resultWhoisInformation" style="padding: 15px; height: 250px; overflow: auto;"></div>
+                                        </div> 
+                                    </div> 
+                                </div>
+                            </div>
+                            <div class="col-xl-6 mb-10">
+                                <div class="tab nav-border" style="position: relative;">
+                                    <div class="tab-content" id="myTabContentInternal">
+                                        <div class="tab-pane fade active show" id="months" role="tabpanel" aria-labelledby="months-tab">
+                                            <div id="resultIpInformation" style="padding: 15px; height: 250px; overflow: auto;"></div>
+                                        </div> 
+                                    </div> 
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+
+<!--<div class="row">
+    <input type="hidden" id="IpInformation" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getIpDetails', 'IpInformation', 'rowLoaderIpInformation', 'resultIpInformation')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#ip_information" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #d9c921; border-bottom: 3px solid #d9c921">
+                    <i class="fa fa-code" style="font-size:16px; margin-right: 10px;"></i>IP information
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderIpInformation" src="<?php //echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="ip_information" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="_resultIpInformation">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>-->
+
+<div class="row">
+    <input type="hidden" id="MozInformation" value="0">
+    <input type="hidden" id="buildWithTechnology" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getMozDetails', 'MozInformation', 'rowLoaderMozInformation', 'resultMozInformation')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#moz_information" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #796fad; border-bottom: 3px solid #796fad">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Moz Information and Build With Technology
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderMozInformation" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="moz_information" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-6 mb-10">
+                                <div class="tab nav-border" style="position: relative;">
+                                    <div class="tab-content" id="myTabContentInternal">
+                                        <div class="tab-pane fade active show" id="months" role="tabpanel" aria-labelledby="months-tab">
+                                            <div id="resultMozInformation" style="padding: 15px; height: 250px; overflow: auto;"></div>
+                                        </div> 
+                                    </div> 
+                                </div>
+                            </div>
+                            <div class="col-xl-6 mb-10">
+                                <div class="tab nav-border" style="position: relative;">
+                                    <div class="tab-content" id="myTabContentInternal">
+                                        <div class="tab-pane fade active show" id="months" role="tabpanel" aria-labelledby="months-tab">
+                                            <div id="resultbuildWithTechnology" style="padding: 15px; height: 250px; overflow: auto;"></div>
+                                        </div> 
+                                    </div> 
+                                </div>
+                             </div>
+                        </div>
+                        <!--<div class="row">
+                             <div class="col-xl-6 mb-10">
+                                <div class="card card-statistics h-100">
+                                    <div class="card-header">
+                                        Moz Information:
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="tab nav-border" style="position: relative;">
+                                            <div class="tab-content" id="myTabContentInternal">
+                                                <div class="tab-pane fade active show" id="months" role="tabpanel" aria-labelledby="months-tab">
+                                                    <div id="resultMozInformation" style="padding: 15px; height: 250px; overflow: auto;"></div>
+                                                </div> 
+                                            </div> 
+                                        </div>
+                                    </div>
+                                </div>
+                             </div>
+                            <div class="col-xl-12 mb-30" id="resultMozInformation">
+
+                            </div
+                        </div>-->
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<!--<div class="row">
+    <input type="hidden" id="buildWithTechnology" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getBuildWith', 'buildWithTechnology', 'rowLoaderbuildWithTechnology', 'resultbuildWithTechnology')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#build_with_technology" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #73ad6f; border-bottom: 3px solid #73ad6f">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Build With Technology
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderbuildWithTechnology" src="<?php //echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="build_with_technology" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultbuildWithTechnology">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>-->
+
+<div class="row">
+    <input type="hidden" id="WebsiteDescription" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getSiteInfo', 'WebsiteDescription', 'rowLoaderWebsiteDescription', 'resultWebsiteDescription')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#website_description" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #05b3f2; border-bottom: 3px solid #05b3f2">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Website Description
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderWebsiteDescription" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="website_description" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultWebsiteDescription">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <input type="hidden" id="ResponseHeader" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getResponseHeader', 'ResponseHeader', 'rowLoaderResponseHeader', 'resultResponseHeader')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#response_header" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #b3203d; border-bottom: 3px solid #b3203d">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Response Header
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderResponseHeader" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="response_header" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultResponseHeader">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <input type="hidden" id="GoogleStats" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getGoogleStats', 'GoogleStats', 'rowLoaderGoogleStats', 'resultGoogleStats')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#google_stats" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #d9c921; border-bottom: 3px solid #d9c921">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Google Stats
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderGoogleStats" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="google_stats" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultGoogleStats">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <input type="hidden" id="SocialMediaAnalysis" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getSocialShareCount', 'SocialMediaAnalysis', 'rowLoaderKeywordOccourance', 'resultSocialMediaAnalysis')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#social_media_analysis" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #796fad; border-bottom: 3px solid #796fad">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Social Media Analysis
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderKeywordOccourance" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="social_media_analysis" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row" id="resultSocialMediaAnalysis">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+    <style>
+        /* reset */
+        html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-weight:inherit;font-style:inherit;font-size:100%;font-family:inherit;vertical-align:baseline}:focus{outline:0}body{line-height:1;color:black;background:white}ol,ul{list-style:none}table{border-collapse:separate;border-spacing:0}caption,th,td{text-align:left;font-weight:normal}blockquote:before,blockquote:after,q:before,q:after{content:""}blockquote,q{quotes:""""}
+
+        /* clearfix */
+        .clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden}.clearfix{display:inline-table}/* Hides from IE-mac \*/* html .clearfix{height:1%}*+html .clearfix{height:1%}.clearfix{display:block}/* End hide from IE-mac */
+
+        html,body{}
+
+        .text-info{
+            padding-right: 10px;
+        }
+        .pinterest-bg{
+            background-color: #bd081b;
+        }
+        .linkedin-bg{
+            background-color: #0274b3;
+        }
+        .google-bg{
+            background-color: #e9364b;
+        }
+        .timblr-bg{
+            background-color: #395976;
+        }
+
+        body{
+            -webkit-text-size-adjust:none;
+            font-family:helvetica,arial,sans-serif;
+            font-size:1em;
+            color:#333;
+            min-width:1000px;
+            /*background-color:#eee;*/
+        }
+
+        img{border:0;}
+
+        img.absmiddle{vertical-align:middle;}
+        table td.middle{vertical-align:middle;}
+
+        p{
+            display:block;
+            margin:0 0 1.5em 0;
+            line-height:1.25em;
+        }
+
+        strong{
+            font-weight:bold;	
+        }
+
+        /*h1,h2,h3{
+            padding-bottom: 0.5em;
+            font-weight: normal;
+            display:block;
+        }
+
+        h1{
+            font-size: 1.6em;
+            color: #555;
+            font-weight:bold;
+        }
+
+        h2{
+            color:#54555C;
+            font-size: 1.2em;
+            font-weight:bold;
+            font-family:Arial, Helvetica, sans-serif;
+            line-height:1.2em;
+            padding-bottom: 0.8em;
+        }
+
+        h3{
+            font-size:1.5em;
+            font-weight:bold;
+            line-height:1.25em;
+            padding:0;
+        }
+
+        h4 {
+            font-size:1.2em;
+            font-weight:normal;
+            margin:0 0 0.75em 0;
+            padding:0;
+        }*/
+
+        #header{
+
+            height:50px;
+            margin-bottom:30px;
+
+        }
+
+        #logo{
+            float:left;
+            margin-top:18px;
+        }
+
+        #search_top{
+            float:left;
+            margin-left:15px;
+        }
+
+        #search_types{
+            font-size:2em;
+        }
+
+        #search_types a{
+            margin-right:0.73em;
+            font-size:0.8em;
+        }
+        #search_line {
+
+            border-bottom:4px solid #ddd;
+        }
+
+        #search_types a.selected{
+            color:#54555C;
+            text-decoration:none;
+            font-weight:bold;
+        }
+
+        #search_top input[type="submit"]{
+            height:31px;
+            padding:0 5px;
+        }
+
+        .search_box{
+            margin-top:4px;
+            height: 24px;
+            font-size:1em; 
+
+            background-color:#f2f2f2;
+            padding: 3px 1px 0px 3px;
+        }
+
+        #search_options{
+            float:left;
+            margin:18px 0 0 5px;
+            font-size:0.6em;
+        }
+
+        #wrapper{
+            clear:both;
+        }
+
+        table.advanced_search td{
+            padding-bottom:4px;
+        }
+        #header_top_margin{
+            margin-top:20px;
+
+        }
+
+        input{padding:4px;}
+        select{padding:1px;}
+
+        #footer {
+            border-top:1px solid #ddd;
+            clear:both;
+            color:#838E96;
+            font-size:0.9sem;
+            line-height:19px;
+            padding:10px 0 0;
+            margin-top:20px;
+        }
+
+        #container_results {}
+
+        #container_results .total {
+            margin: 0 0 10px 0;
+            padding: 4px;
+            color:#fff;
+            background-color:#ccc;
+            font-weight: bold;
+            font-size:0.8em;
+            display:inline;
+        }
+
+        #column_left {
+            float:left;
+            width:100%;
+        }
+
+        #column_middle {
+            float:left;
+            width:65%;
+            margin:0 15px 20px 25px;
+        }
+
+        #column_right {
+            float:right;
+            width:160px;
+        }
+
+        #search_details {
+            font-size:0.9em;
+            margin:0 0 10px 0;
+        }
+
+        .column_ad {
+            border-top:1px solid #ccc;
+            padding:10px 0 0 0;
+            margin:0 0 0 0;
+        }
+
+        .box {
+            margin:0 0 10px 0;
+            padding:10px;
+            -moz-border-radius:4px;
+            -webkit-border-radius: 4px;
+            /*height:auto !important;*/
+        }
+
+        .box.text {
+            font-size:0.75em;
+            font-weight:bold;
+            margin:0 0 4px;
+        }
+
+        .box_analytics {
+            background:#eee none repeat scroll 0 0;
+            margin:0 0 4px 0;
+            -moz-border-radius:4px;
+            -webkit-border-radius: 4px;
+            float:left;
+            padding:10px 5px;
+            width:88px;
+            font-weight:bold;
+            text-align:center;
+        }
+
+        .box_analytics .score {
+            font-size:1.4em;
+            font-weight:bold;
+        }
+
+        .box_analytics .score_title {
+            font-size:0.9em;
+            font-weight:normal;
+        }
+
+        .box_segment {
+            padding:10px 0;
+            border-bottom:1px solid #ccc;	
+        }
+
+        #top_keywords table {
+        }
+
+        #top_keywords td {
+            font-size:0.75em;
+            font-weight:bold;
+            padding-bottom:7px;
+        }
+
+        #top_keywords a {
+            color:#000;
+            text-decoration:none;	
+        }
+
+        #top_keywords a:hover {
+            text-decoration:underline;	
+        }
+
+        .chart_bar {
+            -moz-border-radius:2px;
+            -webkit-border-radius: 2px;
+            background:#0060b6 none repeat scroll 0 0;
+        }
+
+        .box.grey {
+            background:#eee none repeat scroll 0 0;
+        }
+
+        .box.yellow {
+            background:#FCF7E3 none repeat scroll 0 0;
+            border:1px solid #FCDF6B;
+        }
+
+        .box.blue {
+            background:#F1F5FE none repeat scroll 0 0;
+            border:1px solid #C6DCFE;
+        }
+
+        .box p, .box table td {
+            font-size:0.9em;
+            margin-bottom:0.5em;
+        }
+
+        .column_top_area {
+            padding:10px;
+            margin: 0 0 10px 0;
+            font-size:0.9em;
+            background-color:#eee;
+            -moz-border-radius:4px;
+            -webkit-border-radius: 4px;
+            border-radius: 4px;
+        }
+
+        /* results */
+
+        #sort_show {
+            margin-bottom:20px;
+            font-size:0.8em;
+        }
+
+        #sort_show .show_results {
+            float:left;
+        }
+
+
+        #sort_show .sort_results {
+            text-align:right;
+        }
+
+        #sort_show  a {
+            color:#497BB6;
+        }
+
+        #sort_show a.selected {
+            font-weight:bold;
+            text-decoration:none;
+            color:#666666;
+        }
+
+        /* search results css */
+
+        #results {
+            max-width:36em;
+        }
+
+        /* full is for images and videos */
+        #results.full {
+            max-width:none;
+            padding-right:250px;
+        }
+
+        #results.full .result {
+            float:left;
+            margin:0 0 20px 20px;
+        }
+
+        #results.full .result.images {
+            /*height:225px;
+            width:225px;*/
+            text-align:center;
+            width:160px;
+        }
+
+        #results.full .result.images .description {
+            height:150px;
+            width:150px;
+        }
+
+        .result.images .description img {
+            height:150px;
+            max-width:150px;
+        }
+
+        #results.full .result.videos {
+            height:500px;
+            width:400px;
+        }
+
+        #results.full .result .description {}
+
+        /* standard results css */
+        #results .result {
+            margin-bottom:0px;
+        }
+
+        .user_image {
+            height:24px;
+            width:24px;
+            vertical-align:middle;
+            border:1px solid #ddd;
+            padding:2px;
+        }
+
+        .result .icon {
+            float:left;
+        }
+
+        .result .body {
+            margin-left:38px;
+        }
+
+        .result img {
+            max-height:150px;
+            max-width:200px;
+            overflow:hidden;
+            text-align:center;
+            /*margin:10px 0;*/
+        }
+
+        .result img.thumbnail {
+            border:1px solid #ddd;
+            float:right;
+            padding:2px;
+            margin:0 0 5px 5px;
+            max-height:75px;
+            max-width:100px;
+            overflow:hidden;
+            text-align:center;
+        }
+
+        .result .description embed {
+        }
+
+        .result .description {
+            font-size:0.9em;
+            line-height:1.3em;
+            margin-top:5px;
+        }
+
+        .result .info {
+            color:#666;
+            font-size:0.8em;
+            white-space:nowrap;
+            clear:both;
+        }
+
+        .info a.link {
+            color:#539D36;
+            text-decoration:none;
+        }
+
+        .info a.link:hover {
+            text-decoration:underline;
+        }
+
+        .result h3 {
+            display:inline;
+            font-weight:normal;
+            margin:0;
+            font-size:1.1em;
+        }
+
+        .postrank {
+            margin-top:4px;
+            height:16px;
+            width:40px;
+            background-image:url(/assets/img/icons/postrank.png);
+            background-repeat:no-repeat;
+            background-position:left top;
+            background-color:#ccc;
+            color:#000;
+            font-size:11px;
+            font-weight:bold;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+        .postrank div {
+            padding:3px 0 0 0;
+            margin: 0 0 0 16px;
+            text-align:center;
+            width:24px;
+        }
+
+        /* analytics */
+
+        .social_index{
+            font-size: 5em;
+            color:#FB7C00;
+        }
+
+        .social_index_total{
+            font-size:2em;
+            color:#555;
+        }
+
+        .analytics_title{
+            font-size:1.3em;
+        }
+
+        .analytics_item_value{
+            font-size:1em;
+        }
+
+        .analytics_social_source{
+            padding:2px 4px;
+            -moz-border-radius:4px;
+            -webkit-border-radius: 4px;
+            border-radius: 4px;
+            background-color:#FB7C00;
+            color:#fff;
+            float:left;
+        }
+
+        .gchart{
+            text-align:center;
+            -moz-border-radius:4px;
+            -webkit-border-radius: 4px;
+            padding:5px;
+            background-color:#fff;
+        }
+
+        /* pagination */
+        .pagination {
+            clear:both;
+            padding-top:15px;
+            font-size:0.9em;
+            height:28px;
+        }
+
+        .pagination a {
+            text-decoration:none;
+            color:#0066CC;
+        }
+
+        .pagination div.page {
+            background-color:#fff;
+            border:1px solid #ccc;
+            float:left;
+            font-weight:bold;
+            margin-right:1px;
+            padding:5px 7px;
+        }
+
+        .pagination div.selected, .pagination a:hover div.page {
+            background-color:#ccc;
+            color:#fff;
+        }
+
+        .tagcloud {font-size:1em;line-height:1.4em; word-spacing:0.25em;}
+        .tagcloud .font1 {font-size:75%;}
+        .tagcloud .font2 {font-size:100%;}
+        .tagcloud .font3 {font-size:125%;}
+        .tagcloud .font4 {font-size:140%;}
+        .tagcloud .font5 {font-size:150%;}
+        
+        .custom-circle-arrow{
+        -webkit-transition:all 300ms ease-in 0s;
+        -moz-transition: all 300ms ease-in 0s;
+        -o-transition: all 300ms ease-in 0s;
+        transition: all 300ms ease-in 0s;
+    }
+    
+    .collapsed i.custom-circle-arrow {
+        -webkit-transform: rotate(180deg);
+        -moz-transform: rotate(180deg);
+        -o-transform: rotate(180deg);
+        -ms-transform: rotate(180deg);
+        transform: rotate(180deg);
+    }
+    </style>
+</div>
+
+<div class="row">
+    <input type="hidden" id="KeywordOccourance" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('keywordAnalysisPhrases', 'KeywordOccourance', 'rowLoaderKeywordOccourance', 'resultKeywordOccourance')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#keyword_occourance" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #73ad6f; border-bottom: 3px solid #73ad6f">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Keyword Occourance, Density & Possible Spam
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderKeywordOccourance" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="keyword_occourance" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row" id="resultKeywordOccourance">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <input type="hidden" id="HeadingTags" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getHeadingTags', 'HeadingTags', 'rowLoaderHeadingTags', 'resultHeadingTags')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#heading_tags" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #05b3f2; border-bottom: 3px solid #05b3f2">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Heading Tags
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderHeadingTags" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="heading_tags" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultHeadingTags">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <input type="hidden" id="ParagraphsTags" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getParagraph', 'ParagraphsTags', 'rowLoaderParagraphsTags', 'resultParagraphsTags')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#paragraphs_tags" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #b3203d; border-bottom: 3px solid #b3203d">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Paragraphs Tags
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderParagraphsTags" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="paragraphs_tags" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultParagraphsTags">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <input type="hidden" id="IndexInformation" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getIndexing', 'IndexInformation', 'rowLoaderIndexInformation', 'resultIndexInformation')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#index_information" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #d9c921; border-bottom: 3px solid #d9c921">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Index Information
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderIndexInformation" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="index_information" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultIndexInformation">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <input type="hidden" id="RelatedWebsite" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getSimilarWebsite', 'RelatedWebsite', 'rowLoaderRelatedWebsite', 'resultRelatedWebsite')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#related_website" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #796fad; border-bottom: 3px solid #796fad">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Related Website
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderRelatedWebsite" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="related_website" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultRelatedWebsite">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <input type="hidden" id="SimilarwebData" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getSimilarWebRawData', 'SimilarwebData', 'rowLoaderSimilarwebData', 'resultSimilarwebData')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#similarweb_data" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #73ad6f; border-bottom: 3px solid #73ad6f">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Similarweb Data
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderSimilarwebData" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="similarweb_data" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultSimilarwebData">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <input type="hidden" id="AlexaData" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getAlexaData', 'AlexaData', 'rowLoaderAlexaData', 'resultAlexaData')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#alexa_data" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #05b3f2; border-bottom: 3px solid #05b3f2">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Alexa Data
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderAlexaData" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="alexa_data" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultAlexaData">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <input type="hidden" id="TrafficAnalysis" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getTrafficRawData', 'TrafficAnalysis', 'rowLoaderTrafficAnalysis', 'resultTrafficAnalysis')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#traffic_analysis" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #b3203d; border-bottom: 3px solid #b3203d">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Traffic Analysis
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderTrafficAnalysis" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="traffic_analysis" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultTrafficAnalysis">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <input type="hidden" id="ReferralDestinationSites" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getRefferalAndDestination', 'ReferralDestinationSites', 'rowLoaderReferralDestinationSites', 'resultReferralDestinationSites')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#referral_destination_sites" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #d9c921; border-bottom: 3px solid #d9c921">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Referral & Destination Sites
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderReferralDestinationSites" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="referral_destination_sites" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultReferralDestinationSites">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <input type="hidden" id="TagMetaInformation" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getMetaAndTitle', 'TagMetaInformation', 'rowLoaderTagMetaInformation', 'resultTagMetaInformation')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#tag_meta_information" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #796fad; border-bottom: 3px solid #796fad">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Tag & Meta Information
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderTagMetaInformation" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="tag_meta_information" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultTagMetaInformation">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <input type="hidden" id="TopOrganicPaidKeywords" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getTopOrganicPaidKeywords', 'TopOrganicPaidKeywords', 'rowLoaderTopOrganicPaidKeywords', 'resultTopOrganicPaidKeywords')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#top_organic_paid_keywords" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #73ad6f; border-bottom: 3px solid #73ad6f">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Top Organic & Paid Keywords
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderTopOrganicPaidKeywords" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="top_organic_paid_keywords" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultTopOrganicPaidKeywords">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <input type="hidden" id="VisitViewsTrafficEstimation" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getTrafficAndErningEst', 'VisitViewsTrafficEstimation', 'rowLoaderVisitViewsTrafficEstimation', 'resultVisitViewsTrafficEstimation')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#visit_views_traffic_estimation" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #05b3f2; border-bottom: 3px solid #05b3f2">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Visit, Views & Traffic Estimation
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderVisitViewsTrafficEstimation" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="visit_views_traffic_estimation" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultVisitViewsTrafficEstimation">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <input type="hidden" id="InternalExternalLinks" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getInternalAndExternal', 'InternalExternalLinks', 'rowLoaderInternalExternalLinks', 'resultInternalExternalLinks')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#internal_external_links" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #05b3f2; border-bottom: 3px solid #05b3f2">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Internal & External Links
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderInternalExternalLinks" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="internal_external_links" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultInternalExternalLinks">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <input type="hidden" id="BrokenLinkTest" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getBrokenLink', 'BrokenLinkTest', 'rowLoaderBrokenLinkTest', 'resultBrokenLinkTest')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#broken_link_test" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #d9c921; border-bottom: 3px solid #d9c921">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Broken Link
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderBrokenLinkTest" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="broken_link_test" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultBrokenLinkTest">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <input type="hidden" id="DesktopSuggestion" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getDesktopSugession', 'DesktopSuggestion', 'rowLoaderDesktopSuggestion', 'resultDesktopSuggestion')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#desktop_suggestion" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #796fad; border-bottom: 3px solid #796fad">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Desktop Suggestion
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderDesktopSuggestion" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="desktop_suggestion" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultDesktopSuggestion">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <input type="hidden" id="MobileSuggestion" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getMobileSugession', 'MobileSuggestion', 'rowLoaderMobileSuggestion', 'resultMobileSuggestion')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#mobile_suggestion" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #73ad6f; border-bottom: 3px solid #73ad6f">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Mobile Suggestion
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderMobileSuggestion" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="mobile_suggestion" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultMobileSuggestion">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <input type="hidden" id="SpeedOptimizationTips" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getSpeedOptimizationTips', 'SpeedOptimizationTips', 'rowLoaderSpeedOptimizationTips', 'resultSpeedOptimizationTips')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#speed_optimization_tips" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #05b3f2; border-bottom: 3px solid #05b3f2">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Speed & Optimization Tips
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderSpeedOptimizationTips" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="speed_optimization_tips" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultSpeedOptimizationTips">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<!--<div class="row">
+    <input type="hidden" id="SourceCodeOfWebpage" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getSourceCode', 'SourceCodeOfWebpage', 'rowLoaderSourceCodeOfWebpage', 'resultSourceCodeOfWebpage')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#source_code_of_webpage" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #b3203d; border-bottom: 3px solid #b3203d">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Source Code Of Webpage
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderSourceCodeOfWebpage" src="<?php //echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="source_code_of_webpage" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultSourceCodeOfWebpage">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>-->
+
+<div class="row">
+    <input type="hidden" id="ImageAltTestSeoChecker" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('imageAltTestSeoChecker', 'ImageAltTestSeoChecker', 'rowLoaderImageAltTestSeoChecker', 'resultImageAltTestSeoChecker')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#image_alt_test_seo_checker" aria-expanded="false">
+                <div class="acd-group" style="border: 1px solid #d9c921; border-bottom: 3px solid #d9c921">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Image Alt Test Seo Checker
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderImageAltTestSeoChecker" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="image_alt_test_seo_checker" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultImageAltTestSeoChecker">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <input type="hidden" id="HtmlMarkUpValidation" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getHtmlMarkUpValidation', 'HtmlMarkUpValidation', 'rowLoaderHtmlMarkUpValidation', 'resultHtmlMarkUpValidation')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#html_mark_up_validation" aria-expanded="false">
+                <div class="acd-group"  style="border: 1px solid #796fad; border-bottom: 3px solid #796fad">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>HTML mark up validation
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderHtmlMarkUpValidation" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="html_mark_up_validation" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultHtmlMarkUpValidation">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<div class="row">
+    <input type="hidden" id="CssValidation" value="0">
+    <div class="col-xl-12 mb-10">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <a onclick="showData('getCssValidation', 'CssValidation', 'rowLoaderCssValidation', 'resultCssValidation')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#css_validation" aria-expanded="false">
+                <div class="acd-group"  style="border: 1px solid #73ad6f; border-bottom: 3px solid #73ad6f">
+                    <i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Css Validation
+                    <i class="fa fa-chevron-up custom-circle-arrow pull-right"></i>
+                </div>
+                </a>
+                <center>
+                    <img style="display: none;" id="rowLoaderCssValidation" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div id="css_validation" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xl-12 mb-30" id="resultCssValidation">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<script>
+    function showData(action, txtBox, rowLoader, result) {
+        var url = '<?php echo Mage::getBaseUrl(); ?>websiteaudit/index/' + action + '?domain_id=<?php echo $domainId; ?>';
+        var whois = document.getElementById(txtBox).value;
+        if (parseInt(whois) <= 0) {
+            jQuery("#" + rowLoader).show();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: '',
+                success: function (data)
+                {
+                    document.getElementById(result).innerHTML = data;
+                    document.getElementById(txtBox).value = 1;
+                    if(txtBox == 'SocialMediaAnalysis'){
+                        jQuery('#datatable-top-hastags').dataTable({
+                            "scrollY":        "600px",
+                            "scrollCollapse": true,
+                            "paging":         false
+                        });
+                        jQuery('#datatable-related-keywords').dataTable({
+                            "scrollY":        "600px",
+                            "scrollCollapse": true,
+                            "paging":         false
+                        });
+                    }
+                    if(txtBox == 'KeywordOccourance'){
+                        createCustomDataTable('datatable-one-phrase');
+                        createCustomDataTable('datatable-two-phrase');
+                        createCustomDataTable('datatable-three-phrase');
+                        createCustomDataTable('datatable-four-phrase');
+                    }
+                    
+                    if(action == 'getWhoIs'){
+                        //For Merging requests Whois and IP Information
+                        //Need to remove loader from old showdata function
+                        showData('getIpDetails', 'IpInformation', 'rowLoaderWhoisInformation', 'resultIpInformation');
+                    }else if(action == 'getMozDetails'){
+                        //For Merging requests MOZ Information and Build with Technology
+                        //Need to remove loader from old showdata function
+                        showData('getBuildWith', 'buildWithTechnology', 'rowLoaderMozInformation', 'resultbuildWithTechnology');
+                    } else {
+                        jQuery("#" + rowLoader).hide();    
+                    }
+                }
+            });
+        }
+    }
+    
+    function createCustomDataTable(dataTableId){
+        jQuery('#'+dataTableId).dataTable({
+                            "scrollY":        "600px",
+                            "scrollCollapse": true,
+                            "paging":         false
+                        });
+    }
+</script>

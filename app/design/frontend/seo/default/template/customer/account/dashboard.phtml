@@ -1,0 +1,403 @@
+<?php
+$dashboardPermission = 4;
+$userPermissions = '';
+if (Mage::getSingleton('customer/session')->isLoggedIn()) {
+    $customer = Mage::getSingleton('customer/session')->getCustomer();
+    $customerData = Mage::getModel('customer/customer')->load($customer->getId());
+    $userPermissions = $customerData->getUserPermissions();
+} else {
+    
+}
+$linkAnalysisCollection = Mage::getModel('linkanalysis/linkanalysis')->getCollection();
+$linkDetailsCollection = Mage::getModel('linkdetails/linkdetails')->getCollection();
+
+$noOfTotalLink = $linkAnalysisCollection->getSize();
+$noOfCustomerLink = Mage::getModel('linkanalysis/linkanalysis')->getCollection()->addFieldToFilter('customer_id', $customer->getId())->getSize();
+
+$noOfScannedLink = $linkDetailsCollection->getSize();
+$noOfCustomerScannedLink = Mage::getModel('linkdetails/linkdetails')->getCollection()->addFieldToFilter('customer_id', $customer->getId())->getSize();
+
+$userActivityCollection = Mage::getModel('accountactivity/accountactivity')
+        ->getCollection()
+        //->addFieldToFilter('customer_id', $customer->getId())
+        ->setOrder('accountactivity_id', 'ASC');
+        
+$seoToolsCollection = Mage::getModel('smallseotools/smallseotools')
+        ->getCollection()
+        ->setOrder('smallseotools_id', 'ASC');
+$seoUserActivityCollection = Mage::getModel('seotoolsaccountactivity/seotoolsaccountactivity')->getCollection();
+
+$countLinkAnalysis = 0;
+$countWebsiteAudit = 0;
+$countKeywordManager = 0;
+$countSma = 0;
+$countSmm = 0;
+$countPageBuilder = 0;
+$countVideoCreator = 0;
+$countEmailMarketing = 0;
+$countSmallSeoTools = 0;
+
+$totalLinkAnalysis = 0;
+$totalWebsiteAudit = 0;
+$totalKeywordManager = 0;
+$totalSma = 0;
+$totalSmm = 0;
+$totalPageBuilder = 0;
+$totalVideoCreator = 0;
+$totalEmailMarketing = 0;
+$totlaSmallSeoTools = 0;
+
+foreach ($userActivityCollection as $userActivity) {
+    $signin = $userActivity->getSignin();
+    $signout = $userActivity->getSignout();
+    if ($userActivity->getLinkAnalysis() >= 1) {
+        if($userActivity->getCustomerId() == $customer->getId()){
+            $countLinkAnalysis++;    
+        }
+        $totalLinkAnalysis++;
+    }
+    if ($userActivity->getWebsiteAudit() >= 1) {
+        if($userActivity->getCustomerId() == $customer->getId()){
+            $countWebsiteAudit++;
+        }
+        $totalWebsiteAudit++;
+    }
+    if ($userActivity->getKeywordManager() >= 1) {
+        if($userActivity->getCustomerId() == $customer->getId()){
+            $countKeywordManager++;
+        }
+        $totalKeywordManager++;
+    }
+    if ($userActivity->getSma() >= 1) {
+        if($userActivity->getCustomerId() == $customer->getId()){
+            $countSma++;
+        }
+        $totalSma++;
+    }
+    if ($userActivity->getSmm() >= 1) {
+        if($userActivity->getCustomerId() == $customer->getId()){
+            $countSmm++;
+        }
+        $totalSmm++;
+    }
+    if ($userActivity->getPageBuilder() >= 1) {
+        if($userActivity->getCustomerId() == $customer->getId()){
+            $countPageBuilder++;
+        }
+        $totalPageBuilder++;
+    }
+    if ($userActivity->getVideoCreator() >= 1) {
+        if($userActivity->getCustomerId() == $customer->getId()){
+            $countVideoCreator++;
+        }
+        $totalVideoCreator++;
+    }
+    if ($userActivity->getEmailMarketing() >= 1) {
+        if($userActivity->getCustomerId() == $customer->getId()){
+            $countEmailMarketing++;
+        }
+        $totalEmailMarketing++;
+    }
+    if ($userActivity->getSmallSeoTools() >= 1) {
+        if($userActivity->getCustomerId() == $customer->getId()){
+            $countSmallSeoTools++;
+        }
+        $totlaSmallSeoTools++;
+    }
+}
+
+$arrActivities = array(
+    "Last Login" => $signin,
+    "Last Logout" => $signout,
+    "Link Analysis" => $countLinkAnalysis . '/' . $totalLinkAnalysis,
+    "Website Audit" => $countWebsiteAudit . '/' . $totalWebsiteAudit,
+    "Keyword Manager" => $countKeywordManager . '/' . $totalKeywordManager,
+    "Social Media Audit" => $countSma . '/' . $totalSma,
+    "Social Media Management" => $countSmm . '/' . $totalSmm,
+    "Page Builder" => $countPageBuilder. '/' . $totalPageBuilder,
+    "Video Creator" => $countVideoCreator. '/' . $totalVideoCreator,
+    "Email Marketing" => $countEmailMarketing. '/' . $totalEmailMarketing,
+    "Small SEO Tools" => $countSmallSeoTools . '/' . $totlaSmallSeoTools
+);
+?>
+<div class="page-title">
+    <div class="row">
+        <div class="col-sm-6">
+            <h4 class="mb-0"> Dashboard </h4>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                <li class="breadcrumb-item"><a href="index.html" class="default-color">Home</a></li>
+                <li class="breadcrumb-item active">Dashboard</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<!--<div class="row" style="margin-bottom: -30px;">
+    <div class="col-xl-12 mb-30">
+        <div class="card card-statistics mb-30" style="height: 100px;">
+            <div class="card-body">
+                <form>
+                    <div class="row">
+                        <div class="col-xl-8 mb-30">
+                            <div class="form-group">
+                                <input type="url" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter domain url">
+                                <small id="emailHelp" class="form-text text-muted">Enter your domain URL to get full report in PDF.</small>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 mb-30" style="padding-left: 0px; padding-right: 0px;">
+                            <div class="form-group">
+                                <a class="button x-small" href="#" style="padding: 10px 14px;">
+                                    <i class="fa fa-plus-square-o" style="font-size:19px; margin-right: 5px;"></i>
+                                    Add Domain
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 mb-30" style="padding-left: 0px; padding-right: 0px;">
+                            <div class="form-group">
+                                <a class="button x-small" href="#" style="padding: 10px 14px;">
+                                    <i class="fa fa-cloud-download" style="font-size:19px; margin-right: 5px;"></i>
+                                    Download
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>-->
+
+<?php //if (in_array($dashboardPermission, explode(",", $userPermissions))):  ?>
+<!-- widgets -->
+<style>
+    .round-chart span {
+        font-size: 18px !important;
+    }
+    .num-custom{
+        width: 50px;
+        height: 50px;
+        border: solid 2px #ccc;
+        border-radius: 50%;
+        text-align: center;
+        vertical-align: middle;
+        padding-top: 10px;
+        margin-right: 20px;
+        color: #666;
+        font-size: 1.3em;
+    }
+</style>
+<div class="row">
+    <div class="col-xl-3 col-md-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body p-0">
+                <div class="bg-success">
+                    <div class="d-block d-md-flex justify-content-between p-3">
+                        <div class="d-block">
+                            <h5 class="text-white">Domains</h5>
+                        </div>
+                        <div class="d-block d-md-flex">
+                            <i class="mr-10 text-white fa fa-arrow-up"> </i>
+                            <h5 class="text-white"><b><?php echo $noOfTotalLink; ?></b></h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-3 bg-white">
+                    <div class="row">
+                        <div class="col-sm-6 col-6 align-self-center">
+                            <h5>No of Domain</h5>
+                            <span class="text-success">Added</span>
+                        </div>
+                        <div class="col-sm-6 col-6 align-self-center text-right">
+                            <!--<span class="round-chart mb-0" data-percent="<?php echo $noOfCustomerLink; ?>" data-size="80" data-color="#28a745"> <span class="percent" style="width: 80px; height: 80px; line-height: 80px;"><?php echo $noOfCustomerLink; ?></span> </span>-->
+                            <p class="mb-10 text-info"><?php echo $noOfCustomerLink; ?></p>
+                            <div class="progress">
+                                <div class="skill2-bar bg-info" role="progressbar" style="width: <?php echo $noOfCustomerLink; ?>%" aria-valuenow="<?php echo $noOfCustomerLink; ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>  
+    <div class="col-xl-3 col-md-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body p-0">
+                <div class="bg-danger">
+                    <div class="d-block d-md-flex justify-content-between p-3">
+                        <div class="d-block">
+                            <h5 class="text-white">Link </h5>
+                        </div>
+                        <div class="d-block d-md-flex">
+                            <i class="mr-10 text-white fa fa-arrow-up"> </i>
+                            <h5 class="text-white"><b><?php echo $noOfScannedLink; ?></b></h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-3 bg-white">
+                    <div class="row">
+                        <div class="col-sm-6 col-6 align-self-center">
+                            <h5>No of Links</h5>
+                            <span class="text-danger">Scanned</span>
+                        </div>
+                        <div class="col-sm-6 col-6 align-self-center text-right">
+                            <!--<span class="round-chart mb-0" data-percent="<?php echo $noOfCustomerScannedLink; ?>" data-size="80" data-color="#dc3545"> <span class="percent" style="width: 80px; height: 80px; line-height: 80px;"><?php echo $noOfCustomerScannedLink; ?></span> </span>-->
+                            <p class="mb-10 text-info"><?php echo $noOfCustomerScannedLink; ?></p>
+                            <div class="progress">
+                                <div class="skill2-bar bg-danger" role="progressbar" style="width: <?php echo $noOfCustomerScannedLink; ?>%" aria-valuenow="<?php echo $noOfCustomerScannedLink; ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body p-0">
+                <div class="bg-warning">
+                    <div class="d-block d-md-flex justify-content-between p-3">
+                        <div class="d-block">
+                            <h5 class="text-white">Social Media Audit</h5>
+                        </div>
+                        <div class="d-block d-md-flex">
+                            <h5 class="text-white"><b>657</b></h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-3 bg-white">
+                    <div class="row">
+                        <div class="col-sm-6 col-6 align-self-center">
+                            <h5>No of SMA</h5>
+                            <span class="text-warning">5260 total</span>
+                        </div>
+                        <div class="col-sm-6 col-6 align-self-center text-right">
+                            <!--<span class="round-chart mb-0" data-percent="55" data-size="80" data-color="#ffc107"> <span class="percent" style="width: 80px; height: 80px; line-height: 80px;">55</span> </span>-->
+                            <p class="mb-10 text-info">55</p>
+                            <div class="progress">
+                                <div class="skill2-bar bg-warning" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body p-0">
+                <div class="bg-dark">
+                    <div class="d-block d-md-flex justify-content-between p-3">
+                        <div class="d-block">
+                            <h5 class="text-white">PDF Exports</h5>
+                        </div>
+                        <div class="d-block d-md-flex">
+                            <h5 class="text-white"><b>789</b></h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-3 bg-white">
+                    <div class="row">
+                        <div class="col-sm-6 col-6 align-self-center">
+                            <h5>No of Export</h5>
+                        </div>
+                        <div class="col-sm-6 col-6 align-self-center text-right">
+                            <!--<span class="round-chart mb-0" data-percent="77" data-size="80" data-color="#dc3545"> <span class="percent" style="width: 80px; height: 80px; line-height: 80px;">77</span> </span>-->
+                            <p class="mb-10 text-info">77</p>
+                            <div class="progress">
+                                <div class="skill2-bar bg-secondary" role="progressbar" style="width: 77%" aria-valuenow="77" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <h5 class="card-title">SEO Tools Used</h5>
+                <ul class="list-unstyled" style="max-height: 1000px;overflow: auto;">
+<?php $count = 1; ?>
+                    <?php foreach ($arrActivities as $key => $value): ?>
+                        <?php //if ($value > 0): ?>
+                            <li class="mb-20">
+                                <div class="media">
+                                    <div class="position-relative">
+        <?php /* ?><img class="img-fluid mr-15 avatar-small" src="<?php echo $this->getSkinUrl('images/item/'.$count.'.png', array('_secure' => true)); ?>" alt=""><?php */ ?>
+                                        <label class="num-custom"><?php echo $count; ?></label>
+                                    </div> 
+                                    <div class="media-body">
+                                        <h6 class="mt-0 mb-0"><?php echo $key; ?> <span class="float-right text-danger"> <?php echo $value; ?></span>  </h6>
+                                        <p>Scan link and analyse</p>
+                                    </div>
+                                </div>
+                                <div class="divider dotted mt-20"></div>
+                            </li>
+        <?php $count++; ?>
+                        <?php //endif; ?>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <h5 class="card-title">SEO Tools Used</h5>
+                <ul class="list-unstyled" style="max-height: 1000px;overflow: auto;">
+                <?php $count = 1; ?>
+                    <?php foreach ($seoToolsCollection as $seoTool): ?>
+                    <?php 
+                        //$seoUserActivityCollection->getSelect()->group('customer_id, smallseotools_id');
+                        //$seoUserActivityCollection->addAttributeToSelect('customer_id, smallseotools_id, count(*) as cnt');
+                        $userSeoActivityCount = 0;
+                        $totalSeoActivityCount = 0;
+                        foreach($seoUserActivityCollection as $seoUserActivity){
+                            if($seoUserActivity->getSmallseotoolsId() == $seoTool->getSmallseotoolsId()){
+                                if($seoUserActivity->getCustomerId() == $customer->getId()){
+                                    $userSeoActivityCount++;
+                                }
+                                $totalSeoActivityCount++;
+                            }
+                        }
+                    ?>
+                        <li class="mb-20">
+                                <div class="media">
+                                    <div class="position-relative">
+                                        <label class="num-custom"><?php echo $count; ?></label>
+                                    </div> 
+                                    <div class="media-body">
+                                        <h6 class="mt-0 mb-0"><?php echo $seoTool->getTitle(); ?> <span class="float-right text-danger"> <?php echo $userSeoActivityCount.' / '.$totalSeoActivityCount; ?></span>  </h6>
+                                    </div>
+                                </div>
+                                <div class="divider dotted mt-20"></div>
+                            </li>
+                        <?php $count++; ?>
+                    <?php endforeach; ?>
+                <!--<div class="row">
+                    <?php //foreach($seoToolsCollection as $seoTool) : ?>
+                        <div class="col-xl-4">
+                            <h6><?php //echo $seoTool->getTitle(); ?></h6>
+                        </div>
+                    <?php //endforeach; ?>
+                </div>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- ---------------------------------------->
+
+<!-- ---------------------------------------->
+<?php //else:  ?>
+<!--<div class="alert alert-danger" role="alert">
+    Sorry! You are not authorized to access your Dashboard, Click <a href="#" class="alert-link">here</a> to contact site administrator.
+</div>-->
+<?php //endif;  ?>

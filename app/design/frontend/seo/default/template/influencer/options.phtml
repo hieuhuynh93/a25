@@ -1,0 +1,157 @@
+<?php
+$home = 'active_option';
+$accountManager = '';
+$schedule = '';
+$caption = '';
+$fileManager = '';
+$tools = '';
+$post = '';
+$publishAll = '';
+if ($_REQUEST['active_option'] == 'home') {
+    $home = 'active_option';
+    $accountManager = '';
+    $schedule = '';
+    $caption = '';
+    $fileManager = '';
+    $tools = '';
+    $post = '';
+    $publishAll = '';
+} elseif ($_REQUEST['active_option'] == 'accountManager') {
+    $home = '';
+    $accountManager = 'active_option';
+    $schedule = '';
+    $caption = '';
+    $fileManager = '';
+    $post = '';
+    $publishAll = '';
+    $tools = '';
+} elseif ($_REQUEST['active_option'] == 'schedule') {
+    $home = '';
+    $accountManager = '';
+    $schedule = 'active_option';
+    $caption = '';
+    $fileManager = '';
+    $tools = '';
+    $post = '';
+    $publishAll = '';
+} elseif ($_REQUEST['active_option'] == 'caption') {
+    $home = '';
+    $accountManager = '';
+    $schedule = '';
+    $caption = 'active_option';
+    $fileManager = '';
+    $tools = '';
+    $post = '';
+    $publishAll = '';
+} elseif ($_REQUEST['active_option'] == 'fileManager') {
+    $home = '';
+    $accountManager = '';
+    $schedule = '';
+    $caption = '';
+    $fileManager = 'active_option';
+    $tools = '';
+    $post = '';
+    $publishAll = '';
+} elseif ($_REQUEST['active_option'] == 'tools') {
+    $home = '';
+    $accountManager = '';
+    $schedule = '';
+    $caption = '';
+    $fileManager = '';
+    $tools = 'active_option';
+    $post = '';
+    $publishAll = '';
+}elseif ($_REQUEST['active_option'] == 'post') {
+    $home = '';
+    $accountManager = '';
+    $schedule = '';
+    $caption = '';
+    $fileManager = '';
+    $tools = '';
+    $post = 'active_option';
+    $publishAll = '';
+}elseif ($_REQUEST['active_option'] == 'publishAll') {
+    $home = '';
+    $accountManager = '';
+    $schedule = '';
+    $caption = '';
+    $fileManager = '';
+    $tools = '';
+    $post = '';
+    $publishAll = 'active_option';
+}
+?>
+
+<div class="row">
+    <style>
+        .icon{
+            box-sizing: border-box;
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border-radius: 100%;
+            background: #f7f7f7;
+            background-image: none;
+            background-origin: padding-box;
+            line-height: 50px;
+            color: #666;
+            font-size: 18px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-bottom-color: rgb(204, 204, 204);
+            border-bottom-color: #bbb;
+            background-origin: border-box;
+            background-image: -webkit-linear-gradient(top,#fff,#eee);
+            background-image: linear-gradient(to bottom,#fff,#eee);
+            text-shadow: 0 1px 0 #fff;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        .icon:hover{
+            color: #84BA3F;
+            border: 1px solid #84BA3F;
+            font-size: 18px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .active_option{
+            color: #84BA3F;
+            border: 1px solid #84BA3F;
+            font-size: 18px;
+            text-align: center;
+            cursor: text;
+        }
+    </style>
+    <div class="col-12 mb-30 ">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <a href="<?php echo Mage::getBaseUrl() . 'influencer/'; ?>" data-toggle="tooltip" data-placement="bottom" title="Dashboard">
+                    <i class="fa fa-cubes icon <?php echo $home; ?>" style="font-size:24px"></i>
+                </a>
+                <a href="<?php echo Mage::getBaseUrl() . 'account_manager/'; ?>" data-toggle="tooltip" data-placement="bottom" title="Account Manager">
+                    <i class="fa fa-user-o icon <?php echo $accountManager; ?>" style="font-size:24px"></i>
+                </a>
+                <a href="<?php echo Mage::getBaseUrl() . 'schedule/'; ?>" data-toggle="tooltip" data-placement="bottom" title="Schedules">
+                    <i class="fa fa-hourglass-half icon <?php echo $schedule; ?>" style="font-size:24px"></i>
+                </a>
+                <a href="<?php echo Mage::getBaseUrl() . 'captions/'; ?>" data-toggle="tooltip" data-placement="bottom" title="Caption">
+                    <i class="fa fa-share-square-o icon <?php echo $caption; ?>" style="font-size:24px"></i>
+                </a>
+                <a href="<?php echo Mage::getBaseUrl() . 'file_manager/'; ?>" data-toggle="tooltip" data-placement="bottom" title="File Manager">
+                    <i class="fa fa-folder-o icon <?php echo $fileManager; ?>" style="font-size:24px"></i>
+                </a>
+                <a href="<?php echo Mage::getBaseUrl() . 'smm_tools/'; ?>" data-toggle="tooltip" data-placement="bottom" title="Tools">
+                    <i class="fa fa-wrench icon <?php echo $tools; ?>" style="font-size:24px"></i>
+                </a>
+                <a href="<?php echo Mage::getBaseUrl() . 'smm_post/'; ?>" data-toggle="tooltip" data-placement="bottom" title="Post">
+                    <i class="fa fa-edit icon <?php echo $post; ?>" style="font-size:24px"></i>
+                </a>
+                <a href="<?php echo Mage::getBaseUrl() . 'publish_all/'; ?>" data-toggle="tooltip" data-placement="bottom" title="Publish All">
+                    <i class="fa fa-laptop icon <?php echo $publishAll; ?>" style="font-size:24px"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,304 @@
+<?php
+
+class Masterajib_Websiteaudit_IndexController extends Mage_Core_Controller_Front_Action {
+    
+    public function getBuildWithAction(){
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        
+        $helper = Mage::helper('websiteaudit/data');
+        $result = $helper->getBuildWithTechnology($primaryDomain->getUrl());
+        
+        echo "<pre>"; print_r($result);
+    }
+    
+    public function getWebsiteSummaryAction(){
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        
+        $helper = Mage::helper('websiteaudit/data');
+        $result = $helper->getWebsiteSummary($primaryDomain->getUrl());
+        echo json_encode($result);
+    }
+    
+    public function getTrafficAndErningEstAction(){
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('websiteaudit/data');
+        $result = $helper->getTrafficAndErningEst($primaryDomain->getUrl());
+        echo json_encode($result);
+    }
+
+
+    public function getBrokenLinkAction(){
+        $result = array();
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('websiteaudit/data');
+        $result = $helper->getBrokenLink($primaryDomain->getUrl());
+        echo json_encode($result);
+        //echo '<pre>'; print_r($result);
+        
+    }
+    
+    public function satsAndSuggessionsAction(){
+        $result = array();
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('websiteaudit/data');
+        
+        $result['satsAndpage_statistic_speed_mobile'] = json_decode($helper->page_statistic_speed_mobile($primaryDomain->getUrl()), true); 
+        $result['satsAndpage_statistic_speed_desktop'] = json_decode($helper->page_statistic_speed_desktop($primaryDomain->getUrl()), true);
+        
+        echo json_encode($result);
+        
+    }
+    
+    public function keywordAnalysisPhrasesAction(){
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('websiteaudit/data');
+        $primaryDomain->getUrl();
+        $keywordAnalysisPhrases = $helper->keywordAnalysisPhrases($primaryDomain->getUrl());
+        echo $keywordAnalysisPhrases;
+        //echo "<pre>"; print_r(json_decode($keywordAnalysisPhrases, true));
+    }
+
+    public function checkSitemapXmlAction(){
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('websiteaudit/data');
+        $siteMapXml = $helper->checkSitemapXml($primaryDomain->getUrl());
+        echo $siteMapXml;
+    }
+
+    public function getSimilarWebRawDataAction($domain, $proxy = "") {
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('websiteaudit/data');
+        $similarRawData = $helper->getSimilarWebRawData($primaryDomain->getUrl());
+        //$out = array_values($alexaRawData);
+        echo json_encode($similarRawData);
+    }
+
+    public function getRankAction($url) {
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('websiteaudit/data');
+        $rank = $helper->getRank($primaryDomain->getUrl());
+        echo implode(",", $rank);
+    }
+
+    public function getFbShareCountAction() {
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('linkanalysis/data');
+        $fbShareCount = $helper->getFbShareCount($primaryDomain->getUrl());
+        echo $fbShareCount;
+    }
+
+    public function getpinterestShareCountAction() {
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('linkanalysis/data');
+        $pinterestShareCount = $helper->getpinterestShareCount($primaryDomain->getUrl());
+        echo $pinterestShareCount;
+    }
+
+    public function getYandexCountAction() {
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('linkanalysis/data');
+        $yandexCount = 0; //$helper->getBingCount($primaryDomain->getUrl());
+        echo $yandexCount;
+    }
+
+    public function getBingCountAction() {
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('linkanalysis/data');
+        $bingCount = $helper->getBingCount($primaryDomain->getUrl());
+        echo $bingCount;
+    }
+
+    public function getYahooCountAction() {
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('linkanalysis/data');
+        $yahooCount = $helper->getYahooCount($primaryDomain->getUrl());
+        echo $yahooCount;
+    }
+
+    public function getGoogleCountAction() {
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('linkanalysis/data');
+        $googleCount = $helper->getGoogleCount($primaryDomain->getUrl());
+        echo $googleCount;
+    }
+
+    public function getPageLoadTimeAction() {
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('linkanalysis/data');
+        $loadTime = $helper->getPageLoadTime($primaryDomain->getUrl());
+        echo $loadTime;
+    }
+
+    public function getFileSizeAction() {
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('linkanalysis/data');
+        $fileSize = $helper->getFileSize($primaryDomain->getUrl());
+        echo $fileSize;
+    }
+
+    public function getHeadingTagsAction() {
+        $domainId = $_REQUEST['domain'];
+        $tagName = $_REQUEST['tagname'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('websiteaudit/data');
+        $headingTags = $helper->getHeadingTags($primaryDomain->getUrl(), $tagName);
+        echo $headingTags;
+    }
+
+    public function getRobotTxtAction() {
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('websiteaudit/data');
+        $remoteFileExist = ($helper->getRobotTxt($primaryDomain->getUrl()) == 'N/A' ? 'N/A' : $helper->getRobotTxt($primaryDomain->getUrl()));
+        echo $remoteFileExist;
+    }
+
+    public function getBackLinkCountAction() {
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('websiteaudit/data');
+        $backLinkCount = $helper->getBackLinkCount($primaryDomain->getUrl());
+        echo $backLinkCount;
+    }
+
+    public function getSimilarWebsiteAction() {
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('websiteaudit/data');
+        
+        $similarWebsite = $helper->getSimilarWebsite($primaryDomain->getUrl());
+        echo $similarWebsite;
+    }
+
+    public function getMozDetailsAction() {
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('websiteaudit/data');
+        $mozDetails = $helper->getMozDetails($primaryDomain->getUrl());
+        echo json_encode(array(
+            'MozRank_normalised' => $mozDetails['MozRank_normalised'],
+            'MozRank_raw' => $mozDetails['MozRank_raw'],
+            'Domain_Authority' => $mozDetails['Domain_Authority'],
+            'Number_of_External_Links_to_the_URL' => $mozDetails['Number_of_External_Links_to_the_URL'],
+            'Total_number_of_Links_to_the_URL' => $mozDetails['Total_number_of_Links_to_the_URL'],
+            'MozRank_Normalised' => $mozDetails['MozRank_Normalised'],
+            'MozRank_Raw' => $mozDetails['MozRank_Raw'],
+            'PageAuthority' => $mozDetails['PageAuthority'],
+            'HTTP_Status' => $mozDetails['HTTP_Status'],
+            'Canonical_URL' => $mozDetails['Canonical_URL']
+        ));
+    }
+
+    public function getIpDetailsAction() {
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('websiteaudit/data');
+        $ipDetails = $helper->getIpDetails($primaryDomain->getUrl());
+        echo json_encode(array(
+            'ip' => $ipDetails['query'],
+            'isp' => $ipDetails['isp'],
+            'country' => $ipDetails['country'],
+            'city' => $ipDetails['city'],
+            'regionName' => $ipDetails['regionName'],
+            'timezone' => $ipDetails['timezone'],
+            'lat' => $ipDetails['lat'],
+            'lon' => $ipDetails['lon']
+        ));
+    }
+
+    public function getDesktopScreenshotAction() {
+        $domain = $_REQUEST['domain'];
+        $helper = Mage::helper('websiteaudit/data');
+        $image = $helper->getUrlScreenShotDesktop($domain);
+        echo $image;
+    }
+
+    public function getMobileScreenshotAction() {
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('websiteaudit/data');
+        $image = $helper->getUrlScreenShotMobile($primaryDomain->getUrl());
+        echo $image;
+    }
+
+    public function getDesktopPageSpeedAction() {
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('websiteaudit/data');
+        $score = $helper->getDesktopPageSpeed($primaryDomain->getUrl());
+        echo $score;
+    }
+
+    public function getMobilePageSpeedAction() {
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('websiteaudit/data');
+        $score = $helper->getMobilePageSpeed($primaryDomain->getUrl());
+        echo $score;
+    }
+
+    public function getMobileUsaBilityAction() {
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('websiteaudit/data');
+        $mobileUsabilityScore = $helper->getMobileUsaBility($primaryDomain->getUrl());
+        echo $mobileUsabilityScore;
+    }
+
+    public function getPageStatsMobileAction() {
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('websiteaudit/data');
+        $mobileUsabilityScore = $helper->getPageStatsMobile($primaryDomain->getUrl());
+        echo $mobileUsabilityScore;
+    }
+
+    public function getPageStatsDesktopAction() {
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('websiteaudit/data');
+        $mobileUsabilityScore = $helper->getPageStatsDesktop($primaryDomain->getUrl());
+        echo $mobileUsabilityScore;
+    }
+
+    public function getWhoIsAction() {
+        $domainId = $_REQUEST['domain'];
+        $primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($domainId);
+        $helper = Mage::helper('websiteaudit/data');
+        $whoIs = $helper->getWhoIs($primaryDomain->getUrl());
+        echo json_encode(array(
+            'domain_name' => $whoIs['domain name'],
+            'registrar_iana_id' => $whoIs['registrar iana id'],
+            'domain_age' => $helper->calculate_date_differece(substr($whoIs['registry expiry date'], 0, 10), substr($whoIs['creation date'], 0, 10)),
+            'creation_date' => $whoIs['creation date'],
+            'updated_date' => $whoIs['updated date'],
+            'registry_expiry_date' => $whoIs['registry expiry date'],
+            'registrar' => $whoIs['registrar'],
+            'name_server' => $whoIs['name server'],
+            'last_update_of_whois_database' => $whoIs['last update of whois database']
+        ));
+    }
+
+    public function indexAction() {
+        $this->loadLayout();
+        $this->renderLayout();
+    }
+
+}

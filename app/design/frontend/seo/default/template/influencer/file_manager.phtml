@@ -1,0 +1,765 @@
+<?php
+$categoryId = $_REQUEST['cat'];
+$fileType = $_REQUEST['fileType'];
+
+$numOfRecords = 12;
+
+$customer = '';
+
+$currentPage = $_REQUEST['page'];
+if ($currentPage <= 0) {
+    $currentPage = 1;
+}
+
+if (Mage::getSingleton('customer/session')->isLoggedIn()) {
+    $customerData = Mage::getSingleton('customer/session')->getCustomer();
+    $customer = Mage::getModel('customer/customer')->load($customerData->getId());
+} else {
+    $url = Mage::getUrl('customer/account/login');
+    Mage::app()->getFrontController()->getResponse()->setRedirect($url);
+}
+
+$categoryCollection = Mage::getModel('catalog/category')
+        ->getCollection()
+        ->addAttributeToFilter('is_active', 1)
+        ->addAttributeToFilter('level', 2)
+        ->addAttributeToSelect('name')
+        ->addAttributeToSort('position', 'ASC');
+
+$adminUserIds = '';
+$adminCustomerCollection = Mage::getModel('customer/customer')
+        ->getCollection()
+        ->addFieldToFilter('user_type', '5');
+foreach ($adminCustomerCollection as $adminCustomer) {
+    $adminUserIds = $adminUserIds . "," . $adminCustomer->getId();
+}
+
+$userIds = $customerData->getId() . $adminUserIds;
+
+$totalFiles = 27;
+
+$fileManagerCollection = Mage::getModel('filemanager/filemanager')
+        ->getCollection()
+        ->addFieldToFilter('customer_id', array('in' => array($userIds)))
+        ->addFieldToFilter('status', '1')
+        ->addFieldToFilter('category_ids', array('neq' => '7'))
+        ->setOrder('filemanager_id', 'DESC');
+
+$generalUploads = Mage::getModel('filemanager/filemanager')
+        ->getCollection()
+        ->addFieldToFilter('customer_id', array('in' => array($userIds)))
+        ->addFieldToFilter('status', '1')
+        ->setOrder('filemanager_id', 'DESC')
+        ->setPageSize('12')
+        ->setCurPage('1');
+if ($categoryId >= 1) {
+    $generalUploads->addFieldToFilter('category_ids', $categoryId);
+} else {
+    
+}
+
+//echo "<pre>"; print_r($generalUploads->getData()); die();
+
+$totalFiles = $fileManagerCollection->getSize();
+$fileManagerCollection->setPageSize($numOfRecords)->setCurPage($currentPage);
+
+
+if ($categoryId > 0) {
+    $fileManagerCollection->addFieldToFilter('category_ids', $categoryId);
+}
+
+if (strlen($fileType) >= 3) {
+    $fileManagerCollection->addFieldToFilter('upload_type', array('in' => explode(",", $fileType)));
+}
+?>
+<?php $imageFileType = "jpg,jpeg,png,gif"; ?>
+<?php $videoFileType = "mp4,mpeg,avi"; ?>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<div class="page-title">
+    <div class="row">
+        <div class="col-sm-6">
+            <h4 class="mb-0"> Social Media Management - File Manager</h4>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                <li class="breadcrumb-item"><a href="<?php echo Mage::getBaseUrl(); ?>" class="default-color">Home</a></li>
+                <li class="breadcrumb-item active">File Manager </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<?php //echo file_get_contents(Mage::getBaseUrl() . "options?active_option=fileManager"); ?>
+
+<div class="row">
+    <div class="col-12 mb-30 ">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <!--<input onchange="getPreview(this);" id="files" type="file" multiple/>-->
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.3.1/js/fileinput.js"></script>
+                <form method="post" enctype="multipart/form-data" action="<?php echo Mage::getBaseUrl() . 'influencer/index/uploadMedia'; ?>">
+                    <?php if ($customer->getUserType() == '5'): ?>
+                        <div class="form-group">
+                            <select name="influencer_category" class="custom-select" required="required">
+                                <option value="">Select Category</option>
+                                <?php foreach ($categoryCollection as $category): ?>
+                                    <?php if ($category->getId() != '7'): ?>
+                                        <option value="<?php echo $category->getId(); ?>"><?php echo $category->getName(); ?></option>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    <?php else: ?>
+                        <input type="hidden" name="influencer_category" value="7">
+                    <?php endif; ?>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <span class="btn btn-default btn-file" style="width: 100%;">
+                                <input id="input-2" name="input2[]" type="file" class="file" multiple data-show-upload="true" data-show-caption="true">
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" id="media_photo">
+    <div class="col-12 mb-30 ">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <!-- ----------------------------------------->
+                <div class="tab tab-border nav-left" id="filemanager_content">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a onclick="setDestination('my_uploads')" class="nav-link" id="home-06-tab" data-toggle="tab" href="#home-06" role="tab" aria-controls="home-06" aria-selected="false"> <i class="fa fa-home"></i> My uploads</a>
+                        </li>
+                        <li class="nav-item">
+                            <a onclick="setDestination('socicos_directory')" class="nav-link active show" id="profile-06-tab" data-toggle="tab" href="#profile-06" role="tab" aria-controls="profile-06" aria-selected="true"><i class="fa fa-user"></i> SOCICOS directory </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade" id="home-06" role="tabpanel" aria-labelledby="home-06-tab">
+                            <div class="row" style="padding-bottom: 5px; border-bottom: solid 2px #ccc;">
+                                <div class="col-md-6">
+                                    <!--<h5>
+                                            Media (8 Records Found)
+                                        </h5>-->
+                                </div>
+                                <div class="col-md-6">
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                &nbsp;
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <small style="float: right;">
+                                                <a href="#" class="btn btn-outline-success btn-sm"><i class="fa fa-pencil-square-o" style="font-size:12px; margin-right: 5px;"></i>Select all</a>
+                                                <a href="#" class="btn btn-outline-success btn-sm"><i class="fa fa-trash-o" style="font-size:12px; margin-right: 5px;"></i>Delete</a>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="padding-top: 10px;">
+                                <!-- ----------------------------------->
+                                <div class="tab tab-vertical" style="width: 100%;">
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li class="nav-item" style="text-align: center;">
+                                            <a class="nav-link active show" id="home-09-tab" data-toggle="tab" href="#home-09" role="tab" aria-controls="home-09" aria-selected="true">  
+                                                <i class="fa fa-folder-o" style="font-size:28px"></i>
+                                                <p style="font-size: 16px;">General Uploads</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item" style="text-align: center;">
+                                            <a style="text-align: center;" class="nav-link" id="profile-09-tab" data-toggle="tab" href="#profile-09" role="tab" aria-controls="profile-09" aria-selected="false"> 
+                                                <i class="fa fa-folder-o" style="font-size:28px"></i>
+                                                <p style="font-size: 16px;">Bulkpost Uploads</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" style="padding: 5px 5px;">
+                                        <div class="tab-pane fade active show" id="home-09" role="tabpanel" aria-labelledby="home-09-tab">
+                                            <div class="row">
+
+
+
+                                                <?php foreach ($generalUploads as $generalUpload): ?>
+                                                    <div class="col-md-3" style="text-align: center;">
+                                                        <div class="file-preview-frame" title="<?php echo $generalUpload->getFilename(); ?>" style="width:100%;">
+                                                            <img id="" style="width: 100%;" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA); ?>media_library/<?php echo $generalUpload->getFilename(); ?>" width="100%">
+                                                            <div class="file-thumbnail-footer">
+                                                                <div class="file-footer-caption" title="<?php echo $generalUpload->getFilename(); ?>"><?php echo $generalUpload->getFilename(); ?></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="profile-09" role="tabpanel" aria-labelledby="profile-09-tab">
+                                            <?php
+                                            $modelBulkpostingCollection = Mage::getModel('bulkposting/bulkposting')
+                                                    ->getCollection()
+                                                    ->addFieldToFilter('status', '1')
+                                                    ->addFieldToFilter('customer_id', $customerData->getId())
+                                                    ->setOrder('bulkposting_id', 'DESC')
+                                                    ->setPageSize('12')
+                                                    ->setCurPage('1');
+                                            ?>
+                                            <div class="row" id="locationContent">
+                                                <?php foreach ($modelBulkpostingCollection as $modelBulkposting): ?>
+                                                    <div class="col-md-3" style="text-align: center;">
+                                                        <a href="javascript:openFolder('<?php echo $modelBulkposting->getId(); ?>');">
+                                                            <i id="folder<?php echo $modelBulkposting->getId(); ?>" class="fa fa-folder-o" style="font-size:24px"></i>
+                                                            <p class="">(<?php echo strtoupper(str_replace("_", " ", $modelBulkposting->getPostType())); ?>)<br><?php echo $modelBulkposting->getCreatedTime(); ?></p>
+                                                        </a>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>
+                        <div class="tab-pane fade active show" id="profile-06" role="tabpanel" aria-labelledby="profile-06-tab">
+                            <div class="row" style="padding-bottom: 5px; border-bottom: solid 2px #ccc;">
+                                <div class="col-md-6">
+                                    <h5>
+                                        <input type="checkbox" style="float: left; margin-top: 5px; margin-right: 10px;">
+                                        Media (<?php echo $fileManagerCollection->getSize(); ?> Records Found)
+                                    </h5>
+                                </div>
+                                <div class="col-md-6">
+
+                                    <div class="row">
+                                        <div class="col-md-9">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <select class="custom-select" onchange="getMediaCategory(this);">
+                                                            <?php foreach ($categoryCollection as $category): ?>
+                                                                <option <?php echo ($categoryId == $category->getId() ? 'selected="selected"' : ''); ?> value="<?php echo $category->getId(); ?>"><?php echo $category->getName(); ?></option>
+                                                            <?php endforeach; ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <select class="custom-select" onchange="getFileType(this);">
+                                                            <option value="">File Type</option>
+                                                            <option <?php echo ($fileType == $imageFileType ? 'selected="selected"' : ''); ?> value="<?php echo $imageFileType; ?>">Image</option>
+                                                            <option <?php echo ($fileType == $videoFileType ? 'selected="selected"' : ''); ?> value="<?php echo $videoFileType; ?>">Video</option>
+                                                        </select>
+                                                    </div> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <?php if ($customer->getUserType == '5'): ?>
+                                                <small style="float: right;">
+                                                    <a href="javascript:deleteSocicosFiles();" class="btn btn-outline-success btn-sm">
+                                                        <i class="fa fa-trash-o" style="font-size:18px"></i>
+                                                    </a>
+                                                </small>
+                                            <?php endif; ?>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="padding-top: 10px;">
+                                <?php foreach ($fileManagerCollection as $fileManagerColl): ?>
+                                    <div class="col-md-3 text-xs-center" style="margin-top: 20px;">
+                                        <!-- ---------------------------->
+                                        <?php if (in_array($fileManagerColl->getUploadType(), explode(",", $videoFileType))): ?>
+                                            <div class="file-preview-frame" title="Chaha_Hai_Tujhko.mp4" style="width:100%;">
+                                                <label class="image-checkbox" title="7" style="width: 100%;">
+                                                    <video controls="" width="100%" height="160px">
+                                                        <source id="socicosDirImage<?php echo $fileManagerColl->getId(); ?>" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA); ?>media_library/<?php echo $fileManagerColl->getFilename(); ?>" type="video/mp4">
+                                                        <div class="file-preview-other">
+                                                            <span class="file-icon-4x">
+                                                                <i class="glyphicon glyphicon-file"></i>
+                                                            </span>
+                                                        </div>
+                                                    </video>
+                                                    <input type="checkbox" name="team[]" value="<?php echo $fileManagerColl->getId(); ?>" class="tea">
+                                                </label>
+                                                <div class="file-thumbnail-footer">
+                                                    <div class="file-footer-caption" title="Chaha_Hai_Tujhko.mp4"><?php echo $fileManagerColl->getFilename(); ?></div>
+                                                </div>
+                                            </div>
+                                        <?php else: ?>
+                                            <div class="file-preview-frame" title="<?php echo $generalUpload->getFilename(); ?>" style="width:100%;">
+                                                <label class="image-checkbox" title="7" style="width: 100%;">
+                                                    <img id="socicosDirImage<?php echo $fileManagerColl->getId(); ?>" style="width: 100%;" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA); ?>media_library/<?php echo $fileManagerColl->getFilename(); ?>" width="100%">
+                                                    <input type="checkbox" name="team[]" value="<?php echo $fileManagerColl->getId(); ?>" class="tea">
+                                                    <div></div>
+                                                </label>
+                                                <div class="file-thumbnail-footer">
+                                                    <div class="file-footer-caption" title="<?php echo $generalUpload->getFilename(); ?>"><?php echo $fileManagerColl->getFilename(); ?></div>
+                                                </div>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <!-- -->
+
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- -------------------------------------------->
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="dataTables_info">Showing <?php echo (($numOfRecords * $currentPage) - $numOfRecords) + 1; ?> to <?php echo $numOfRecords * $currentPage; ?> of <?php echo $totalFiles; ?> entries</div>
+    </div>
+    <?php
+    if (($totalFiles % $numOfRecords) == 0) {
+        $numOfPages = $totalFiles / $numOfRecords;
+    } else {
+        $numOfPages = ($totalFiles / $numOfRecords) + 1;
+    }
+    ?>
+    <div class="col-md-7">
+        <div class="dataTables_paginate paging_simple_numbers" style="float: right;">
+            <ul class="pagination">
+                <?php $isPrevious = 0; ?>
+                <?php $currentURL = Mage::getBaseUrl() . 'file_manager'; ?>
+                <?php for ($i = 1; $i <= $numOfPages; $i++): ?>
+                    <?php if ($currentPage > $i && $isPrevious == 0): ?>
+                        <?php $isPrevious++; ?>
+                        <li class="paginate_button page-item previous">
+                            <a href="<?php echo $currentURL . '?page=' . ($currentPage - 1); ?>" class="page-link">Previous</a>
+                        </li>
+                    <?php endif; ?>
+                    <li class="paginate_button page-item <?php echo ($currentPage == $i ? 'active' : ''); ?>">
+                        <a href="<?php echo $currentURL . '?page=' . ($i); ?>" class="page-link"><?php echo $i; ?></a>
+                    </li>
+                    <?php /* if ($currentPage < $i): ?>
+                      <li class="paginate_button page-item next">
+                      <a href="<?php echo $currentURL . '?page=' . ($currentPage + 1); ?>" class="page-link">Next</a>
+                      </li>
+                      <?php endif; */ ?>
+                <?php endfor; ?>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var category = '';
+    var fileType = '';
+
+    function deleteSocicosFiles() {
+        var url = '<?php echo Mage::getBaseUrl(); ?>filemanager/index/deletesocicosfiles';
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        var ids = [];
+        jQuery.each($("input[name='team[]']:checked"), function () {
+            ids.push(jQuery(this).val());
+        });
+        var fileIds = ids.join(",");
+        
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: {fileIds:fileIds},
+            success: function (data)
+            {
+              //var $result = jQuery(data).find('#locationContent').html();
+              //jQuery("#locationContent").html($result);
+              //jQuery("#pre-loader").hide();
+            }
+        });
+    }
+
+    function goPreviousFolderView() {
+        var url = '<?php echo Mage::getBaseUrl(); ?>file_manager';
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                var $result = jQuery(data).find('#locationContent').html();
+                jQuery("#locationContent").html($result);
+                jQuery("#pre-loader").hide();
+            }
+        });
+    }
+
+    function openFolder(bulkuploadid) {
+        jQuery("#folder" + bulkuploadid).switchClass('fa-folder-o', 'fa-spinner fa-spin');
+        var url = '<?php echo Mage::getBaseUrl(); ?>filemanager/index/getfolderobjects';
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: {bulkuploadid: bulkuploadid},
+            success: function (data)
+            {
+                jQuery("#locationContent").html(data);
+                //var $result = jQuery(data).find('#media_photo').html();
+                //jQuery("#media_photo").html($result);
+                jQuery("#pre-loader").hide();
+            }
+        });
+    }
+
+    function addCategories() {
+
+    }
+
+    var destinationGlobal = 'socicos_directory';
+    function setDestination(destination) {
+        destinationGlobal = destination;
+    }
+
+    function getFileType(e) {
+        var fileType = e.value;
+        var url = '<?php echo Mage::getBaseUrl(); ?>file_manager/?cat=' + category + '&fileType=' + fileType;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                var $result = jQuery(data).find('#media_photo').html();
+                jQuery("#media_photo").html($result);
+                document.getElementById("profile-06-tab").click();
+                jQuery("#pre-loader").hide();
+            }
+        });
+    }
+
+    function getMediaCategory(e) {
+        //alert("hi");
+        category = e.value;
+        var url = '<?php echo Mage::getBaseUrl(); ?>file_manager/?cat=' + category + '&fileType=' + fileType;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                var $result = jQuery(data).find('#media_photo').html();
+                jQuery("#media_photo").html($result);
+                document.getElementById("profile-06-tab").click();
+                jQuery("#pre-loader").hide();
+            }
+        });
+    }
+
+    // init the state from the input
+    jQuery(".image-checkbox").each(function () {
+        if (jQuery(this).find('input[type="checkbox"]').first().attr("checked")) {
+            jQuery(this).addClass('image-checkbox-checked');
+        } else {
+            jQuery(this).removeClass('image-checkbox-checked');
+        }
+    });
+
+    // sync the state to the input
+    jQuery(".image-checkbox").on("click", function (e) {
+        if (jQuery(this).hasClass('image-checkbox-checked')) {
+            jQuery(this).removeClass('image-checkbox-checked');
+            jQuery(this).find('input[type="checkbox"]').first().removeAttr("checked");
+        } else {
+            jQuery(this).addClass('image-checkbox-checked');
+            jQuery(this).find('input[type="checkbox"]').first().attr("checked", "checked");
+        }
+
+        e.preventDefault();
+    });
+</script>
+
+<style>
+    .text-shaddow{
+        color: white;
+        text-shadow: 1px 1px 2px #000000;
+    }
+
+    .image-checkbox
+    {
+        cursor: pointer;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        border: 4px solid transparent;
+        outline: 0;
+    }
+
+    .image-checkbox input[type="checkbox"]
+    {
+        display: none;
+    }
+
+    .image-checkbox-checked
+    {
+        border-color: #f58723;
+    }
+
+    .text-xs-center{
+        text-align: center !important;
+        vertical-align: middle;
+    }
+
+    /*-------------------------------------------*/
+
+    .file-object {
+        margin: 0 0 -5px 0;
+        padding: 0;
+    }
+
+    .btn-file {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-file input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        min-width: 100%;
+        min-height: 100%;
+        text-align: right;
+        opacity: 0;
+        background: none repeat scroll 0 0 transparent;
+        cursor: inherit;
+        display: block;
+    }
+
+    .file-caption-name {
+        display: inline-block;
+        overflow: hidden;
+        height: 20px;
+        word-break: break-all;
+    }
+
+    .input-group-lg .file-caption-name {
+        height: 25px;
+    }
+
+    .file-preview-detail-modal {
+        text-align: left;
+    }
+
+    .file-error-message {
+        color: #a94442;
+        background-color: #f2dede;
+        margin: 5px;
+        border: 1px solid #ebccd1;
+        border-radius: 4px;
+        padding: 15px;
+    }
+
+    .file-error-message pre, .file-error-message ul {
+        margin: 0;
+        text-align: left;
+    }
+
+    .file-error-message pre {
+        margin: 5px 0;
+    }
+
+    .file-caption-disabled {
+        background-color: #EEEEEE;
+        cursor: not-allowed;
+        opacity: 1;
+    }
+
+    .file-preview {
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        padding: 5px;
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    .file-preview-frame {
+        display: table;
+        margin: 8px;
+        height: 160px;
+        border: 1px solid #ddd;
+        box-shadow: 1px 1px 5px 0 #a2958a;
+        padding: 6px;
+        float: left;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .file-preview-frame:not(.file-preview-error):hover {
+        box-shadow: 3px 3px 5px 0 #333;
+    }
+
+    .file-preview-image {
+        height: 160px;
+        vertical-align: middle;
+    }
+
+    .file-preview-text {
+        text-align: left;
+        width: 160px;
+        margin-bottom: 2px;
+        color: #428bca;
+        background: #fff;
+        overflow-x: hidden;
+    }
+
+    .file-preview-other {
+        display: table-cell;
+        text-align: center;
+        vertical-align: middle;
+        width: 160px;
+        height: 160px;
+        border: 2px solid #999;
+        border-radius: 30px;
+    }
+
+    .file-preview-other:hover {
+        opacity: 0.8;
+    }
+
+    .file-actions, .file-other-error {
+        text-align: left;
+    }
+
+    .file-icon-lg {
+        font-size: 1.2em;
+    }
+
+    .file-icon-2x {
+        font-size: 2.4em;
+    }
+
+    .file-icon-4x {
+        font-size: 4.8em;
+    }
+
+    .file-input-new .file-preview, .file-input-new .close, .file-input-new .glyphicon-file,
+    .file-input-new .fileinput-remove-button, .file-input-new .fileinput-upload-button,
+    .file-input-ajax-new .fileinput-remove-button, .file-input-ajax-new .fileinput-upload-button {
+        display: none;
+    }
+
+    .file-thumb-loading {
+        background: transparent url('../img/loading.gif') no-repeat scroll center center content-box !important;
+    }
+
+    .file-actions {
+        margin-top: 15px;
+    }
+
+    .file-footer-buttons {
+        float: right;
+    }
+
+    .file-upload-indicator {
+        padding-top: 2px;
+        cursor: default;
+        opacity: 0.8;
+        width: 60%;
+    }
+
+    .file-upload-indicator:hover {
+        font-weight: bold;
+        opacity: 1;
+    }
+
+    .file-footer-caption {
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 160px;
+        text-align: center;
+        padding-top: 4px;
+        font-size: 11px;
+        color: #777;
+        margin: 5px auto 10px auto;
+    }
+
+    .file-preview-error {
+        opacity: 0.65;
+        box-shadow: none;
+    }
+
+    .file-preview-frame:not(.file-preview-error) .file-footer-caption:hover {
+        color: #000;
+    }
+
+    .file-drop-zone {
+        border: 1px dashed #aaa;
+        border-radius: 4px;
+        height: 100%;
+        text-align: center;
+        vertical-align: middle;
+        margin: 12px 15px 12px 12px;
+        padding: 5px;
+    }
+
+    .file-drop-zone-title {
+        color: #aaa;
+        font-size: 40px;
+        padding: 85px 10px;
+    }
+
+    .file-highlighted {
+        border: 2px dashed #999 !important;
+        background-color: #f0f0f0;
+    }
+
+    .file-uploading {
+        background: url('../img/loading-sm.gif') no-repeat center bottom 10px;
+        opacity: 0.65;
+    }
+
+    .file-thumb-progress .progress, .file-thumb-progress .progress-bar {
+        height: 10px;
+        font-size: 9px;
+        line-height: 10px;
+    }
+
+    .file-thumbnail-footer {
+        position: relative;
+    }
+
+    .file-thumb-progress {
+        position: absolute;
+        top: 22px;
+        left: 0;
+        right: 0;
+    }
+
+    /* IE 10 fix */
+    .btn-file ::-ms-browse {
+        width:100%;
+        height:100%;
+    }
+
+    .progress{
+        display: none;
+    }
+
+    .kv-fileinput-caption{
+        padding: 0px;
+    }
+</style>

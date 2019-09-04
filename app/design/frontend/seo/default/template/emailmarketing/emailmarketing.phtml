@@ -1,0 +1,331 @@
+<style>
+    .boxActive{
+        text-shadow: 0px 1px 0px #666;
+        border: solid 2px #ccc; 
+        border-radius: 20px;
+    }
+    .boxActive:hover{
+        text-shadow: 0px 1px 0px #666;
+        border: solid 2px #ccc; 
+        border-radius: 20px;
+        box-shadow: 2px 3px 5px #aaaaaa;
+    }
+
+    .pb-3, .py-3 {
+        padding-bottom: 0.1rem !important;
+    }
+    .pt-3, .py-3 {
+        padding-top: 0.1rem !important;
+    }
+</style>
+<div class="page-title">
+    <div class="row">
+        <div class="col-sm-4">
+            <h4 class="mb-0"> Email Marketing</h4>
+        </div>
+        <div class="col-sm-8">
+            <<ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                <li class="breadcrumb-item"><a href="<?php echo Mage::getBaseUrl();?>" class="default-color">Home</a></li>
+                <li class="breadcrumb-item">Email Marketing</li>
+            </ol>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-xl-3 col-md-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body p-0">
+                <div class="p-3 bg-white">
+                    <div class="row">
+                        <div class="col-sm-6 col-6 align-self-center">
+                            <h5>Delivery</h5>
+                            <span class="text-success">72067</span>
+                        </div>
+                        <div class="col-sm-6 col-6 align-self-center text-right">
+                            <span class="round-chart mb-0" data-percent="84" data-size="80" data-color="#28a745"> <span class="percent"></span> </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body p-0">
+                <div class="p-3 bg-white">
+                    <div class="row">
+                        <div class="col-sm-6 col-6 align-self-center">
+                            <h5>Bounse</h5>
+                            <span class="text-success">767</span>
+                        </div>
+                        <div class="col-sm-6 col-6 align-self-center text-right">
+                            <span class="round-chart mb-0" data-percent="14" data-size="80" data-color="#ffc107"> <span class="percent"></span> </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body p-0">
+                <div class="p-3 bg-white">
+                    <div class="row">
+                        <div class="col-sm-6 col-6 align-self-center">
+                            <h5>Subscribe</h5>
+                            <span class="text-success">78267</span>
+                        </div>
+                        <div class="col-sm-6 col-6 align-self-center text-right">
+                            <span class="round-chart mb-0" data-percent="64" data-size="80" data-color="#28a745"> <span class="percent"></span> </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body p-0">
+                <div class="p-3 bg-white">
+                    <div class="row">
+                        <div class="col-sm-6 col-6 align-self-center">
+                            <h5>Unsubscribed</h5>
+                            <span class="text-success">720</span>
+                        </div>
+                        <div class="col-sm-6 col-6 align-self-center text-right">
+                            <span class="round-chart mb-0" data-percent="54" data-size="80" data-color="#dc3545"> <span class="percent"></span> </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-8 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <h5 class="card-title pb-0 mb-15 border-0">Members Tools </h5>
+                <!-- ---------- Tools list starts ----------------->
+                <div class="row">
+                    <div class="col-xl-3 col-md-4 col-6 text-center boxActive" style="max-width: 23%; margin: 5px;">
+                        <a href="<?php echo $this->getUrl('manage-campaign'); ?>">
+                            <div class="weather-icon py-3 text-warning"> 
+                                <i class="fa fa-cube" style="font-size:35px"></i>
+                            </div>
+                            <h6 class="mt-15" style="margin-top: 0.1rem !important; font-size: 0.99rem; color: #32beec;"> Campaigns </h6>
+                        </a>
+                    </div>
+
+                    <div class="col-xl-3 col-md-4 col-6 text-center boxActive" style="max-width: 23%; margin: 5px;">
+                        <a href="<?php echo $this->getUrl('mailing-list'); ?>">
+                            <div class="weather-icon py-3 text-warning"> 
+                                <i class="fa fa-envelope-open-o" style="font-size:35px"></i>
+                            </div>
+                            <h6 class="mt-15" style="margin-top: 0.1rem !important; font-size: 0.99rem; color: #32beec;"> Mailing List </h6>
+                        </a>
+                    </div>
+
+                    <div class="col-xl-3 col-md-4 col-6 text-center boxActive" style="max-width: 23%; margin: 5px;">
+                        <a href="<?php echo $this->getUrl('subscribers'); ?>">
+                            <div class="weather-icon py-3 text-warning"> 
+                                <i class="fa fa-user-o" style="font-size:35px"></i>
+                            </div>
+                            <h6 class="mt-15" style="margin-top: 0.1rem !important; font-size: 0.99rem; color: #32beec;"> Subscribers </h6>
+                        </a>
+                    </div>
+
+                    <div class="col-xl-3 col-md-4 col-6 text-center boxActive" style="max-width: 23%; margin: 5px;">
+                        <a href="<?php echo $this->getUrl('template-library'); ?>">
+                            <div class="weather-icon py-3 text-warning"> 
+                                <i class="fa fa-university" style="font-size:35px"></i>
+                            </div>
+                            <h6 class="mt-15" style="margin-top: 0.1rem !important; font-size: 0.99rem; color: #32beec;"> Template Library </h6>
+                        </a>
+                    </div>
+
+                    <div class="col-xl-3 col-md-4 col-6 text-center boxActive" style="max-width: 23%; margin: 5px;">
+                        <a href="<?php echo $this->getUrl('email-marketing-report'); ?>">
+                            <div class="weather-icon py-3 text-warning"> 
+                                <i class="fa fa-ticket" style="font-size:35px"></i>
+                            </div>
+                            <h6 class="mt-15" style="margin-top: 0.1rem !important; font-size: 0.99rem; color: #32beec;"> Report </h6>
+                        </a>
+                    </div>
+
+                    <div class="col-xl-3 col-md-4 col-6 text-center boxActive" style="max-width: 23%; margin: 5px;">
+                        <a href="<?php echo $this->getUrl('occasion-mail'); ?>">
+                            <div class="weather-icon py-3 text-warning"> 
+                                <i class="fa fa-asterisk" style="font-size:35px"></i>
+                            </div>
+                            <h6 class="mt-15" style="margin-top: 0.1rem !important; font-size: 0.99rem; color: #32beec;"> Occasion Mail </h6>
+                        </a>
+                    </div>
+
+                    <div class="col-xl-3 col-md-4 col-6 text-center boxActive" style="max-width: 23%; margin: 5px;">
+                        <a href="<?php echo $this->getUrl('store-credits'); ?>">
+                            <div class="weather-icon py-3 text-warning"> 
+                                <i class="fa fa-at" style="font-size:35px"></i>
+                            </div>
+                            <h6 class="mt-15" style="margin-top: 0.1rem !important; font-size: 0.99rem; color: #32beec;"> Store Credits </h6>
+                        </a>
+                    </div>
+
+                    <div class="col-xl-3 col-md-4 col-6 text-center boxActive" style="max-width: 23%; margin: 5px;">
+                        <a href="<?php echo $this->getUrl('my-team'); ?>">
+                            <div class="weather-icon py-3 text-warning"> 
+                                <i class="fa fa-group" style="font-size:35px"></i>
+                            </div>
+                            <h6 class="mt-15" style="margin-top: 0.1rem !important; font-size: 0.99rem; color: #32beec;"> My Team </h6>
+                        </a>
+                    </div>
+
+                    <div class="col-xl-3 col-md-4 col-6 text-center boxActive" style="max-width: 23%; margin: 5px;">
+                        <a href="<?php echo $this->getUrl('email-media'); ?>">
+                            <div class="weather-icon py-3 text-warning"> 
+                                <i class="fa fa-video-camera" style="font-size:35px"></i>
+                            </div>
+                            <h6 class="mt-15" style="margin-top: 0.1rem !important; font-size: 0.99rem; color: #32beec;"> Media </h6>
+                        </a>
+                    </div>
+
+                    <!--<div class="col-xl-3 col-md-4 col-6 text-center boxActive" style="max-width: 23%; margin: 5px;">
+                        <a href="#">
+                            <div class="weather-icon py-3 text-warning"> 
+                                <i class="fa fa-at" style="font-size:35px"></i>
+                            </div>
+                            <h6 class="mt-15" style="margin-top: 0.1rem !important; font-size: 0.99rem; color: #32beec;"> My </h6>
+                        </a>
+                    </div>-->
+
+                    <div class="col-xl-3 col-md-4 col-6 text-center boxActive" style="max-width: 23%; margin: 5px;">
+                        <a href="<?php echo $this->getUrl('black-list'); ?>">
+                            <div class="weather-icon py-3 text-warning"> 
+                                <i class="fa fa-legal" style="font-size:35px"></i>
+                            </div>
+                            <h6 class="mt-15" style="margin-top: 0.1rem !important; font-size: 0.99rem; color: #32beec;"> Black List </h6>
+                        </a>
+                    </div>
+
+                    <div class="col-xl-3 col-md-4 col-6 text-center boxActive" style="max-width: 23%; margin: 5px;">
+                        <a href="<?php echo $this->getUrl('email-accounts'); ?>">
+                            <div class="weather-icon py-3 text-warning"> 
+                                <i class="fa fa-key" style="font-size:35px"></i>
+                            </div>
+                            <h6 class="mt-15" style="margin-top: 0.1rem !important; font-size: 0.99rem; color: #32beec;"> Email Accounts </h6>
+                        </a>
+                    </div>
+
+                    <div class="col-xl-3 col-md-4 col-6 text-center boxActive" style="max-width: 23%; margin: 5px;">
+                        <a href="<?php echo $this->getUrl('web-forms'); ?>">
+                            <div class="weather-icon py-3 text-warning"> 
+                                <i class="fa fa-id-card-o" style="font-size:35px"></i>
+                            </div>
+                            <h6 class="mt-15" style="margin-top: 0.1rem !important; font-size: 0.99rem; color: #32beec;"> Web Form </h6>
+                        </a>
+                    </div>
+
+                    <div class="col-xl-3 col-md-4 col-6 text-center boxActive" style="max-width: 23%; margin: 5px;">
+                        <a href="<?php echo $this->getUrl('atometic-scripts'); ?>">
+                            <div class="weather-icon py-3 text-warning"> 
+                                <i class="fa fa-cogs" style="font-size:35px"></i>
+                            </div>
+                            <h6 class="mt-15" style="margin-top: 0.1rem !important; font-size: 0.99rem; color: #32beec;"> Autometic Script </h6>
+                        </a>
+                    </div>
+
+                    <div class="col-xl-3 col-md-4 col-6 text-center boxActive" style="max-width: 23%; margin: 5px;">
+                        <a href="<?php echo $this->getUrl('api'); ?>">
+                            <div class="weather-icon py-3 text-warning"> 
+                                <i class="fa fa-code-fork" style="font-size:35px"></i>
+                            </div>
+                            <h6 class="mt-15" style="margin-top: 0.1rem !important; font-size: 0.99rem; color: #32beec;"> API </h6>
+                        </a>
+                    </div>
+
+                    <div class="col-xl-3 col-md-4 col-6 text-center boxActive" style="max-width: 23%; margin: 5px;">
+                        <a href="<?php echo $this->getUrl('calender'); ?>">
+                            <div class="weather-icon py-3 text-warning"> 
+                                <i class="fa fa-calendar" style="font-size:35px"></i>
+                            </div>
+                            <h6 class="mt-15" style="margin-top: 0.1rem !important; font-size: 0.99rem; color: #32beec;"> Calender </h6>
+                        </a>
+                    </div>
+
+                    <div class="col-xl-3 col-md-4 col-6 text-center boxActive" style="max-width: 23%; margin: 5px;">
+                        <a href="<?php echo $this->getUrl('auto-responder'); ?>">
+                            <div class="weather-icon py-3 text-warning"> 
+                                <i class="fa fa-exchange" style="font-size:35px"></i>
+                            </div>
+                            <h6 class="mt-15" style="margin-top: 0.1rem !important; font-size: 0.99rem; color: #32beec;"> Auto Responder </h6>
+                        </a>
+                    </div>
+
+                    <div class="col-xl-3 col-md-4 col-6 text-center boxActive" style="max-width: 23%; margin: 5px;">
+                        <a href="<?php echo $this->getUrl('mail-inbox'); ?>">
+                            <div class="weather-icon py-3 text-warning"> 
+                                <i class="fa fa-envelope-open-o" style="font-size:35px"></i>
+                            </div>
+                            <h6 class="mt-15" style="margin-top: 0.1rem !important; font-size: 0.99rem; color: #32beec;"> Mail Inbox </h6>
+                        </a>
+                    </div>
+                </div>
+                <!-- ---------- Tools List Ends ------------------->
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <h5 class="card-title">Summary  </h5>
+                <div class="row mb-30">
+                    <div class="col-md-6">
+                        <div class="clearfix">
+                            <p class="mb-10 float-left">Positive Customer</p>
+                            <i class="mb-10 text-success float-right fa fa-arrow-up"> </i>
+                        </div>
+                        <div class="progress progress-small">
+                            <div class="skill2-bar bg-success" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <h4 class="mt-10 text-success">8501</h4>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="clearfix">
+                            <p class="mb-10 float-left">Negative Customer</p>
+                            <i class="mb-10 text-danger float-right fa fa-arrow-down"> </i>
+                        </div>
+                        <div class="progress progress-small">
+                            <div class="skill2-bar bg-danger" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <h4 class="mt-10 text-danger">3251</h4>
+                    </div>
+                </div>
+                <div class="chart-wrapper" style="width: 100%; margin: 0 auto;"> 
+                    <div id="canvas-holder">
+                        <canvas id="canvas3" width="550"></canvas>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 mt-30">
+                        <b>Total Customer</b>
+                        <h4 class="text-success mt-10">1582</h4>
+                    </div>
+                    <div class="col-sm-4 mt-30">
+                        <b>Total Email Credit </b>
+                        <h4 class="text-danger mt-10">58GB</h4>
+                    </div>
+                    <div class="col-sm-4 mt-30">
+                        <b>Remaining Credit</b>
+                        <h4 class="text-warning mt-10">352,6$</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

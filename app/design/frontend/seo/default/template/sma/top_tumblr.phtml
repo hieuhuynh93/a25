@@ -1,0 +1,102 @@
+<?php
+if (isset($_REQUEST['num'])) {
+    $numOfRecords = $_REQUEST['num'];
+} else {
+    $numOfRecords = 10;
+}
+
+if (Mage::getSingleton('customer/session')->isLoggedIn()) {
+    $topPostsCollection = Mage::getModel('sma/sma')->getCollection()
+                                ->addFieldToFilter('source', 'Tumblr')
+                                ->addFieldToFilter('customer_id', Mage::getSingleton('customer/session')->getCustomer()->getId())
+                                ->setPageSize($numOfRecords)
+                                ->setCurPage(1)
+                                ->setOrder('posts', 'DESC');
+    //echo "<pre>"; print_r($topMediaCollection->getData()); die();
+    
+} else {
+    $url = Mage::getUrl('customer/account/login');
+    Mage::app()->getFrontController()->getResponse()->setRedirect($url);
+}
+?>
+
+<div class="page-title">
+    <div class="row">
+        <div class="col-sm-6">
+            <h4 class="mb-0"> Top Tumblr</h4>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                <li class="breadcrumb-item"><a href="<?php echo Mage::getBaseUrl(); ?>" class="default-color">Home</a></li>
+                <li class="breadcrumb-item">Social Media Audit</li>
+                <li class="breadcrumb-item active">Top Tumblr</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-12 mb-30">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <div class="tab tab-border">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active show" id="home-10-tab" data-toggle="tab" href="#home-10" role="tab" aria-controls="home-10" aria-selected="true"> <i class="fa fa-home"></i> Posts</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="row">
+                            <div class="col-xl-8 mb-30" style="margin-bottom: 0.43rem !important;">
+                                <h5 class="card-title pb-0 mb-15 border-0">Top 10 Members Profiles </h5>
+                            </div>
+                            <div class="col-xl-4 mb-30" style="margin-bottom: 0.43rem !important;">
+                                <select style="float: right;" onchange="document.location.href='<?php echo Mage::getBaseUrl().'top-instagram?num=';?>'+this.value;">
+                                    <option <?php echo ($numOfRecords == '10' ? 'selected="selected"' : ''); ?> value="10">10</option>
+                                    <option <?php echo ($numOfRecords == '20' ? 'selected="selected"' : ''); ?> value="20">20</option>
+                                    <option <?php echo ($numOfRecords == '50' ? 'selected="selected"' : ''); ?> value="50">50</option>
+                                    <option <?php echo ($numOfRecords == '100' ? 'selected="selected"' : ''); ?> value="100">100</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade active show" id="home-10" role="tabpanel" aria-labelledby="home-10-tab">
+                            <div class="table-responsive">
+                                <table class="table center-aligned-table mb-0">
+                                    <thead>
+                                        <tr class="text-dark">
+                                            <th></th>
+                                            <th style="text-align: center;">Member</th>
+                                            <th>Name</th>
+                                            <th>User Name</th>
+                                            <th style="text-align: center;">Posts</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $countFollowers = 1;?>
+                                        <?php foreach($topPostsCollection as $topPosts): ?>
+                                            <?php $profileLink = $this->getUrl('social-user-details') . '?username='.$topPosts->getUserName().'&source='.$topPosts->getSource(); ?>
+                                            <tr>
+                                                <td style="text-align: center;"><?php echo $countFollowers; ?></td>
+                                                <td style="text-align: center;"> <a href="<?php echo $profileLink; ?>"><img class="img-fluid avatar-small" src="<?php echo $topPosts->getProfilePicture(); ?>" alt=""> </a></td>
+                                                <td>
+                                                    <?php if($topPosts->getIsVarified() >= 1): ?>
+                                                        <i data-toggle="tooltip" data-placement="top" title="Verified" class="fa fa-check-circle" style="font-size:15px; margin-right: 10px;"></i>
+                                                    <?php endif;?>
+                                                    <a href="<?php echo $profileLink; ?>"><?php echo $topPosts->getFullName(); ?></a>
+                                                </td>
+                                                <td><a href="<?php echo $profileLink; ?>"><?php echo $topPosts->getUserName(); ?></a></td>
+                                                <td class="text-info" style="text-align: center;"><?php echo $topPosts->getPosts(); ?></td>
+                                            </tr>
+                                            <?php $countFollowers++; ?>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>

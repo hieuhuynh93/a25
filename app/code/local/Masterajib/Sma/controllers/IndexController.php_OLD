@@ -1,0 +1,242 @@
+<?php
+
+class Masterajib_Sma_IndexController extends Mage_Core_Controller_Front_Action {
+
+    public function liveCountAction() {
+        $sourceTxt = $_REQUEST['source'];
+        $username = $_REQUEST['username'];
+        $followers = 0;
+        if ($sourceTxt == 'Instagram') {
+            $url = 'https://www.instagram.com/' . $username;
+            $raw = file_get_contents($url); //replace with user
+            preg_match('/\"edge_followed_by\"\:\s?\{\"count\"\:\s?([0-9]+)/', $raw, $m);
+            $followers = intval($m[1]);
+        } elseif ($sourceTxt == 'Twitter') {
+            $username = str_replace(" ", "", $_REQUEST['username']);
+            $url = 'https://twitter.com/' . $username;
+            $source = file_get_contents($url);
+            $dom = new DOMDocument();
+            $dom->loadHTML($source);
+            foreach ($dom->getElementsByTagName('a') as $item) {
+                $output[] = array(
+                    //'str' => $dom->saveHTML($item),
+                    'str' => strip_tags($dom->saveHTML($item)),
+                    'href' => $item->getAttribute('href'),
+                    'anchorText' => $item->nodeValue
+                );
+                if (strpos($item->nodeValue, 'Followers') !== false) {
+                    $followers = $this->getNumberFormatToNumber(str_replace("Followers", "", $item->nodeValue)); //;//(int) filter_var($item->nodeValue, FILTER_SANITIZE_NUMBER_INT);
+                }
+            }
+        }
+
+        echo number_format($followers);
+    }
+
+    public function getNumberFormatToNumber($numberFormat) {
+        if (strpos($numberFormat, 'K') !== false) {
+            $numberFormat = (int) filter_var($numberFormat, FILTER_SANITIZE_NUMBER_INT) * 100;
+        }
+        if (strpos($numberFormat, 'M') !== false) {
+            $numberFormat = (int) filter_var($numberFormat, FILTER_SANITIZE_NUMBER_INT) * 100000;
+        }
+        if (strpos($numberFormat, 'B') !== false) {
+            $numberFormat = (int) filter_var($numberFormat, FILTER_SANITIZE_NUMBER_INT) * 100000000;
+        }
+        if (strpos($numberFormat, 'T') !== false) {
+            $numberFormat = (int) filter_var($numberFormat, FILTER_SANITIZE_NUMBER_INT) * 100000000000;
+        }
+        return $numberFormat;
+    }
+
+    public function saveAndContinueAction() {
+        if (Mage::getSingleton('customer/session')->isLoggedIn()) {
+            $sourceTxt = $_REQUEST['sourceTxt'];
+            $username = str_replace(" ", "", $_REQUEST['username']);
+            $model = Mage::getModel('sma/sma');
+            if ($sourceTxt == 'Twitter') {
+                $arrayTwitterData = array();
+                $url = 'https://twitter.com/' . $username;
+                $source = file_get_contents($url);
+
+                
+                
+                $arrayTwitterData['customer_id'] = Mage::getSingleton('customer/session')->getCustomer()->getId();
+                $arrayTwitterData['source'] = $sourceTxt;
+                $arrayTwitterData['profile_id'] = 1234;
+                $arrayTwitterData['user_name'] = $username;
+                $arrayTwitterData['full_name'] = $username;
+
+                /*foreach ($dom->getElementsByTagName('a') as $item) {
+                    $output[] = array(
+                        //'str' => $dom->saveHTML($item),
+                        'str' => strip_tags($dom->saveHTML($item)),
+                        'href' => $item->getAttribute('href'),
+                        'profile_id' => ($item->getAttribute('data-user-id') != '' ? $item->getAttribute('data-user-id') : ''),
+                        'anchorText' => $item->nodeValue
+                    );
+
+                    if (strtolower(ltrim($item->getAttribute('href'), "/")) == strtolower($username)) {
+                        $arrayTwitterData['profile_id'] = $item->getAttribute('data-user-id');
+                    }
+
+                    if (($count == 57 || in_array("profile_images", explode("/", $item->getAttribute('href')))) && empty($arrayTwitterData['profile_picture'])) {
+                        $arrayTwitterData['profile_picture'] = $item->getAttribute('href');
+                    }
+                    if (strpos($item->nodeValue, 'Tweets, current page') !== false) {
+                        $arrayTwitterData['tweets'] = str_replace(",", "", $this->getNumberFormatToNumber(str_replace(" ", "", str_replace("Tweets Tweets, current page. ", "", preg_replace('/\s+/', ' ', $item->nodeValue)))));
+                    }
+                    if (strpos($item->nodeValue, 'Followers') !== false) {
+                        $arrayTwitterData['followers'] = $this->getNumberFormatToNumber(str_replace("Followers", "", $item->nodeValue)); //;//(int) filter_var($item->nodeValue, FILTER_SANITIZE_NUMBER_INT);
+                    }
+                    if (strpos($item->nodeValue, 'Following') !== false) {
+                        $arrayTwitterData['following'] = (int) filter_var($item->nodeValue, FILTER_SANITIZE_NUMBER_INT);
+                    }
+                    if (strpos($item->nodeValue, 'Photos and videos') !== false && empty($arrayTwitterData['media'])) {
+                        $arrayTwitterData['media'] = (int) filter_var($item->nodeValue, FILTER_SANITIZE_NUMBER_INT);
+                    }
+
+                    if (strpos($item->nodeValue, 'Likes') !== false && empty($arrayTwitterData['likes'])) {
+                        $arrayTwitterData['likes'] = (int) filter_var($item->nodeValue, FILTER_SANITIZE_NUMBER_INT);
+                    }
+                    if (strpos($item->nodeValue, 'Lists') !== false && empty($arrayTwitterData['lists'])) {
+                        $arrayTwitterData['lists'] = (int) filter_var($item->nodeValue, FILTER_SANITIZE_NUMBER_INT);
+                    }
+                    if (strpos($item->nodeValue, 'Moments') !== false && empty($arrayTwitterData['moments'])) {
+                        $arrayTwitterData['moments'] = (int) filter_var($item->nodeValue, FILTER_SANITIZE_NUMBER_INT);
+                    }
+
+                    $count++;
+                }*/
+                if (!empty($arrayTwitterData)) {
+                    $userCollection = $model->getCollection()
+                            ->addFieldToFilter('user_name', $username)
+                            ->addFieldToFilter('source', $sourceTxt);
+                    if (!empty($userCollection) && $userCollection->getSize() > 0) {
+                        foreach ($userCollection as $user) {
+                            $model = Mage::getModel('sma/sma')->load($user->getId());
+                        }
+                    }
+                    foreach ($arrayTwitterData as $key => $value) {
+                        $model->setData($key, $value);
+                    }
+                    $model->setData('created_time', now());
+                    $model->setData('update_time', now());
+
+                    //echo "<pre>"; print_r($model); die();
+
+                    try {
+                        $model->save();
+                    } catch (Exception $ex) {
+                        die($ex);
+                    }
+                }
+            }
+            //echo "<pre>"; print_r($arrayTwitterData);
+            //echo "<pre>"; print_r($output); die();
+            if ($sourceTxt == 'Instagram') {
+                $url = 'https://www.instagram.com/' . $username;
+                $source = file_get_contents($url);
+                preg_match('/<script type="text\/javascript">window\._sharedData =([^;]+);<\/script>/', $source, $matches);
+                if (!isset($matches[1]))
+                    return false;
+                $r = json_decode($matches[1], true);
+
+                if (!empty($r['entry_data']['ProfilePage']['0']['graphql']['user']['full_name']) && strlen($r['entry_data']['ProfilePage']['0']['graphql']['user']['full_name']) > 3) {
+                    $fullName = $r['entry_data']['ProfilePage']['0']['graphql']['user']['full_name'];
+                }
+
+                if (!empty($r['entry_data']['ProfilePage']['0']['graphql']['user']['biography']) && strlen($r['entry_data']['ProfilePage']['0']['graphql']['user']['biography']) > 3) {
+                    $biography = $r['entry_data']['ProfilePage']['0']['graphql']['user']['biography'];
+                }
+
+                if (!empty($r['entry_data']['ProfilePage']['0']['graphql']['user']['id']) && $r['entry_data']['ProfilePage']['0']['graphql']['user']['id'] > 0) {
+                    $profileId = $r['entry_data']['ProfilePage']['0']['graphql']['user']['id'];
+                }
+
+                if (!empty($r['entry_data']['ProfilePage']['0']['graphql']['user']['profile_pic_url']) && strlen($r['entry_data']['ProfilePage']['0']['graphql']['user']['profile_pic_url']) > 3) {
+                    $profile_pic_url = $r['entry_data']['ProfilePage']['0']['graphql']['user']['profile_pic_url'];
+                }
+
+                if (!empty($r['entry_data']['ProfilePage']['0']['graphql']['user']['edge_followed_by']['count'])) {
+                    $followers = $r['entry_data']['ProfilePage']['0']['graphql']['user']['edge_followed_by']['count'];
+                }
+
+                if (!empty($r['entry_data']['ProfilePage']['0']['graphql']['user']['edge_follow']['count'])) {
+                    $following = $r['entry_data']['ProfilePage']['0']['graphql']['user']['edge_follow']['count'];
+                }
+
+                if (!empty($r['entry_data']['ProfilePage']['0']['graphql']['user']['edge_owner_to_timeline_media']['count'])) {
+                    $media = $r['entry_data']['ProfilePage']['0']['graphql']['user']['edge_owner_to_timeline_media']['count'];
+                }
+
+                $userCollection = $model->getCollection()
+                        ->addFieldToFilter('user_name', $username)
+                        ->addFieldToFilter('source', $sourceTxt);
+                if (!empty($userCollection) && $userCollection->getSize() > 0) {
+                    foreach ($userCollection as $user) {
+                        $model = Mage::getModel('sma/sma')->load($user->getId());
+                    }
+                }
+                $model->setCustomerId(Mage::getSingleton('customer/session')->getCustomer()->getId());
+                $model->setSource($sourceTxt);
+                $model->setProfileId($profileId);
+                $model->setUserName($username);
+                $model->setFullName($fullName);
+                $model->setProfilePicture($profile_pic_url);
+                $model->setProfileDescription($biography);
+                $model->setFollowers($followers);
+                $model->setFollowing($following);
+                $model->setMedia($media);
+                $model->setContent('');
+                $model->setStatus('1');
+                $model->setCreatedTime(now());
+                $model->setUpdateTime(now());
+                try {
+                    $model->save();
+                } catch (Exception $ex) {
+                    die($ex);
+                }
+            }
+            $url = Mage::getBaseUrl() . 'social-user-details?username=' . $username . '&source=' . $sourceTxt;
+            Mage::app()->getFrontController()->getResponse()->setRedirect($url);
+        } else {
+            $url = Mage::getUrl('customer/account/login');
+            Mage::app()->getFrontController()->getResponse()->setRedirect($url);
+        }
+    }
+
+    public function indexAction() {
+        $this->loadLayout();
+        $this->renderLayout();
+    }
+
+    public function deleteProfileAction() {
+        $sourceTxt = $_REQUEST['sourceTxt'];
+        $username = $_REQUEST['username'];
+        if (Mage::getSingleton('customer/session')->isLoggedIn()) {
+            $model = Mage::getModel('sma/sma');
+            $userCollection = $model->getCollection()
+                    ->addFieldToFilter('user_name', $username)
+                    ->addFieldToFilter('source', $sourceTxt)
+                    ->addFieldToFilter('customer_id', Mage::getSingleton('customer/session')->getCustomer()->getId());
+            if (!empty($userCollection) && $userCollection->getSize() > 0) {
+                foreach ($userCollection as $user) {
+                    $model = Mage::getModel('sma/sma')->load($user->getId());
+                    try {
+                        $model->delete();
+                    } catch (Exception $ex) {
+                        echo $ex;
+                        die();
+                    }
+                }
+            }
+            $url = Mage::getBaseUrl() . 'sma';
+            Mage::app()->getFrontController()->getResponse()->setRedirect($url);
+        } else {
+            $url = Mage::getUrl('customer/account/login');
+            Mage::app()->getFrontController()->getResponse()->setRedirect($url);
+        }
+    }
+
+}

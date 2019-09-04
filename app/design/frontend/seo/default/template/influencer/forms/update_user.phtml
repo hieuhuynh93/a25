@@ -1,0 +1,31 @@
+<?php
+$userId = $_REQUEST['userId'];
+$influencerModal = Mage::getModel('influencerusers/influencerusers')->load($userId);
+//echo "<pre>"; print_r($influencerModal->getData());
+$platform = '';
+if($influencerModal->getPlatform() == 2){
+    $platform = 'Instagram';
+}
+?>
+<form method="post" action="<?php echo Mage::getBaseUrl(); ?>influencerusers/index/updateUser">
+    <fieldset>
+        <input type="hidden" name="id" value="<?php echo $influencerModal->getId();?>">
+        <div class="form-group">
+            <label for="disabledTextInput"><?php echo $platform; ?> Username</label>
+            <input value="<?php echo $influencerModal->getUsername(); ?>" type="text" id="disabledTextInput" class="form-control" disabled="disabled">
+        </div>
+        <div class="form-group">
+            <label for="disabledSelect"><?php echo $influencerModal->getUsername(); ?> Password</label>
+            <input name="password" value="" type="password" id="disabledTextInput" class="form-control" placeholder="Enter <?php echo $influencerModal->getUsername(); ?> Password" required="required">
+        </div>
+        <div class="form-group">
+            <label for="disabledSelect">User Email</label>
+            <input name="email" value="" type="email" id="disabledTextInput" class="form-control" placeholder="Enter User Email" required="required">
+        </div>
+        <div class="form-group">
+            <label for="disabledSelect">Contact No</label>
+            <input name="contact_no" value="" type="text" id="disabledTextInput" class="form-control" placeholder="Enter Contact No" required="required">
+        </div>
+        <button type="submit" class="btn btn-success">Submit</button>
+    </fieldset>
+</form>

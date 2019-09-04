@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+
+<html class="no-js" lang="en-US">
+<html>
+<head>
+<link rel="canonical" href="https://familyfriendlysites.com/" />
+<meta name="description" content="Find approved websites and destinations that support online safety of family members using the internet. The Original Family-Friendly Directory started in 1996." />
+ <meta charset="utf-8">
+ <script src="https://familyfriendlysites.com/javascriptheader.js" type="text/javascript"></script> 
+ <script src="https://familyfriendlysites.com/jquery/superclick.js" type="text/javascript"></script> 
+ <link rel="stylesheet" href="https://familyfriendlysites.com/jquery/superclick.css" type="text/css" />
+ <link rel="stylesheet" href="https://familyfriendlysites.com/jquery/jquery-ui.min.css" type="text/css" />
+<script type='text/javascript' src='https://familyfriendlysites.com/javascript/jquery.fancycheckbox.min.js'></script>
+<script type='text/javascript' src='https://familyfriendlysites.com/javascript/prettyphoto/jquery.prettyPhoto.js'></script>
+<script type='text/javascript' src='https://familyfriendlysites.com/javascript/jquery.nicescroll.min.js'></script>
+<script type='text/javascript' src='https://familyfriendlysites.com/javascript/jquery.finishedTyping.js'></script>
+<script type='text/javascript' src='https://familyfriendlysites.com/javascript/spin.min.js'></script>
+<script type='text/javascript' src='https://familyfriendlysites.com/javascript/modernizr.touch.js'></script>
+<script type='text/javascript' src='https://familyfriendlysites.com/javascript/rating.js'></script>
+<script type='text/javascript' src='https://familyfriendlysites.com/javascript/script.js'></script>
+<script type='text/javascript' src='https://familyfriendlysites.com/javascript/scripts-2.js'></script>
+
+<script type="text/javascript">
+//<![CDATA[
+
+jQuery(document).ready(function() {
+$ = jQuery.noConflict(true); // undo damage of unknown script
+
+$("#mobilemenubutton").click(function(e) {
+$(".menuitems").toggle(500);
+if ($(".navbar-nav").length) $(".navbar-nav > li:not(:first-child)").toggle();
+});
+$(".memuitems a").click(function(e) { $(".menuitems").hide(500); });
+ var sclick = $('.navbar-nav').superclick({});  var ssclick = $('.superclickit').superclick({});  $("#addisplay6").click(function() { $.get("https://familyfriendlysites.com/ajax.php?action=countadclick&id=6", {}, function(response) {}); });  $("#addisplay5").click(function() { $.get("https://familyfriendlysites.com/ajax.php?action=countadclick&id=5", {}, function(response) {}); });  $("#addisplay10").click(function() { $.get("https://familyfriendlysites.com/ajax.php?action=countadclick&id=10", {}, function(response) {}); });  $("#addisplay4").click(function() { $.get("https://familyfriendlysites.com/ajax.php?action=countadclick&id=4", {}, function(response) {}); });  $("#addisplay7").click(function() { $.get("https://familyfriendlysites.com/ajax.php?action=countadclick&id=7", {}, function(response) {}); });  $("#addisplay3").click(function() { $.get("https://familyfriendlysites.com/ajax.php?action=countadclick&id=3", {}, function(response) {}); });  $("#addisplay8").click(function() { $.get("https://familyfriendlysites.com/ajax.php?action=countadclick&id=8", {}, function(response) {}); });  $("#addisplay9").click(function() { $.get("https://familyfriendlysites.com/ajax.php?action=countadclick&id=9", {}, function(response) {}); });  wsn_closeboxes(); 
+if(typeof(initialize) == 'function') initialize();
+
+
+        if ($("#zipsourceauto").length) { $("#zipsourceauto").autocomplete({ source: "/ajax.php?type=autocomplete&action=zipsourceauto" }); }
+        else if ($("[name=zipsourceauto]").length) { $("[name=zipsourceauto]").autocomplete({ source: "/ajax.php?type=autocomplete&action=zipsourceauto" }); }
+
+        if ($("#zipsource").length) { $("#zipsource").autocomplete({ source: "/ajax.php?type=autocomplete&action=zipsource" }); }
+        else if ($("[name=zipsource]").length) { $("[name=zipsource]").autocomplete({ source: "/ajax.php?type=autocomplete&action=zipsource" }); }
+
+$('a.ajaxlink').click(function(e) { wsn_doajaxlink(e, this.href); });
+$('a.ajaxdelete').click(function(e) { wsn_doajaxdelete(e, this.href, this.id); });
+mapDiv = $("#directory-main-bar");
+	var tabRegister = $('#ait-dir-register-tab'),
+		tabLogin =  $('#ait-dir-login-tab'),
+		linkLogin = $('#ait-login-tabs .login'),
+		linkRegister = $('#ait-login-tabs .register');
+	linkLogin.click(function(event) {
+		linkRegister.parent().removeClass('active');
+		tabRegister.hide();
+		linkLogin.parent().addClass('active');
+		tabLogin.show();
+		event.preventDefault();
+	});
+	linkRegister.click(function(event) {
+		linkLogin.parent().removeClass('active');
+		tabLogin.hide();
+		linkRegister.parent().addClass('active');
+		tabRegister.show();
+		event.preventDefault();
+	});
+	// init and change
+	var select = tabRegister.find('select[name=directory-role]'),
+		buttonSubmit = tabRegister.find('input[name=user-submit]'),
+		freeTitle = 'Sign up',
+		buyTitle = 'Buy with PayPal';
+	if(select.find('option:selected').hasClass('free')){
+		buttonSubmit.val(freeTitle);
+	} else {
+		buttonSubmit.val(buyTitle);
+	}
+	select.change(function(event) {
+		if(select.find('option:selected').hasClass('free')){
+			buttonSubmit.val(freeTitle);
+		} else {
+			buttonSubmit.val(buyTitle);
+		}
+	});
+
+$.ajax({
+    async: false,
+    url: "/javascript/categoryjsoncache.js",
+    dataType: "script"
+});
+	
+
+	var catInput = $( "#dir-searchinput-category" ),
+		catInputID = $( "#dir-searchinput-category-id" ),
+		locInput = $( "#dir-searchinput-location" ),
+		locInputID = $( "#dir-searchinput-location-id" );
+
+	catInput.autocomplete({
+		minLength: 0,
+		source: categories,
+		focus: function( event, ui ) {
+			var val = ui.item.label.replace(/&amp;/g, "&");
+				val = val.replace(/&nbsp;/g, " ");
+			catInput.val( val );
+			return false;
+		},
+		select: function( event, ui ) {
+			var val = ui.item.label.replace(/&amp;/g, "&");
+				val = val.replace(/&nbsp;/g, " ");
+			catInput.val( val );
+			catInputID.val( ui.item.value );
+			return false;
+		}
+	}).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+		return $( "<li>" )
+			.data( "item.autocomplete", item )
+			.append( "<a>" + item.label + "</a>" )
+			.appendTo( ul );
+	};
+	var catList = catInput.autocomplete( "widget" );
+	catList.niceScroll({ autohidemode: false });
+
+	catInput.click(function(){
+		catInput.val('');
+		catInputID.val('0');
+		catInput.autocomplete( "search", "" );
+	});
+	var locations = [ ];
+	if ($("[name=zipsource]").length)
+	{
+	  $("[name=zipsource]").autocomplete({
+	    minLength: 1,
+	    source: "/ajax.php?type=autocomplete&action=zipsource",
+            focus: function( event, ui ) {
+			var val = ui.item.label.replace(/&amp;/g, "&");
+				val = val.replace(/&nbsp;/g, " ");
+			locInput.val( val );
+			return false;
+		},
+	    select: function( event, ui ) {
+			var val = ui.item.label.replace(/&amp;/g, "&");
+				val = val.replace(/&nbsp;/g, " ");
+			locInput.val( val );
+			locInputID.val( ui.item.value );
+			return false;
+		}	    
+	  }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+		return $( "<li>" )
+			.data( "item.autocomplete", item )
+			.append( "<a>" + item.label + "</a>" )
+			.appendTo( ul );
+	};
+	  
+	}
+	
+	locInput.click(function(){
+		locInput.val('');
+		locInputID.val('0');
+		locInput.autocomplete( "search", "" );
+	});
+
+var contentDiv = $('#main #content');
+var currContent = contentDiv.html();
+var ajaxContent;
+
+function generateContent(data) {
+	"use strict";
+	var length = $.map(data, function(n, i) { return i; }).length;
+
+	contentDiv.find('.ajax-content').remove();
+	var title;
+	if(length == 0){
+		title = $('<header class="entry-header"><h1 class="entry-title"><span>No result found</span></h1></header>');
+	} else {
+		title = $('<header class="entry-header"><h1 class="entry-title"><span>Search result</span></h1></header>');
+	}
+
+	var html;
+	if(length > 0){
+		html = $('<ul class="items"></ul>');
+	}
+	var limit = 30;
+	if(limit > length) {
+		limit = length;
+	}
+	var i = 0;
+	for(var key in data){
+		var thumbnailHtml;
+		if(data[key].timthumbUrlContent){
+			var thumbnailHtml = '<div class="thumbnail"><img  src="https://familyfriendlysites.com/'+data[key].timthumbUrlContent+'" alt="Item thumbnail" /><div class="comment-count">'+data[key].comment_count+'</div></div>';
+		} else {
+			thumbnailHtml = '';
+		}
+		var rating = '';
+		if(data[key].rating){
+			rating += '<span class="rating">';
+			for (var i = 1; i <= data[key].rating['max']; i++) {
+				rating += '<span class="star';
+				if(i <= data[key].rating['val']) {
+					rating += ' active';
+				}
+				rating += '"></span>';
+			}
+			rating += '</span>';
+		}
+		var descriptionHtml = '<div class="description"><h3><a href="https://familyfriendlysites.com/'+data[key].link+'">'+data[key].post_title+'</a>'+rating+'</h3>'+data[key].excerptDir+'</div>';
+		html.append('<li class="item clear">'+thumbnailHtml+descriptionHtml+'</li>');
+		if(i <= limit){
+			i++;
+		} else {
+			break;
+		}
+	};
+	ajaxContent = $('<div class="ajax-content"></div>').html(title).append(html);
+	contentDiv.find('>').hide();
+	contentDiv.append(ajaxContent);
+}
+
+// reset search ajax values
+$('#directory-search .reset-ajax').click(function () {
+	"use strict";
+	// get default values
+	ajaxGetMarkers(false,false,false,false,true);
+
+	contentDiv.find('.ajax-content').remove();
+	contentDiv.find('>').show();
+
+	$('#dir-searchinput-text').val("");
+	// for IE
+	$('span.for-dir-searchinput-text label').show();
+
+	$('#dir-searchinput-location').val("");
+	$('#dir-searchinput-location-id').val("0");
+	// for IE
+	$('span.for-dir-searchinput-category label').show();
+
+	$('#dir-searchinput-category').val("");
+	$('#dir-searchinput-category-id').val("0");
+	// for IE
+	$('span.for-dir-searchinput-location label').show();
+
+	$('#dir-searchinput-geo').attr('checked',false);
+	$('div.iphone-style[rel=dir-searchinput-geo]').removeClass('on').addClass('off');
+
+	//$('#dir-searchinput-geo-radius').val($('#dir-searchinput-geo-radius').data('default-value'));
+
+	// hide close icon
+	$(this).hide();
+});
+
+});
+
+//]]>
+</script>
+<title>Family Friendly Sites</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script type='text/javascript'>var ua = navigator.userAgent; var meta = document.createElement('meta');if((ua.toLowerCase().indexOf('android') > -1 && ua.toLowerCase().indexOf('mobile')) || ((ua.match(/iPhone/i)) || (ua.match(/iPad/i)))){ meta.name = 'viewport';	meta.content = 'target-densitydpi=device-dpi, width=device-width'; }var m = document.getElementsByTagName('meta')[0]; m.parentNode.insertBefore(meta,m);</script> 	
+<link rel="stylesheet" href="https://familyfriendlysites.com/schemas/base.css">
+<link rel="stylesheet" href="https://familyfriendlysites.com/templates/styles/bootstrap.css">
+
+<script src="https://malsup.github.io/min/jquery.cycle2.min.js"></script>
+<style>	
+	#slider-header{
+		text-align: center;
+	}
+	
+	.cycle-slideshow{
+		margin: 0 auto;
+		width: 100%;
+		
+		background: url(https://malsup.github.io/images/spinner.gif) 50% 50% no-repeat;
+	}		
+
+	.cycle-slideshow img { 
+		position: absolute; top: 0; left: 0;
+		width: 100%; padding: 0; display: block;
+	}
+
+	.cycle-slideshow img:first-child {
+		position: static; z-index: 100;
+	}
+
+.cycle-prev, .cycle-next { position: absolute; top: 0; width: 30%; opacity: 0; filter: alpha(opacity=0); z-index: 800; height: 100%; cursor: pointer; }
+.cycle-prev { left: 0;  background: url(https://malsup.github.io/images/left.png) 10% 50% no-repeat;}
+.cycle-next { right: 0; background: url(https://malsup.github.io/images/right.png) 90% 50% no-repeat;}
+.cycle-prev:hover, .cycle-next:hover { opacity: .7; filter: alpha(opacity=70) }	
+
+/* pager */
+.cycle-pager { 
+    text-align: center; width: 100%; z-index: 500; position: absolute;
+	
+	top: 10px; 
+	overflow: hidden;
+}
+.cycle-pager span { 
+    font-family: arial; font-size: 50px; width: 16px; height: 16px; 
+    display: inline-block; color: #ddd; cursor: pointer; 
+}
+.cycle-pager span.cycle-pager-active { color: #D69746;}
+.cycle-pager > * { cursor: pointer;}
+
+/* overlay */
+.cycle-overlay { 
+    font-family: tahoma, arial;
+	font-size: 1.5em;
+    position: absolute; bottom: 0; width: 100%; z-index: 600; 
+    background: black; color: white; padding: 15px 0px 15px 0px; opacity: .5;
+	text-align: center;
+}
+
+.example-pager { text-align: center; width: 100%; z-index: 500; top: 10px; overflow: hidden; }
+.example-pager span { font-size: 50px; width: 16px; height: 16px; display: inline-block; color: #ddd; }
+.example-pager span.cycle-pager-active { color: #D69746;}
+.example-pager > * { cursor: pointer;}
+	</style>
+    
+<link rel="alternate" type="application/rss+xml" title="Family Friendly Sites" href="https://familyfriendlysites.com/rssfeed.php" />
+<style type="text/css">
+   .nav .breadcrumb li:after { content: "»"; }
+.nav .breadcrumb li:last-child:after { content: ""; } 
+  </style>
+
+<meta property="fb:app_id" content="1139970696034975">
+<meta property="og:url" content="https://familyfriendlysites.com/" />
+<meta property="og:title" content="Family Friendly Sites" />
+<meta property="og:description" content="Find approved websites and destinations that support online safety of family members using the internet. The Original Family-Friendly Directory started in 1996." />
+<meta property="og:site_name" content="Family Friendly Sites" />
+<meta property="og:type" content="website" />
+
+</head>
+
+<body>
+
+
+
+<div id="page">
+
+	<div class="topbar clearfix">
+		<div id="tagLineHolder">
+			<div class="defaultContentWidth clearfix">
+				<p class="left info">Today's Date is: 02/08/19</p>
+			    <ul class="social-icons right clearfix">
+			        <li class="left">
+			        	<a href="https://www.facebook.com/pages/Family-Friendly-Sites/207839865894441"><img src="https://familyfriendlysites.com/templates/images_bootstrap/icon-facebook.png" height="24" width="24" alt="Facebook" title="Facebook"></a>
+			        </li>
+			        <li class="left"><a href="https://twitter.com/familysites">
+			        	<img src="https://familyfriendlysites.com/templates/images_bootstrap/icon-twitter.png" height="24" width="24" alt="Follow us on Twitter" title="Follow us on Twitter"></a>
+			        </li>		       
+			    </ul>
+			</div>
+		</div>
+	</div>
+    
+        <header id="branding" role="banner">
+                <div class="defaultContentWidth clearfix">
+                        <div id="logo" class="left">
+                            <a class="trademark" href="https://familyfriendlysites.com">
+                                <img src="https://familyfriendlysites.com/templates/images_bootstrap/logo.jpg" alt="Family Friendly Sites" title="Family Friendly Sites">
+                            </a>
+                        </div>
+                    
+           
+                        <nav  id="access" role="navigation"> 
+                            <h3 class="assistive-text">Main menu</h3>
+<nav class="mainmenu navbutton navbar navbar-default">
+<ul id="menu-main-menu" class="menu nav navbar-nav">
+                                
+                                <li><a href="https://familyfriendlysites.com/" id="currenttab">HOME</a></li>
+                                
+                                <li><a href="https://familyfriendlysites.com/newposts.php">Newest</a></li>
+                                
+                                <li><a href="https://familyfriendlysites.com/register.php">Register</a></li>
+                                
+                                <li><a id="login" href="https://familyfriendlysites.com/index.php?action=userlogin">Log In</a></li>
+                                
+                                <li><a href="https://familyfriendlysites.com/index.php?TID=pages-faqs">FAQs</a></li>
+                                
+                                <li><a href="https://familyfriendlysites.com/family-friendly-guidelines">FFS Guidelines</a></li>
+                                
+                            </ul>
+                            </nav>
+                        </nav>
+
+                 </div>
+            </header>
+            
+            
+            
+             
+                       
+               <div class="cycle-slideshow" data-cycle-fx="fade">
+
+				
+	<div class="cycle-pager"></div>
+	
+		
+				
+		
+		<div class="cycle-prev"></div>
+		<div class="cycle-next"></div>		
+
+		<img  src="https://familyfriendlysites.com/templates/images_bootstrap/slider/slide1.jpg">
+		<img  src="https://familyfriendlysites.com/templates/images_bootstrap/slider/slide2.jpg">
+        <img  src="https://familyfriendlysites.com/templates/images_bootstrap/slider/slide3.jpg">
+        <img  src="https://familyfriendlysites.com/templates/images_bootstrap/slider/slide4.jpg">
+        <img  src="https://familyfriendlysites.com/templates/images_bootstrap/slider/slide5.jpg">
+        <img  src="https://familyfriendlysites.com/templates/images_bootstrap/slider/slide6.jpg">
+			
+	</div>
+	
+          
+                
+                
+			
+	
+    
+    <div id="directory-search" data-interactive="yes">
+		<div class="defaultContentWidth clearfix">
+			
+            <form  action="https://familyfriendlysites.com/search.php" method="GET" name="quicksearchform" id="dir-search-form" class="dir-searchform">
+           
+            <input type="hidden" name="condition" value="or">
+            <input type="hidden" name="filled" value="1">
+
+            
+<div id="dir-search-inputs">
+					<div id="dir-holder">
+						<div class="dir-holder-wrap">
+
+							<input type="text" name="search" id="dir-searchinput-text" placeholder="Search keyword..." class="dir-searchinput">
+
+<div id="dir-searchinput-settings" class="dir-searchinput-settings"><a href="https://familyfriendlysites.com/search.php"><div class="icon"></div></a></div>
+
+<input type="hidden" name="zipmiles" value="100">
+
+							
+						<input type="hidden" name="geo-lat" id="dir-searchinput-geo-lat" value="">
+							<input type="hidden" name="geo-lng" id="dir-searchinput-geo-lng" value="">
+
+							<input type="text" id="dir-searchinput-category" placeholder="All categories">
+							<input type="text" name="catid" id="dir-searchinput-category-id" value="0">
+
+							<input type="text" id="dir-searchinput-location" name="zipsource" placeholder="All locations">
+							<input type="text" name="locations" id="dir-searchinput-location-id" value="0">
+
+                           
+
+							<div class="reset-ajax"></div>
+						</div>
+					</div>
+				</div>
+
+				<div id="dir-search-button">
+					<input type="submit" value="Search" class="dir-searchsubmit" >
+				</div>
+
+			</form>
+		</div>
+
+	</div>
+
+            <div id="main" class="defaultContentWidth">
+				<div id="wrapper-row">
+					<div id="primary" class="">
+						<div id="content" role="main">
+                        
+                        
+                        <article id="post-7" class="post-7 page type-page status-publish hentry">
+
+						
+						<header class="entry-header">
+						
+							<h1 class="entry-title">
+								<a href="https://familyfriendlysites.com/./index.php?TID=about_home">About Family-Friendly Sites <sup>tm</sup></a>
+							</h1>
+						</header>
+                        <div class="entry-content">
+							<p>Family-Friendly Sites began on the Internet in 1996 with the intent to support the online safety of family members using the Internet by offering websites a designation that would be easily recognized by family members and other Internet users. In 1999 FFS established a human managed directory to monitor sites displaying it's emblems.</p>
+
+<p>If you are a website owner, have a personal webpage, or are promoting your business online and you would like to have the FFS emblem display on your website and be listed in the FFS Directory, review the FFS Guidelines, register and submit your website.</p>
+                            
+						</div>
+                            
+						
+
+						<h2 class="subcategories-title">Categories</h2>
+                       
+						
+							
+						<div class="category-subcategories clearfix">
+							<ul class="subcategories">
+                               
+                                
+                                
+								<li class="category">
+									<div class="category-wrap-table">
+										<div class="category-wrap-row">
+                                        	<div class="icon folder"></div>
+												<div class="description">
+													<h3><a href="https://familyfriendlysites.com/arts-and-culture/">Arts and Culture</a>  </h3>
+                                                   	
+                                                    <a href="https://familyfriendlysites.com/arts-and-culture/blogs/" >Blogs</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/arts-and-culture/design/" >Design</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/arts-and-culture/fashion/" >Fashion</a>, 
+                                                    <a href="https://familyfriendlysites.com/arts-and-culture/">More...</a>              
+
+                                                        
+                                                        
+                                                                          
+
+											</div>
+                                            
+                                            
+										</div>
+									</div>
+								</li>
+                               
+								
+								<li class="category">
+									<div class="category-wrap-table">
+										<div class="category-wrap-row">
+                                        	<div class="icon folder"></div>
+												<div class="description">
+													<h3><a href="https://familyfriendlysites.com/business-and-finance/">Business and Finance</a>  <span class="icons updatedcontent label label-info"><img src="https://familyfriendlysites.com/templates/images_bootstrap/updated.png" alt="updated" style="vertical-align:middle;"></span></h3>
+                                                   	
+                                                    <a href="https://familyfriendlysites.com/business-and-finance/accounting-and-tax-services/" >Accounting & Tax Services</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/business-and-finance/advertising/" >Advertising</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/business-and-finance/agriculture/" >Agriculture</a>, 
+                                                    <a href="https://familyfriendlysites.com/business-and-finance/">More...</a>              
+
+                                                        
+                                                        
+                                                                          
+
+											</div>
+                                            
+                                            
+										</div>
+									</div>
+								</li>
+                               
+								
+								<li class="category">
+									<div class="category-wrap-table">
+										<div class="category-wrap-row">
+                                        	<div class="icon folder"></div>
+												<div class="description">
+													<h3><a href="https://familyfriendlysites.com/careers-and-professional-development/">Careers and Professional Development</a>  </h3>
+                                                   	
+                                                    <a href="https://familyfriendlysites.com/careers-and-professional-development/blogs/" >Blogs</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/careers-and-professional-development/jobs/" >Jobs</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/careers-and-professional-development/planning/" >Planning</a>, 
+                                                    <a href="https://familyfriendlysites.com/careers-and-professional-development/">More...</a>              
+
+                                                        
+                                                        
+                                                                          
+
+											</div>
+                                            
+                                            
+										</div>
+									</div>
+								</li>
+                               
+								
+								<li class="category">
+									<div class="category-wrap-table">
+										<div class="category-wrap-row">
+                                        	<div class="icon folder"></div>
+												<div class="description">
+													<h3><a href="https://familyfriendlysites.com/education-and-learning/">Education and Learning</a>  <span class="icons updatedcontent label label-info"><img src="https://familyfriendlysites.com/templates/images_bootstrap/updated.png" alt="updated" style="vertical-align:middle;"></span></h3>
+                                                   	
+                                                    <a href="https://familyfriendlysites.com/education-and-learning/blogs/" >Blogs</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/education-and-learning/boarding-schools/" >Boarding Schools</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/education-and-learning/character-education/" >Character Education</a>, 
+                                                    <a href="https://familyfriendlysites.com/education-and-learning/">More...</a>              
+
+                                                        
+                                                        
+                                                                          
+
+											</div>
+                                            
+                                            
+										</div>
+									</div>
+								</li>
+                               
+								
+								<li class="category">
+									<div class="category-wrap-table">
+										<div class="category-wrap-row">
+                                        	<div class="icon folder"></div>
+												<div class="description">
+													<h3><a href="https://familyfriendlysites.com/entertainment-and-games/">Entertainment and Games</a>  </h3>
+                                                   	
+                                                    <a href="https://familyfriendlysites.com/entertainment-and-games/antique-games-and-toys/" >Antique games and toys</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/entertainment-and-games/blogs/" >Blogs</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/entertainment-and-games/board-games/" >Board Games</a>, 
+                                                    <a href="https://familyfriendlysites.com/entertainment-and-games/">More...</a>              
+
+                                                        
+                                                        
+                                                                          
+
+											</div>
+                                            
+                                            
+										</div>
+									</div>
+								</li>
+                               
+								
+								<li class="category">
+									<div class="category-wrap-table">
+										<div class="category-wrap-row">
+                                        	<div class="icon folder"></div>
+												<div class="description">
+													<h3><a href="https://familyfriendlysites.com/events-and-celebrations/">Events and Celebrations</a>  </h3>
+                                                   	
+                                                    <a href="https://familyfriendlysites.com/events-and-celebrations/birthdays/" >Birthdays</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/events-and-celebrations/blogs/" >Blogs</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/events-and-celebrations/catering-food/" >Catering Food</a>, 
+                                                    <a href="https://familyfriendlysites.com/events-and-celebrations/">More...</a>              
+
+                                                        
+                                                        
+                                                                          
+
+											</div>
+                                            
+                                            
+										</div>
+									</div>
+								</li>
+                               
+								
+								<li class="category">
+									<div class="category-wrap-table">
+										<div class="category-wrap-row">
+                                        	<div class="icon folder"></div>
+												<div class="description">
+													<h3><a href="https://familyfriendlysites.com/global-and-local/">Global and Local</a>  <span class="icons updatedcontent label label-info"><img src="https://familyfriendlysites.com/templates/images_bootstrap/updated.png" alt="updated" style="vertical-align:middle;"></span></h3>
+                                                   	
+                                                    <a href="https://familyfriendlysites.com/global-and-local/africa/" >Africa</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/global-and-local/asia/" >Asia</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/global-and-local/carribean/" >Carribean</a>, 
+                                                    <a href="https://familyfriendlysites.com/global-and-local/">More...</a>              
+
+                                                        
+                                                        
+                                                                          
+
+											</div>
+                                            
+                                            
+										</div>
+									</div>
+								</li>
+                               
+								
+								<li class="category">
+									<div class="category-wrap-table">
+										<div class="category-wrap-row">
+                                        	<div class="icon folder"></div>
+												<div class="description">
+													<h3><a href="https://familyfriendlysites.com/37/">Government and Non-Profit Organizations</a>  </h3>
+                                                   	
+                                                    <a href="https://familyfriendlysites.com/554/" >Blogs</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/834/" >Children and Families</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/110/" >Civic</a>, 
+                                                    <a href="https://familyfriendlysites.com/37/">More...</a>              
+
+                                                        
+                                                        
+                                                                          
+
+											</div>
+                                            
+                                            
+										</div>
+									</div>
+								</li>
+                               
+								
+								<li class="category">
+									<div class="category-wrap-table">
+										<div class="category-wrap-row">
+                                        	<div class="icon folder"></div>
+												<div class="description">
+													<h3><a href="https://familyfriendlysites.com/health-and-wellness/">Health and Wellness</a>  <span class="icons updatedcontent label label-info"><img src="https://familyfriendlysites.com/templates/images_bootstrap/updated.png" alt="updated" style="vertical-align:middle;"></span></h3>
+                                                   	
+                                                    <a href="https://familyfriendlysites.com/health-and-wellness/alternative-medicine/" >Alternative Medicine</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/health-and-wellness/beauty/" >Beauty</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/health-and-wellness/blogs/" >Blogs</a>, 
+                                                    <a href="https://familyfriendlysites.com/health-and-wellness/">More...</a>              
+
+                                                        
+                                                        
+                                                                          
+
+											</div>
+                                            
+                                            
+										</div>
+									</div>
+								</li>
+                               
+								
+								<li class="category">
+									<div class="category-wrap-table">
+										<div class="category-wrap-row">
+                                        	<div class="icon folder"></div>
+												<div class="description">
+													<h3><a href="https://familyfriendlysites.com/helpful-kids-resources/">Helpful Kids Resources</a>  <span class="icons updatedcontent label label-info"><img src="https://familyfriendlysites.com/templates/images_bootstrap/updated.png" alt="updated" style="vertical-align:middle;"></span></h3>
+                                                   	
+                                                    <a href="https://familyfriendlysites.com/helpful-kids-resources/early-learning/" >Early Learning</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/helpful-kids-resources/educational-sites/" >Educational Sites</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/helpful-kids-resources/games-and-entertainment/" >Games & Entertainment</a>, 
+                                                    <a href="https://familyfriendlysites.com/helpful-kids-resources/">More...</a>              
+
+                                                        
+                                                        
+                                                                          
+
+											</div>
+                                            
+                                            
+										</div>
+									</div>
+								</li>
+                               
+								
+								<li class="category">
+									<div class="category-wrap-table">
+										<div class="category-wrap-row">
+                                        	<div class="icon folder"></div>
+												<div class="description">
+													<h3><a href="https://familyfriendlysites.com/helpful-parent-resources/">Helpful Parent Resources</a>  </h3>
+                                                   	
+                                                    <a href="https://familyfriendlysites.com/helpful-parent-resources/internet-safety-resources/" >Internet Safety Resources</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/helpful-parent-resources/parenting-tips/" >Parenting Tips</a>              
+
+                                                        
+                                                        
+                                                                          
+
+											</div>
+                                            
+                                            
+										</div>
+									</div>
+								</li>
+                               
+								
+								<li class="category">
+									<div class="category-wrap-table">
+										<div class="category-wrap-row">
+                                        	<div class="icon folder"></div>
+												<div class="description">
+													<h3><a href="https://familyfriendlysites.com/hobbies-and-collections/">Hobbies and Collections</a>  </h3>
+                                                   	
+                                                    <a href="https://familyfriendlysites.com/hobbies-and-collections/antique-machinery-and-equiptment/" >Antique Machinery and Equiptment</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/hobbies-and-collections/antiques-furniture/" >Antiques Furniture</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/hobbies-and-collections/auto-care/" >Auto Care</a>, 
+                                                    <a href="https://familyfriendlysites.com/hobbies-and-collections/">More...</a>              
+
+                                                        <br>
+                                                        
+                                                        1 viewing                  
+
+											</div>
+                                            
+                                            
+										</div>
+									</div>
+								</li>
+                               
+								
+								<li class="category">
+									<div class="category-wrap-table">
+										<div class="category-wrap-row">
+                                        	<div class="icon folder"></div>
+												<div class="description">
+													<h3><a href="https://familyfriendlysites.com/home-and-family/">Home and Family</a>  <span class="icons updatedcontent label label-info"><img src="https://familyfriendlysites.com/templates/images_bootstrap/updated.png" alt="updated" style="vertical-align:middle;"></span></h3>
+                                                   	
+                                                    <a href="https://familyfriendlysites.com/home-and-family/blogs/" >Blogs</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/home-and-family/cooking/" >Cooking</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/home-and-family/dining-out/" >Dining Out</a>, 
+                                                    <a href="https://familyfriendlysites.com/home-and-family/">More...</a>              
+
+                                                        
+                                                        
+                                                                          
+
+											</div>
+                                            
+                                            
+										</div>
+									</div>
+								</li>
+                               
+								
+								<li class="category">
+									<div class="category-wrap-table">
+										<div class="category-wrap-row">
+                                        	<div class="icon folder"></div>
+												<div class="description">
+													<h3><a href="https://familyfriendlysites.com/news-and-media/">News and Media</a>  </h3>
+                                                   	
+                                                    <a href="https://familyfriendlysites.com/news-and-media/blogs/" >Blogs</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/news-and-media/magazines/" >Magazines</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/news-and-media/media-services/" >Media Services</a>, 
+                                                    <a href="https://familyfriendlysites.com/news-and-media/">More...</a>              
+
+                                                        
+                                                        
+                                                                          
+
+											</div>
+                                            
+                                            
+										</div>
+									</div>
+								</li>
+                               
+								
+								<li class="category">
+									<div class="category-wrap-table">
+										<div class="category-wrap-row">
+                                        	<div class="icon folder"></div>
+												<div class="description">
+													<h3><a href="https://familyfriendlysites.com/people-and-lifestyles/">People and Lifestyles</a>  </h3>
+                                                   	
+                                                    <a href="https://familyfriendlysites.com/people-and-lifestyles/blogs/" >Blogs</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/people-and-lifestyles/community/" >Community</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/people-and-lifestyles/countries/" >Countries</a>, 
+                                                    <a href="https://familyfriendlysites.com/people-and-lifestyles/">More...</a>              
+
+                                                        
+                                                        
+                                                                          
+
+											</div>
+                                            
+                                            
+										</div>
+									</div>
+								</li>
+                               
+								
+								<li class="category">
+									<div class="category-wrap-table">
+										<div class="category-wrap-row">
+                                        	<div class="icon folder"></div>
+												<div class="description">
+													<h3><a href="https://familyfriendlysites.com/reference-and-resources/">Reference and Resources</a>  </h3>
+                                                   	
+                                                    <a href="https://familyfriendlysites.com/reference-and-resources/biographies/" >Biographies</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/reference-and-resources/blogs/" >Blogs</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/reference-and-resources/expert-advice/" >Expert Advice</a>, 
+                                                    <a href="https://familyfriendlysites.com/reference-and-resources/">More...</a>              
+
+                                                        
+                                                        
+                                                                          
+
+											</div>
+                                            
+                                            
+										</div>
+									</div>
+								</li>
+                               
+								
+								<li class="category">
+									<div class="category-wrap-table">
+										<div class="category-wrap-row">
+                                        	<div class="icon folder"></div>
+												<div class="description">
+													<h3><a href="https://familyfriendlysites.com/religion-and-spirituality/">Religion and Spirituality</a>  </h3>
+                                                   	
+                                                    <a href="https://familyfriendlysites.com/religion-and-spirituality/angels/" >Angels</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/religion-and-spirituality/astrology/" >Astrology</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/religion-and-spirituality/blogs/" >Blogs</a>, 
+                                                    <a href="https://familyfriendlysites.com/religion-and-spirituality/">More...</a>              
+
+                                                        
+                                                        
+                                                                          
+
+											</div>
+                                            
+                                            
+										</div>
+									</div>
+								</li>
+                               
+								
+								<li class="category">
+									<div class="category-wrap-table">
+										<div class="category-wrap-row">
+                                        	<div class="icon folder"></div>
+												<div class="description">
+													<h3><a href="https://familyfriendlysites.com/science-and-nature/">Science and Nature</a>  </h3>
+                                                   	
+                                                    <a href="https://familyfriendlysites.com/science-and-nature/agriculture/" >Agriculture</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/science-and-nature/animals/" >Animals</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/science-and-nature/archaeology/" >Archaeology</a>, 
+                                                    <a href="https://familyfriendlysites.com/science-and-nature/">More...</a>              
+
+                                                        
+                                                        
+                                                                          
+
+											</div>
+                                            
+                                            
+										</div>
+									</div>
+								</li>
+                               
+								
+								<li class="category">
+									<div class="category-wrap-table">
+										<div class="category-wrap-row">
+                                        	<div class="icon folder"></div>
+												<div class="description">
+													<h3><a href="https://familyfriendlysites.com/shopping-and-auctions/"title="Buying or Selling something, it should be listed in these categories">Shopping and Auctions</a>  <span class="icons updatedcontent label label-info"><img src="https://familyfriendlysites.com/templates/images_bootstrap/updated.png" alt="updated" style="vertical-align:middle;"></span></h3>
+                                                   	
+                                                    <a href="https://familyfriendlysites.com/shopping-and-auctions/antiques/" >Antiques</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/shopping-and-auctions/art/" >Art</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/shopping-and-auctions/auction-sites/" >Auction Sites</a>, 
+                                                    <a href="https://familyfriendlysites.com/shopping-and-auctions/">More...</a>              
+
+                                                        
+                                                        
+                                                                          
+
+											</div>
+                                            
+                                            
+										</div>
+									</div>
+								</li>
+                               
+								
+								<li class="category">
+									<div class="category-wrap-table">
+										<div class="category-wrap-row">
+                                        	<div class="icon folder"></div>
+												<div class="description">
+													<h3><a href="https://familyfriendlysites.com/sports-and-recreation/">Sports and Recreation</a>  </h3>
+                                                   	
+                                                    <a href="https://familyfriendlysites.com/sports-and-recreation/archery/" >Archery</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/sports-and-recreation/baseball/" >Baseball</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/sports-and-recreation/basketball/" >Basketball</a>, 
+                                                    <a href="https://familyfriendlysites.com/sports-and-recreation/">More...</a>              
+
+                                                        
+                                                        
+                                                                          
+
+											</div>
+                                            
+                                            
+										</div>
+									</div>
+								</li>
+                               
+								
+								<li class="category">
+									<div class="category-wrap-table">
+										<div class="category-wrap-row">
+                                        	<div class="icon folder"></div>
+												<div class="description">
+													<h3><a href="https://familyfriendlysites.com/technology-and-the-internet/">Technology and the Internet</a>  <span class="icons updatedcontent label label-info"><img src="https://familyfriendlysites.com/templates/images_bootstrap/updated.png" alt="updated" style="vertical-align:middle;"></span></h3>
+                                                   	
+                                                    <a href="https://familyfriendlysites.com/technology-and-the-internet/access-providers/" >Access Providers</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/technology-and-the-internet/apps/" >Apps</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/technology-and-the-internet/blogs/" >Blogs</a>, 
+                                                    <a href="https://familyfriendlysites.com/technology-and-the-internet/">More...</a>              
+
+                                                        
+                                                        
+                                                                          
+
+											</div>
+                                            
+                                            
+										</div>
+									</div>
+								</li>
+                               
+								
+								<li class="category">
+									<div class="category-wrap-table">
+										<div class="category-wrap-row">
+                                        	<div class="icon folder"></div>
+												<div class="description">
+													<h3><a href="https://familyfriendlysites.com/vacation-and-travel/">Vacation and Travel</a>  <span class="icons updatedcontent label label-info"><img src="https://familyfriendlysites.com/templates/images_bootstrap/updated.png" alt="updated" style="vertical-align:middle;"></span></h3>
+                                                   	
+                                                    <a href="https://familyfriendlysites.com/vacation-and-travel/apartments/" >Apartments</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/vacation-and-travel/bed-and-breakfast/" >Bed and Breakfast</a>, 
+                                                    
+                                                    <a href="https://familyfriendlysites.com/vacation-and-travel/blogs/" >Blogs</a>, 
+                                                    <a href="https://familyfriendlysites.com/vacation-and-travel/">More...</a>              
+
+                                                        <br>
+                                                        
+                                                        1 viewing                  
+
+											</div>
+                                            
+                                            
+										</div>
+									</div>
+								</li>
+                               
+								
+                                 
+                                
+                                </ul>
+											
+						</div>
+
+	
+						<div class="alternative-content">
+							<a href="https://familyfriendlysites.com/register.php">
+								<div class="register-company">
+									<h3>Add Your Website <span>Register Today</span></h3>
+									<p>Join the Original Family-Friendly Directory on the Internet. Recognized and Respected on the Web, we are celebrating our 20th year promoting family-friendly sites!
+ </p>
+								</div>
+							</a>
+                            
+                            
+                            
+                            
+						</div>
+
+			<aside id="flickr-widget-3" class="widget widget_flickr">
+					<h3 class="widget-title"><span>TOP 10 LISTINGS<span class="wd-icon"></span></span></h3>				
+					<p>Sort:
+                        <span class="labels">newest</span> |
+                        <a href="https://familyfriendlysites.com/index.php?thefield%5b1%5d=rating">top rated</a> |
+                        <a href="https://familyfriendlysites.com/index.php?thefield%5b1%5d=hits">most visited</a>
+                        </p>
+                        
+					<ul>
+                    <li class="thumb" style="margin:5px;">
+
+					        
+
+<a href="https://familyfriendlysites.com/business-and-finance/business-services/health-and-safety/iriss-177602.html" title="IRISS">
+					          <img src="https://familyfriendlysites.com/thumbshots/thumb_100x100_6222909a3bb3b2f5ff62da8dfb1537e2.jpg"  title="" alt="IRISS" class="thumbshots"> 
+					        </a> 
+
+					    </li>
+
+		            
+					
+			      		<li class="thumb" style="margin:5px;">
+
+					        
+
+<a href="https://familyfriendlysites.com/technology-and-the-internet/services/torguard-177610.html" title="TorGuard">
+					          <img src="https://familyfriendlysites.com/thumbshots/thumb_100x100_7cae927c436869adb94478bdf13b7ea7.jpg"  title="" alt="TorGuard" class="thumbshots"> 
+					        </a> 
+
+					    </li>
+
+		            
+					
+			      		<li class="thumb" style="margin:5px;">
+
+					        
+
+<a href="https://familyfriendlysites.com/helpful-kids-resources/games-and-entertainment/sky-zone-trampoline-park-177609.html" title="Sky Zone Trampoline Park">
+					          <img src="https://familyfriendlysites.com/thumbshots/thumb_100x100_e12c6f68befbcb784880980a75cb1a17.jpg"  title="" alt="Sky Zone Trampoline Park" class="thumbshots"> 
+					        </a> 
+
+					    </li>
+
+		            
+					
+			      		<li class="thumb" style="margin:5px;">
+
+					        
+
+<a href="https://familyfriendlysites.com/business-and-finance/energy/pezz-electrical-services-llc-177608.html" title="Pezz Electrical Services LLC">
+					          <img src="https://familyfriendlysites.com/thumbshots/thumb_100x100_2c24a2c5e416935c61fa53b2cb02bcd9.jpg"  title="" alt="Pezz Electrical Services LLC" class="thumbshots"> 
+					        </a> 
+
+					    </li>
+
+		            
+					
+			      		<li class="thumb" style="margin:5px;">
+
+					        
+
+<a href="https://familyfriendlysites.com/home-and-family/home/home-improvements/arizonas-finest-roofing-177607.html" title="Arizona&#39;s Finest Roofing">
+					          <img src="https://familyfriendlysites.com/thumbshots/thumb_100x100_536c2ff5f3cc34b17d1e068be580a3ce.jpg"  title="" alt="Arizonas Finest Roofing" class="thumbshots"> 
+					        </a> 
+
+					    </li>
+
+		            
+					
+			      		<li class="thumb" style="margin:5px;">
+
+					        
+
+<a href="https://familyfriendlysites.com/health-and-wellness/healthcare/products-and-services/md-logic-177606.html" title="MD Logic">
+					          <img src="https://familyfriendlysites.com/thumbshots/thumb_100x100_b5ba57040ba8d9736fbb34b0305b67e9.jpg"  title="" alt="MD Logic" class="thumbshots"> 
+					        </a> 
+
+					    </li>
+
+		            
+					
+			      		<li class="thumb" style="margin:5px;">
+
+					        
+
+<a href="https://familyfriendlysites.com/business-and-finance/legal/family-law/koonsfuller-pc-177605.html" title="KoonsFuller PC">
+					          <img src="https://familyfriendlysites.com/thumbshots/thumb_100x100_85721538072d186392bb65bf81bd5213.jpg"  title="" alt="KoonsFuller PC" class="thumbshots"> 
+					        </a> 
+
+					    </li>
+
+		            
+					
+			      		<li class="thumb" style="margin:5px;">
+
+					        
+
+<a href="https://familyfriendlysites.com/health-and-wellness/substance-abuse/jcs-recovery-center-177604.html" title="JC&#39;s Recovery Center">
+					          <img src="https://familyfriendlysites.com/thumbshots/thumb_100x100_00daeada78bc4c435b6628fde2f74786.jpg"  title="" alt="JCs Recovery Center" class="thumbshots"> 
+					        </a> 
+
+					    </li>
+
+		            
+					
+			      		<li class="thumb" style="margin:5px;">
+
+					        
+
+<a href="https://familyfriendlysites.com/vacation-and-travel/transportation/vehicle-rentals/cabo-san-lucas-car-rental-177603.html" title="Cabo San Lucas Car Rental">
+					          <img src="https://familyfriendlysites.com/attachments/thumb_100x100_27a91b4353e2bc06abc0a24311dcd729.jpg" alt="" title="" class="avatar linkimage" > 
+					        </a> 
+
+					    </li>
+
+		            
+					
+			      		<li class="thumb" style="margin:5px;">
+
+					        
+
+<a href="https://familyfriendlysites.com/health-and-wellness/beauty/hair/essence-salon-177597.html" title="Essence Salon">
+					          <img src="https://familyfriendlysites.com/thumbshots/thumb_100x100_871e91696d0bcdde7d92a924e249e67b.jpg"  title="" alt="Essence Salon" class="thumbshots"> 
+					        </a> 
+
+					    </li>
+	          		</ul>
+					
+	    		</aside>
+
+					</article>
+				
+
+			
+
+			
+
+<div class="clear"></div>
+                         </div>
+                     </div>
+                        
+            
+    
+            		<div id="secondary" class="widget-area" role="complementary">
+                        
+                            <aside id="text-10" class="widget widget_text">
+                                                                
+<aside id="ait-directory-widget-4" class="widget widget_directory">
+<h3 class="widget-title"><span>REGISTER / LOGIN</span></h3>			
+<div class="not-logged">
+						<div id="ait-login-tabs">
+							<ul>
+				<li class="active"><a class="register" onclick="window.location.href='register.php'">Register</a></li>
+				<li ><a class="login" href="#ait-dir-login-tab">Login</a></li>
+							</ul>
+
+							
+							<div id="ait-dir-register-tab">					
+							<h3>Benefits of Membership</h3>
+                                <p>Registration is Quick and Easy. In most cases your link will be reviewed by our editors within 48 hours. See <a href="http://familyfriendlysites.co/family-friendly-guidelines/">guidelines</a> for details.
+</p>
+                                
+                                <p style="text-align:center;"> <button class="button-primary" onclick="window.location.href='register.php'">JOIN NOW</button>	</p>	
+                               	
+							</div>
+
+							
+
+							<div id="ait-dir-login-tab">
+								
+								
+							<form name="ait-login-form-widget" id="ait-login-form-widget"  action="https://familyfriendlysites.com/index.php?action=userlogin&amp;filled=1" method="post">
+									
+									<p class="login-username">
+										<label for="user_login">Username</label>
+										<input type="text" name="username"  id="user_login" class="input" value="" size="20">
+									</p>
+									<p class="login-password">
+										<label for="user_pass">Password</label>
+										<input type="password" name="userpassword" id="user_pass" class="input" value="" size="20">
+									</p>
+									
+									
+									<p class="login-submit">
+										<input type="submit" name="processform"  id="wp-submit" class="button-primary" value="Log In">
+										
+									</p>
+									
+								</form>		
+							</div>
+                        
+                       </div>
+					</div>
+				</aside>
+
+ 
+                                <aside  class="widget widget_posts"> 
+					<h3 class="widget-title"><span>Newest Link</span></h3>        
+					<div class="postitems-wrapper">
+                    <div class="postitem clearfix  last with-thumbnail">
+	            			<center><div class="thumb-wrap fl">
+	                			<!--RW <a href="https://familyfriendlysites.com/vacation-and-travel/by-destinations/europe/italy/italylimousine-161714.html" class="greyscale">
+<a href="https://familyfriendlysites.com/vacation-and-travel/by-destinations/europe/italy/italylimousine-161714.html"><img src="//api.pagepeeker.com/v2/thumbs.php?size=s&code=af8a7c05a8&url=https://www.italylimousine.com" valign="top" border="0" alt="Italylimousine  Image"></a>-->
+
+<a href="https://familyfriendlysites.com/vacation-and-travel/by-destinations/europe/italy/italylimousine-161714.html" title="Italylimousine ">
+					          <img src="https://familyfriendlysites.com/thumbshots/thumb_100x100_bd5002c2274d96d1372d34299843710f.jpg"  title="" alt="Italylimousine " class="thumbshots"> 
+					        </a> 
+
+                   			</div></center>
+	                		<h3><a href="https://familyfriendlysites.com/vacation-and-travel/by-destinations/europe/italy/italylimousine-161714.html">Italylimousine </a></h3>
+	                		<p><small>Italy limousine luxury Travel and Guided tours in italy, from Naples ,Amalfi Coast ,Rome &amp; Tuscany.B... <a href="https://familyfriendlysites.com/vacation-and-travel/by-destinations/europe/italy/italylimousine-161714.html">read more</a></small> </p>
+                        </div>     
+            		</div>
+
+            	</aside>
+                                
+                            </aside> 
+ 
+                            <aside >
+                                <h3 class="widget-title"><span>Visit Our Sponsors</span></h3>
+			
+                                    <div class="textwidget mrgb2x">
+                                    	
+                                        
+                                       <div class="adleft125x60 mrgb05x"><div id="addisplay6" class="adslots"><a href="http://familyfriendlyrealtors.com/index.php" rel="nofollow" target="_blank"><img  src="https://familyfriendlysites.com/templates/images_bootstrap/ads/ffrlogo.gif" alt="Family Friendly Realtors"></a>
+</div></div>
+				        			   <div class="adright125x60 mrgb05x"><div id="addisplay5" class="adslots"><script language="JAVASCRIPT1.1"  src="https://www.terror-alert.com/alert/status.jsc"></script></div></div>
+										
+                                        
+                                      	
+                                        <div class="adleft125x60 mrgb05x"></div>
+                                        <div class="adright125x60 mrgb05x"></div>
+                                       
+                                   
+                                       
+                                        
+                                        
+                                        
+                                        
+                                        <div class="adleft125x125 mrgb05x"><div id="addisplay10" class="adslots"><a href="http://sellmoz.com/?ffs" target="_blank"> <img  src="https://familyfriendlysites.com/templates/images_bootstrap/ads/sellmozAd125.png" alt="SellMoz.com"></a>
+</div></div>
+                                        <div class="adright125x125 mrgb05x"><div id="addisplay4" class="adslots"><a href="https://familyfriendlysites.com/contactform.php/?ffs" target="_blank"> <img  src="https://familyfriendlysites.com/templates/images_bootstrap/ads/advertisehere125.jpg" alt="Your Ad Here"></a>
+</div></div>
+                                        
+                                        <div class="adleft125x125 mrgb05x"><div id="addisplay7" class="adslots"><a href="https://mastermoz.com" rel="nofollow" target="_blank"> <img  src="https://familyfriendlysites.com/templates/images_bootstrap/ads/mmbullseyefree.gif" alt="MasterMOZ Directory"></a></div></div>
+                                        <div class="adright125x125 mrgb05x"><div id="addisplay3" class="adslots"><a href="http://restaurantequipment.us?ffs" target="_blank"><img  src="https://familyfriendlysites.com/templates/images_bootstrap/ads/REbanner125.jpg" alt="RestauantEquipment.US" /></a>
+</div></div>
+                                        
+                                        
+                                        
+                                        <!-- 
+                                        <div class="adleft125x250 mrgb05x"></div>
+                                        <div class="adright125x250 mrgb05x"></div>
+										-->
+                                       <div style="clear:both;"></div>
+                                    </div>
+
+
+                                <h3 class="widget-title"><span>We Support These Organizations</span></h3>	
+		
+                                    <div class="textwidget">
+                                    	
+                                        <div class="adleft125x125 mrgb05x"><div id="addisplay8" class="adslots"><a HREF="https://www.adcouncil.org/"><img  src="https://familyfriendlysites.com/templates/images_bootstrap/ads/adc_aa_120x90.gif"></a></div></div>
+                                        <div class="adright125x125 mrgb05x"></div>
+                                        <!--
+                                        <div class="adleft125x125 mrgb05x"></div>
+                                        <div class="adright125x125 mrgb05x"></div>
+                                        -->
+                                        
+                                         <div class="adleft125x250 mrgb05x"><div id="addisplay9" class="adslots"><iframe src="https://realityclock.com/comments.php?custom=yes&TID=stat120x240&id=185&usewrapper=no" width-"120" height="240" frameborder="0" marginheight="0" marginweight="0" hspace="0" vspace="0" scrolling="no"></iframe>
+</div></div>
+                                         <div class="adright125x250 mrgb05x"></div>
+                                        
+
+                                    </div>
+                                    
+                                    
+
+
+                            </aside> 
+
+
+
+
+
+              
+  
+
+                                                        <aside id="text" class="widget widget_text">
+                                <h3 class="widget-title"><span>Statistics</span></h3>	
+	
+                                    <div class="textwidget" style="text-align:center;"> 
+
+                              
+
+                                        <p>Directory last updated Feb 05, 2019.</p>
+										<p>Welcome <a href="https://familyfriendlysites.com/members/honeyy-group-45714.html">Honeyy Group</a>, the newest member.</p>
+                                    </div>
+                            </aside> 
+                            
+                            
+            		</div> 
+
+				</div>
+
+			</div> 
+    
+     <footer id="colophon" role="contentinfo">
+
+	        <div id="supplementary" class="widgets defaultContentWidth">
+	            <div id="footer-widgets" class="widget-area" role="complementary">
+					
+                   <div id="recent-comments-4" class="box widget-container widget_recent_comments">
+						<div class="box-wrapper">
+							<div class="title-border-bottom">
+								<div class="title-border-top">
+									<div class="title-decoration"></div>
+									<h2 class="widget-title">Information</h2>
+								</div>
+							</div>
+							<ul id="recentcomments">
+
+								<li class="recentcomments"><a href="https://familyfriendlysites.com/news">Important News!</a></li>
+								<li class="recentcomments"><a href="https://familyfriendlysites.com/index.php?TID=about_home">About FFS</a></li>
+								<li class="recentcomments"><a href="https://familyfriendlysites.com/family-friendly-guidelines">FFS Guidelines</a></li>
+								<li class="recentcomments"><a href="https://familyfriendlysites.com/tos">Terms of Service</a></li>
+                                <li class="recentcomments"><a href="https://familyfriendlysites.com/privacy">Privacy Policy</a></li>
+							</ul>
+						</div>
+					</div>  
+
+					<div id="recent-comments-4" class="box widget-container widget_recent_comments">
+						<div class="box-wrapper">
+							<div class="title-border-bottom">
+								<div class="title-border-top">
+									<div class="title-decoration"></div>
+									<h2 class="widget-title">Member Info</h2>
+								</div>
+							</div>
+							<ul id="recentcomments">
+
+								<li class="recentcomments"><a href="https://familyfriendlysites.com/index.php?action=userlogin">Member Login</a></li>
+								<li class="recentcomments"><a href="https://familyfriendlysites.com/contactform.php">Support</a></li>
+								<li class="recentcomments"><a href="https://familyfriendlysites.com/index.php?TID=pages-faqs">FAQ</a></li>
+								<li class="recentcomments"><a href="https://familyfriendlysites.com/sitemap.php">Site Map</a></li>
+                                <li class="recentcomments"><a href="https://familyfriendlysites.com/rssfeed.php">RSS Feed</a></li>
+							</ul>
+						</div>
+					</div>  
+
+					<div id="recent-comments-4" class="box widget-container widget_recent_comments">
+						<div class="box-wrapper">
+							<div class="title-border-bottom">
+								<div class="title-border-top">
+									<div class="title-decoration"></div>
+									<h2 class="widget-title">Link Info</h2>
+								</div>
+							</div>
+							<ul id="recentcomments">
+
+<li class="recentcomments"><a href="https://familyfriendlysites.com/staff-picks">Staff Picks</a></li>
+<li class="recentcomments"><a href="https://familyfriendlysites.com/newposts.php">Newest Links</a></li>
+<li class="recentcomments"><a href="https://familyfriendlysites.com/featured">Featured Links</a></li>
+							</ul>
+						</div>
+					</div>  
+
+					<div id="text-6" class="box widget-container widget_text">
+						<div class="box-wrapper">
+							<div class="title-border-bottom">
+								<div class="title-border-top">
+									<div class="title-decoration"></div>
+									<h2 class="widget-title">CONTACT US</h2>
+								</div>
+							</div>         
+							
+							<div class="textwidget">
+								<form  action="https://familyfriendlysites.com/contactform.php?filled=1" method="post">
+                                    <table width="90%" >
+                                   
+                                    <tr>
+                                     <td style="padding-right:10px;">E-Mail:</td>
+                                     <td style="padding-bottom:15px;"><input type="text" name="email"  value="" /></td>
+                                    </tr>
+                                   
+                                    <tr>
+                                     <td style="padding-right:10px;">Message:</td>
+                                     <td><textarea name="message" rows="3" cols="20" style="border: solid 1px #999;"></textarea></td>
+                                    </tr>
+                                    <tr>
+ <td class="labelscolumn"></td>
+ <td class="optionscolumn">
+<div class="g-recaptcha" data-sitekey="6Les3wsUAAAAAMUCz0WquwRO3aGmbC2KAPZ_HLwm"></div>
+ </td>
+</tr>
+
+
+
+                                    <tr><td></td><td><button type="submit" class="btn btn-default btn-lg">Send E-Mail</button></td></tr>
+                                    </table>
+									
+								</form>
+
+							</div>
+
+						</div>
+					</div>               
+	     		</div>
+
+	        		
+
+				<div id="site-generator" class="clearfix">
+					<div class="defaultContentWidth">
+<br>
+							<strong>©1996-2018 Family Friendly Sites.</strong> All rights reserved.<br>
+Family Friendly Site and Family Friendly Sites and their emblems are trademarks of FamilyFriendlySites.com </div>
+	<br><br>					
+					
+				</div>
+
+			</div>
+			
+		
+		</div>
+
+</div>
+
+    
+     
+
+<!--
+
+
+
+-->
+
+
+
+<ul class="menubullets">
+
+
+
+
+
+
+
+</ul>
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-66712905-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+<img src="https://familyfriendlysites.com/helper.php?action=linksponsorships" style="width: 1px; height: 1px;" alt="" class="helperimage"></body>
+</html>

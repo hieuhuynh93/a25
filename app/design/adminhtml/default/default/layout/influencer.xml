@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <influencer_adminhtml_influencer_index>
+        <reference name="content">
+            <block type="influencer/adminhtml_influencer" name="influencer" />
+        </reference>
+    </influencer_adminhtml_influencer_index>
+</layout>

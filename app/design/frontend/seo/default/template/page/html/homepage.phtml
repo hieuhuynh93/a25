@@ -1,0 +1,8 @@
+<?php
+$customerLogin = Mage::getUrl('customer/account/login');
+if (!Mage::getSingleton('customer/session')->isLoggedIn()) {
+    Mage::app()->getFrontController()->getResponse()->setRedirect($customerLogin);
+} else {
+    // logged in
+}
+?>

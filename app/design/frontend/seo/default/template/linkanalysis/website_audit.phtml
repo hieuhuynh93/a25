@@ -1,0 +1,1974 @@
+<?php
+$primaryDomainId = $_REQUEST['domain'];
+$primaryDomain = Mage::getModel('linkanalysis/linkanalysis')->load($primaryDomainId);
+
+$helper = Mage::helper('linkanalysis/data');
+
+$fileSize = $helper->getFileSize($primaryDomain->getUrl());
+$pageAuthority = $helper->getPageAuthority($primaryDomain->getUrl());
+$pageLoadTime = $helper->getPageLoadTime($primaryDomain->getUrl());
+$domainAuthority = $helper->getDomainAuthority($primaryDomain->getUrl());
+$alexaRank = $helper->getAlexaRank($primaryDomain->getUrl());
+$urlScreenShotDesktop = $helper->getUrlScreenShotDesktop($primaryDomain->getUrl());
+$urlScreenShotMobile = $helper->getUrlScreenShotMobile($primaryDomain->getUrl());
+$desktopSpeed = $helper->getDesktopPageSpeed($primaryDomain->getUrl());
+$mobileSpeed = $helper->getMobilePageSpeed($primaryDomain->getUrl());
+$mobileUsability = $helper->getMobileUsaBility($primaryDomain->getUrl());
+$googleCount = $helper->getGoogleCount($primaryDomain->getUrl());
+$yahooCount = $helper->getYahooCount($primaryDomain->getUrl());
+$bingCount = $helper->getBingCount($primaryDomain->getUrl());
+$yandexCount = 0;
+$pinterestShareCount = $helper->getpinterestShareCount($primaryDomain->getUrl());
+$fbShareCount = $helper->getFbShareCount($primaryDomain->getUrl());
+$whoIsData = $helper->LookupDomain($primaryDomain->getUrl());
+$pageStatsDesktop = $helper->getPageStatsDesktop($primaryDomain->getUrl());
+$pageStatsMobile = $helper->getPageStatsMobile($primaryDomain->getUrl());
+$ipDetails = $helper->getDomainLookUp($primaryDomain->getUrl());
+$mozDetails = $helper->getMozDetails($primaryDomain->getUrl());
+
+function convertToReadableSize($size){
+  $base = log($size) / log(1024);
+  $suffix = array("", " KB", " MB", " GB", " TB");
+  $f_base = floor($base);
+  return round(pow(1024, $base - floor($base)), 1) . $suffix[$f_base];
+}
+?>
+<div class="page-title">
+    <div class="row">
+        <div class="col-sm-4">
+            <h4 class="mb-0"> Website Audit</h4>
+        </div>
+        <div class="col-sm-8">
+            <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                <li class="breadcrumb-item"><a href="index.html" class="default-color">Home</a></li>
+                <li class="breadcrumb-item">Dashboard</li>
+                <li class="breadcrumb-item active">Link Analysis</li>
+                <li class="breadcrumb-item active">Link Analysis Details</li>
+                <li class="breadcrumb-item active">Analysis Results</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <h6><?php echo $primaryDomain->getUrl(); ?></h6>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-3 col-md-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body p-0">
+                <div class="bg-success" style="background-color: #fff !important;">
+<?php echo $urlScreenShotDesktop; ?>
+                </div>
+                <div class="p-3 bg-white">
+                    <div class="row">
+                        <div class="col-sm-6 col-6 align-self-center">
+                            <h5>Website Score</h5>
+                        </div>
+                        <div class="col-sm-6 col-6 align-self-center text-right">
+                            <span class="round-chart mb-0" data-percent="84" data-size="80" data-color="#28a745"> <span class="percent"></span> </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <h5 class="card-title pb-0 mb-15 border-0">Website Status </h5>
+                <div class="table-responsive">
+                    <table class="table center-aligned-table mb-0">
+                        <tbody>
+                            <tr>
+                                <td style="width: 10%;"><i class="fa fa-check-square-o" style="font-size:24px"></i></td>
+                                <td style="width: 40%;">41% passed of verification steps</td>
+                                <td style="width: 50%;">
+                                    <div class="progress progress-small mt-2">
+                                        <div class="skill2-bar bg-info" role="progressbar" style="width: 41%" aria-valuenow="41" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 10%;"><i class="fa fa-warning" style="font-size:24px"></i></td>
+                                <td style="width: 40%;">20% of verification steps</td>
+                                <td style="width: 50%;">
+                                    <div class="progress progress-small mt-2">
+                                        <div class="skill2-bar bg-warning" role="progressbar" style="width: 14%" aria-valuenow="14" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 10%;"><i class="fa fa-times-circle-o" style="font-size:24px"></i></td>
+                                <td style="width: 40%;">A5% of verification steps</td>
+                                <td style="width: 50%;">
+                                    <div class="progress progress-small mt-2">
+                                        <div class="skill2-bar bg-danger" role="progressbar" style="width: 8%" aria-valuenow="8" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p style="float: right; padding-top: 50px;">
+                        <a href="#" class="btn btn-outline-success btn-sm">Download</a>
+                        <a href="#" class="btn btn-outline-success btn-sm">Share</a>
+                        <a href="#" class="btn btn-outline-success btn-sm">Add to bookmark</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 mb-30">
+        <div class="card card-statistics">
+            <div class="card-body" style="padding: 0px !important;">
+<?php echo $urlScreenShotMobile; ?>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left">
+                        <span class="text-danger">
+                            <i class="fa fa-bar-chart-o highlight-icon" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="float-right text-right">
+                        <p class="card-text text-dark">ROBOT.TXT</p>
+                        <h4>65,650</h4>
+                    </div>
+                </div>
+                <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                    <i class="fa fa-exclamation-circle mr-1" aria-hidden="true"></i> Analysis Status
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left">
+                        <span class="text-warning">
+                            <i style="font-size: 40px; color: #28a745;" class="fa fa-check-square-o highlight-icon" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="float-right text-right">
+                        <p class="card-text text-dark">PAGE SIZE</p>
+                        <h4><?php echo $fileSize; ?></h4>
+                    </div>
+                </div>
+                <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                    <i class="fa fa-bookmark-o mr-1" aria-hidden="true"></i>
+                    <a href="#">Page Size Suggession</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left">
+                        <span class="text-success">
+                            <i style="font-size: 40px; color: #28a745;" class="fa fa-check-square-o highlight-icon" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="float-right text-right">
+                        <p class="card-text text-dark">LOAD TIME</p>
+                        <h4><?php echo $pageLoadTime; ?></h4>
+                    </div>
+                </div>
+                <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                    <i class="fa fa-calendar mr-1" aria-hidden="true"></i>
+                    <a href="#">Page Load Time Sugession</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left">
+                        <span class="text-primary">
+                            <i style="font-size: 40px; color: #28a745;" class="fa fa-check-square-o highlight-icon" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="float-right text-right">
+                        <p class="card-text text-dark">PAGE AUTHORITY</p>
+                        <h4><?php echo $pageAuthority; ?></h4>
+                    </div>
+                </div>
+                <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                    <i class="fa fa-repeat mr-1" aria-hidden="true"></i>
+                    <a href="#">About Page Authority</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left">
+                        <span class="round-chart mb-0" data-percent="<?php echo $desktopSpeed; ?>" data-size="80" data-color="#28a745"> 
+                            <span class="percent"></span> 
+                        </span>
+                    </div>
+                    <div class="float-right text-right">
+                        <p class="card-text text-dark">Desktop</p>
+                        <h4><?php echo $desktopSpeed; ?></h4>
+                    </div>
+                </div>
+                <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                    <i class="fa fa-exclamation-circle mr-1" aria-hidden="true"></i> Page Speed Desktop
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left">
+                        <span class="round-chart mb-0" data-percent="<?php echo $mobileSpeed; ?>" data-size="80" data-color="#28a745"> 
+                            <span class="percent"></span> 
+                        </span>
+                    </div>
+                    <div class="float-right text-right">
+                        <p class="card-text text-dark">Mobile</p>
+                        <h4><?php echo $mobileSpeed; ?></h4>
+                    </div>
+                </div>
+                <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                    <i class="fa fa-bookmark-o mr-1" aria-hidden="true"></i> Page Speed Mobile
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left">
+                        <span class="round-chart mb-0" data-percent="<?php echo $mobileUsability; ?>" data-size="80" data-color="#28a745"> 
+                            <span class="percent"></span> 
+                        </span>
+                    </div>
+                    <div class="float-right text-right">
+                        <p class="card-text text-dark">Usability Mobile</p>
+                        <h4><?php echo $mobileUsability; ?></h4>
+                    </div>
+                </div>
+                <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                    <i class="fa fa-calendar mr-1" aria-hidden="true"></i> Sales Per Week 
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left">
+                        <span class="round-chart mb-0" data-percent="<?php echo $domainAuthority; ?>" data-size="80" data-color="#28a745"> 
+                            <span class="percent"></span> 
+                        </span>
+                    </div>
+                    <div class="float-right text-right">
+                        <p class="card-text text-dark">Domain Authority</p>
+                        <h4><?php echo $domainAuthority; ?></h4>
+                    </div>
+                </div>
+                <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                    <i class="fa fa-repeat mr-1" aria-hidden="true"></i> Just Updated
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- --------------------------------------->
+<div class="row">
+    <div class="col-xl-4 mb-30">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <h5 class="card-title pb-0 border-0 mb-15">WhoIs Information </h5>
+                <!-- action group -->
+                <div class="scrollbar max-h-350" style="overflow-y: hidden; outline: currentcolor none medium;" tabindex="4">
+                    <div class="table-responsive">
+                        <table class="table center-aligned-table">
+                            <tbody>
+                                <tr>
+                                    <td><i class="fa fa-circle text-info"></i></td>
+                                    <td>Domain Name</td>
+                                    <td><?php echo $whoIsData['domain name'] ?></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-success"></i></td>
+                                    <td>Registered</td>
+                                    <td>YES</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-success"></i></td>
+                                    <td>Registrar iana id</td>
+                                    <td><?php echo $whoIsData['registrar iana id'] ?></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-success"></i></td>
+                                    <td>Domain Age</td>
+                                    <td><?php echo $helper->calculate_date_differece(substr($whoIsData['registry expiry date'], 0, 10), substr($whoIsData['creation date'], 0, 10)); ?></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-success"></i></td>
+                                    <td>Created At</td>
+                                    <td><?php echo substr($whoIsData['creation date'], 0, 10); ?></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-info"></i></td>
+                                    <td>Changed At</td>
+                                    <td><?php echo substr($whoIsData['updated date'], 0, 10); ?></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-success"></i></td>
+                                    <td>Expire At</td>
+                                    <td><?php echo substr($whoIsData['registry expiry date'], 0, 10); ?></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-info"></i></td>
+                                    <td>Registrar</td>
+                                    <td><?php echo $whoIsData['registrar'] ?></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-success"></i></td>
+                                    <td>Name server</td>
+                                    <td><?php echo $whoIsData['name server'] ?></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-info"></i></td>
+                                    <td>Last Update Whois database</td>
+                                    <td><?php echo $whoIsData['last update of whois database'] ?></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 mb-30">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <h5 class="card-title pb-0 border-0 mb-15">IP Information </h5>
+                <!-- action group -->
+                <div class="scrollbar max-h-350" style="overflow-y: hidden; outline: currentcolor none medium;" tabindex="4">
+                    <div class="table-responsive">
+                        <?php if(!empty($ipDetails)): ?>
+                        <table class="table center-aligned-table">
+                            <tbody>
+                                <tr>
+                                    <td><i class="fa fa-circle text-success"></i></td>
+                                    <td>IP</td>
+                                    <td><?php echo $ipDetails['query']; ?></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-info"></i></td>
+                                    <td>ISP</td>
+                                    <td><?php echo $ipDetails['isp']; ?></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-success"></i></td>
+                                    <td>Country</td>
+                                    <td><?php echo $ipDetails['country']; ?></td>
+                                </tr>
+                                <!--<tr>
+                                    <td><i class="fa fa-circle text-success"></i></td>
+                                    <td>Continent</td>
+                                    <td><?php /*echo $ipDetails['geoplugin_continentName'];*/ ?></td>
+                                </tr>-->
+                                <tr>
+                                    <td><i class="fa fa-circle text-info"></i></td>
+                                    <td>City</td>
+                                    <td><?php echo $ipDetails['city']; ?></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-success"></i></td>
+                                    <td>Region</td>
+                                    <td><?php echo $ipDetails['regionName']; ?></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-info"></i></td>
+                                    <td>Timezone</td>
+                                    <td><?php echo $ipDetails['timezone']; ?></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-success"></i></td>
+                                    <td>Latitude</td>
+                                    <td><?php echo $ipDetails['lat']; ?></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-info"></i></td>
+                                    <td>Longitude</td>
+                                    <td><?php echo $ipDetails['lon']; ?></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <?php else: ?>
+                        Sorry! No IP Details Found.
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 mb-30">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <h5 class="card-title pb-0 border-0 mb-15">MOZ Information </h5>
+                <!-- action group -->
+                <div class="scrollbar max-h-350" style="overflow-y: hidden; outline: currentcolor none medium;" tabindex="4">
+                    <div class="table-responsive">
+                        <?php if(!empty($mozDetails)): ?>
+                            <table class="table center-aligned-table">
+                            <tbody>
+                                <tr>
+                                    <td><i class="fa fa-circle text-info"></i></td>
+                                    <td>MozRank</td>
+                                    <td><?php echo $mozDetails['MozRank_Normalised']; ?> / 10</td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-success"></i></td>
+                                    <td>Subdomain Normalized</td>
+                                    <td><?php echo $mozDetails['MozRank_normalised']; ?></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-info"></i></td>
+                                    <td>Subdomain Raw</td>
+                                    <td><?php echo $mozDetails['MozRank_raw']; ?></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-success"></i></td>
+                                    <td>URL Normalized</td>
+                                    <td><?php /*echo $mozDetails[''];*/ ?></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-info"></i></td>
+                                    <td>URL Raw</td>
+                                    <td><?php echo $mozDetails['MozRank_Raw']; ?></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-success"></i></td>
+                                    <td>HTTP Status Code</td>
+                                    <td><?php echo $mozDetails['HTTP_Status']; ?></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-info"></i></td>
+                                    <td>External Quality Link</td>
+                                    <td><?php echo $mozDetails['Number_of_External_Links_to_the_URL']; ?></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-success"></i></td>
+                                    <td>Links</td>
+                                    <td><?php echo $mozDetails['Total_number_of_Links_to_the_URL']; ?></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-info"></i></td>
+                                    <td>BackLink Count</td>
+                                    <td><?php /*echo $mozDetails[''];*/ ?></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-circle text-info"></i></td>
+                                    <td>Canonical URL</td>
+                                    <td><?php echo $mozDetails['Canonical_URL']; ?></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <?php else: ?>
+                            Sorry!, No Moz Information Found
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-3 mb-30">
+        <div class="card card-statistics fb-bg h-100">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left icon-box-fixed">
+                        <span class="text-white">
+                            <i class="fa fa-facebook highlight-icon" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="float-right">
+                        <h4 id="facebook_count" class="text-white"><?php echo $fbShareCount; ?></h4>
+                        <p class="card-text text-white">Share </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 mb-30">
+        <div class="card card-statistics twitter-bg h-100">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left icon-box-fixed">
+                        <span class="text-white">
+                            <i class="fa fa-twitter highlight-icon" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="float-right">
+                        <h4 id="twitter_count" class="text-white">0</h4>
+                        <p class="card-text text-white">Followers </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 mb-30">
+        <div class="card card-statistics youtube-bg h-100">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left icon-box-fixed">
+                        <span class="text-white">
+                            <i class="fa fa-youtube highlight-icon" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="float-right">
+                        <h4 id="youtube_count" class="text-white">0</h4>
+                        <p class="card-text text-white">Subscribers </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 mb-30">
+        <div class="card card-statistics fb-bg h-100">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left icon-box-fixed">
+                        <span class="text-white">
+                            <i class="fa fa-instagram highlight-icon" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="float-right">
+                        <h4 id="instagram_count" class="text-white">0</h4>
+                        <p class="card-text text-white">Likes </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 mb-30">
+        <div class="card card-statistics twitter-bg h-100">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left icon-box-fixed">
+                        <span class="text-white">
+                            <i class="fa fa-linkedin highlight-icon" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="float-right">
+                        <h4 id="linkedin_count" class="text-white">0</h4>
+                        <p class="card-text text-white">Followers </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 mb-30">
+        <div class="card card-statistics youtube-bg h-100">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left icon-box-fixed">
+                        <span class="text-white">
+                            <i class="fa fa-pinterest highlight-icon" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="float-right">
+                        <h4 id="pinterest_count" class="text-white"><?php echo $pinterestShareCount; ?></h4>
+                        <p class="card-text text-white">Subscribers </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 mb-30">
+        <div class="card card-statistics fb-bg h-100">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left icon-box-fixed">
+                        <span class="text-white">
+                            <i class="fa fa-google-plus highlight-icon" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="float-right">
+                        <h4 id="google_count" class="text-white">0</h4>
+                        <p class="card-text text-white">Likes </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 mb-30">
+        <div class="card card-statistics twitter-bg h-100">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left icon-box-fixed">
+                        <span class="text-white">
+                            <i class="fa fa-timblr highlight-icon" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="float-right">
+                        <h4 id="timblr_count" class="text-white">0</h4>
+                        <p class="card-text text-white">Followers </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-4 mt-3 mt-xl-0">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <h5 class="card-title">Index Information</h5>
+                <div class="mt-20">
+                    <div class="clearfix">
+                        <p class="mb-10 float-left">GOOGLE</p>
+                        <p class="mb-10 text-info float-right"><?php echo $googleCount; ?></p>
+                    </div>
+                    <div class="progress progress-small">
+                        <div class="skill2-bar bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="mt-20">
+                    <div class="clearfix">
+                        <p class="mb-10 float-left">YAHOO</p>
+                        <p class="mb-10 text-success float-right"><?php echo $yahooCount; ?></p>
+                    </div>
+                    <div class="progress progress-small">
+                        <div class="skill2-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="mt-20 mb-20">
+                    <div class="clearfix">
+                        <p class="mb-10 float-left">BING</p>
+                        <p class="mb-10 text-secondary float-right"><?php echo $bingCount; ?></p>
+                    </div>
+                    <div class="progress progress-small">
+                        <div class="skill2-bar bg-secondary" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="mt-20">
+                    <div class="clearfix">
+                        <p class="mb-10 float-left">YANDEX</p>
+                        <p class="mb-10 text-warning float-right"><?php echo $yandexCount; ?></p>
+                    </div>
+                    <div class="progress progress-small">
+                        <div class="skill2-bar bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>  
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <h5 class="card-title">Related Website</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-20" style="margin-bottom: 0.0rem !important;">
+                        <div class="media">
+                            <div class="position-relative">
+                                <img class="img-fluid mr-15 avatar-small" src="<?php echo $this->getSkinUrl('images/item/01.png', array('_secure' => true)); ?>" alt="">
+                            </div> 
+                            <div class="media-body">
+                                <h6 class="mt-0 mb-0">Ajio</h6>
+                                <p><a href="#">https://www.ajio.com</a> </p>
+                            </div>
+                        </div>
+                        <div class="divider dotted mt-20"></div>
+                    </li>
+                    <li class="mb-20" style="margin-bottom: 0.0rem !important;">
+                        <div class="media">
+                            <div class="position-relative clearfix">
+                                <img class="img-fluid mr-15 avatar-small" src="<?php echo $this->getSkinUrl('images/item/02.png', array('_secure' => true)); ?>" alt="">
+                            </div> 
+                            <div class="media-body">
+                                <h6 class="mt-0 mb-0">Flipkart</h6>
+                                <p><a href="#">https://www.flipkart.com</a> </p>
+                            </div>
+                        </div>
+                        <div class="divider dotted mt-20"></div>
+                    </li>
+                    <li class="mb-20" style="margin-bottom: 0.0rem !important;">
+                        <div class="media">
+                            <div class="position-relative">
+                                <img class="img-fluid mr-15 avatar-small" src="<?php echo $this->getSkinUrl('images/item/03.png', array('_secure' => true)); ?>" alt="">
+                            </div> 
+                            <div class="media-body">
+                                <h6 class="mt-0 mb-0">Snapdeal</h6>
+                                <p><a href="#">https://www.snapdeal.com</a> </p>
+                            </div>
+                        </div>
+                        <div class="divider dotted mt-20"></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 mt-3 mt-xl-0">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <h5 class="card-title">Similar Web Data</h5>
+                <div class="mt-20">
+                    <div class="clearfix">
+                        <p class="mb-10 float-left">Total Visit</p>
+                        <p class="mb-10 text-info float-right">801</p>
+                    </div>
+                    <div class="progress progress-small">
+                        <div class="skill2-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="mt-20">
+                    <div class="clearfix">
+                        <p class="mb-10 float-left">Time on site</p>
+                        <p class="mb-10 text-success float-right">572</p>
+                    </div>
+                    <div class="progress progress-small">
+                        <div class="skill2-bar bg-success" role="progressbar" style="width: 57%" aria-valuenow="57" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="mt-20 mb-20">
+                    <div class="clearfix">
+                        <p class="mb-10 float-left">Page Views</p>
+                        <p class="mb-10 text-secondary float-right">766</p>
+                    </div>
+                    <div class="progress progress-small">
+                        <div class="skill2-bar bg-secondary" role="progressbar" style="width: 76%" aria-valuenow="76" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="mt-20">
+                    <div class="clearfix">
+                        <p class="mb-10 float-left">Bounce Rate</p>
+                        <p class="mb-10 text-warning float-right">288</p>
+                    </div>
+                    <div class="progress progress-small">
+                        <div class="skill2-bar bg-warning" role="progressbar" style="width: 28%" aria-valuenow="28" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>  
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-6 mb-30">
+        <div class="card card-statistics mb-30">
+            <div class="card-body" style="border-top: 5px solid goldenrod;">
+                <h5 class="card-title">Traffic by Countries</h5>
+                <div class="scrollbar max-h-200 overflow-y">
+                    <table class="table table-hover">
+                        <tbody><tr class="bg-light">
+                                <th>SL</th>
+                                <th>Country</th>
+                                <th>Traffic %</th>
+                            </tr>
+                            <tr><td>1</td><td>India</td><td>                                 96.16%                                                                                                                        7.62%                                                                      </td></tr><tr><td>2</td><td>United States</td><td>                                 1.14%                                                                                                                        25.52%                                                                      </td></tr><tr><td>3</td><td>Indonesia</td><td>                                 0.42%                                                                                                                        14.12%                                                                      </td></tr><tr><td>4</td><td>United Kingdom</td><td>                                 0.40%                                                                                                                        9.01%                                                                      </td></tr><tr><td>5</td><td>Singapore</td><td>                                 0.25%                                                                                                                        31.13%                                                                      </td>					   </tr></tbody></table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-6 mb-30">
+        <div class="card card-statistics mb-30">
+            <div class="card-body" style="border-top: 5px solid mediumpurple;">
+                <h5 class="card-title"> Social Media Traffic</h5>
+                Facebook <span class="pull-right"><b>88.41%</b></span><div class="progress">
+                    <div class="progress-bar progress-bar-striped " role="progressbar" aria-valuenow="88.41%" aria-valuemin="0" aria-valuemax="100" style="width:88.41%">
+                    </div>
+                </div>Youtube <span class="pull-right"><b>9.47%</b></span><div class="progress">
+                    <div class="progress-bar progress-bar-striped " role="progressbar" aria-valuenow="9.47%" aria-valuemin="0" aria-valuemax="100" style="width:9.47%">
+                    </div>
+                </div>WhatsApp Webapp <span class="pull-right"><b>0.79%</b></span><div class="progress">
+                    <div class="progress-bar progress-bar-striped " role="progressbar" aria-valuenow="0.79%" aria-valuemin="0" aria-valuemax="100" style="width:0.79%">
+                    </div>
+                </div>quora <span class="pull-right"><b>0.68%</b></span><div class="progress">
+                    <div class="progress-bar progress-bar-striped " role="progressbar" aria-valuenow="0.68%" aria-valuemin="0" aria-valuemax="100" style="width:0.68%">
+                    </div>
+                </div>Instagram <span class="pull-right"><b>0.14%</b></span><div class="progress">
+                    <div class="progress-bar progress-bar-striped " role="progressbar" aria-valuenow="0.14%" aria-valuemin="0" aria-valuemax="100" style="width:0.14%">
+                    </div>
+                </div>			   </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-20">
+    <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+        <div class="card card-statistics h-100 bg-primary">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left">
+                        <span class="text-white">
+                            <i class="fa fa-arrow-right highlight-icon" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="float-right text-right">
+                        <p class="card-text text-white">Direct Traffic</p>
+                        <h4 class="text-white">39.59%</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+        <div class="card card-statistics h-100 bg-success">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left">
+                        <span class="text-white">
+                            <i class="fa fa-arrow-down highlight-icon" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="float-right text-right">
+                        <p class="card-text text-white">Referral Traffic</p>
+                        <h4 class="text-white">1.43%</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+        <div class="card card-statistics h-100 bg-warning">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left">
+                        <span class="text-white">
+                            <i class="fa fa-tag highlight-icon" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="float-right text-right">
+                        <p class="card-text text-white">Search Traffic</p>
+                        <h4 class="text-white">27.22%</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+        <div class="card card-statistics h-100 bg-youtube">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left">
+                        <span class="text-white">
+                            <i class="fa fa-sign-out highlight-icon" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="float-right text-right">
+                        <p class="card-text text-white">Social Traffic</p>
+                        <h4 class="text-white">18.18%</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+        <div class="card card-statistics h-100 bg-linkedin">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left">
+                        <span class="text-white">
+                            <i class="fa fa-envelope highlight-icon" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="float-right text-right">
+                        <p class="card-text text-white">Mail Traffic</p>
+                        <h4 class="text-white">2.19%</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+        <div class="card card-statistics h-100 bg-instagram">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left">
+                        <span class="text-white">
+                            <i class="fa fa-laptop highlight-icon" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="float-right text-right">
+                        <p class="card-text text-white">Display Traffic</p>
+                        <h4 class="text-white">11.40%</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- --------------------------------------->
+<br><br>
+
+<div class="row"> 
+    <div class="col-lg-3 mt-10 sm-mt-0">
+        <div class="clearfix">
+            <p class="mb-10 float-left">Moz Rank</p>
+            <p class="mb-10 text-info float-right">801</p>
+        </div>
+        <div class="progress progress-small">
+            <div class="skill2-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+    </div>
+    <div class="col-lg-3 mt-10">
+        <div class="clearfix">
+            <p class="mb-10 float-left">Bounce Rate</p>
+            <p class="mb-10 text-success float-right">572</p>
+        </div>
+        <div class="progress progress-small">
+            <div class="skill2-bar bg-success" role="progressbar" style="width: 57%" aria-valuenow="57" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left">
+                        <span class="text-warning">
+                            <i class="fa fa-shopping-cart highlight-icon" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="float-right text-right">
+                        <p class="card-text text-dark">File Detected</p>
+                        <h4>Site Map XML</h4>
+                    </div>
+                </div>
+                <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                    <i class="fa fa-bookmark-o mr-1" aria-hidden="true"></i> http://ajio.com/sitemap.xml
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left">
+                        <span class="text-warning">
+                            <i class="fa fa-twitter highlight-icon" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="float-right text-right">
+                        <p class="card-text text-dark">Alexa Rank</p>
+                        <h4><?php echo $alexaRank; ?></h4>
+                    </div>
+                </div>
+                <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                    <i class="fa fa-bookmark-o mr-1" aria-hidden="true"></i> Alexa Rank
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-12 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <h5 class="card-title pb-0 mb-15 border-0">Website Description </h5>
+                <div class="table-responsive">
+                    <table class="table center-aligned-table mb-0">
+                        <thead>
+                            <tr class="text-dark">
+                                <th>Item</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/team/05.jpg', array('_secure' => true)); ?>" alt=""> </td>
+                                <td>Charset</td>
+                                <td class="text-info">UTF - 8</td>
+                                <td class="">Great, language/character encoding is specified: UTF-8</td>
+                            </tr>
+                            <tr>
+                                <td> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/team/05.jpg', array('_secure' => true)); ?>" alt=""> </td>
+                                <td>Meta Tag</td>
+                                <td class="text-info">92 Characters</td>
+                                <td class="">
+                                    AJIO | Online Shopping for Clothing, Footwear, Fashion Tech & Accessories for Men, Women & Kids
+                                </td>
+                            </tr>
+                            <tr>
+                                <td> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/team/05.jpg', array('_secure' => true)); ?>" alt=""> </td>
+                                <td>Meta Title</td>
+                                <td class="text-info">96 Characters</td>
+                                <td class="">
+                                    AJIO | Online Shopping for Clothing, Footwear, Fashion Tech & Accessories for Men, Women & Kids
+                                </td>
+                            </tr>
+                            <tr>
+                                <td> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/team/05.jpg', array('_secure' => true)); ?>" alt=""> </td>
+                                <td>Title Description</td>
+                                <td class="text-info">196 Characters</td>
+                                <td class="">
+                                    Shop online for Fashion & Tech in India. Buy Clothing, Footwear, Accessories and Electronics at best prices. ✓100% Handpicked ✓30 Day Returns.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/team/05.jpg', array('_secure' => true)); ?>" alt=""> </td>
+                                <td>Effective URL</td>
+                                <td class="text-info">26 Characters</td>
+                                <td class="">
+                                    https://www.ajio.com
+                                </td>
+                            </tr>
+                            <tr>
+                                <td> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/team/05.jpg', array('_secure' => true)); ?>" alt=""> </td>
+                                <td>Excerpt</td>
+                                <td class="text-info">Page content</td>
+                                <td class="">
+                                    AJIO | Online Shopping for Clothing, Footwear, Fashion Tech & Accessories for Men, Women & Kids...
+                                </td>
+                            </tr>
+                            <tr>
+                                <td> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/team/05.jpg', array('_secure' => true)); ?>" alt=""> </td>
+                                <td>Meta Keyword</td>
+                                <td class="text-info">8 Detected</td>
+                                <td class="">
+                                    <span class="badge badge-success">Today</span>
+                                    <span class="badge badge-success">Tomorrow</span>
+                                    <span class="badge badge-success">Sale</span>
+                                    <span class="badge badge-success">Marketing</span>
+                                    <span class="badge badge-success">eCommerce</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/team/05.jpg', array('_secure' => true)); ?>" alt=""> </td>
+                                <td>Keywords Cloud</td>
+                                <td class="text-info">Density</td>
+                                <td class="">
+                                    <a href="#" class="btn btn-outline-success btn-sm">View Order</a>
+                                    <a href="#" class="btn btn-outline-success btn-sm">View Order</a>
+                                    <a href="#" class="btn btn-outline-success btn-sm">View Order</a>
+                                    <a href="#" class="btn btn-outline-success btn-sm">View Order</a>
+                                    <a href="#" class="btn btn-outline-success btn-sm">View Order</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/team/05.jpg', array('_secure' => true)); ?>" alt=""> </td>
+                                <td>Google Preview</td>
+                                <td class="text-info">Your look like this in google search result</td>
+                                <td class="">
+                                    AJIO | Online Shopping for Clothing, Footwear, Fashion Tech & Accessories for Men, Women & Kids...
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="vertical-align: top;"> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/team/05.jpg', array('_secure' => true)); ?>" alt=""> </td>
+                                <td style="vertical-align: top;">Keyword Consistency</td>
+                                <td style="vertical-align: top;" class="text-info">Keyword density is one of the main terms in SEO</td>
+                                <td class="" style="vertical-align: top;">
+                                    <!-- --------------- Inner Table Starts ------------>
+                                    <table class="mb-0 table table-bordered table-3 text-center table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Keyword </th>
+                                                <th>Freq</th>
+                                                <th>Title</th>
+                                                <th>Desc</th>
+                                                <th>Domain</th>
+                                                <th>H1</th>
+                                                <th>H2</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>javascript</td>
+                                                <td>2</td>
+                                                <td><i class="fa fa-close" style="font-size:16px;color:red"></i></td>
+                                                <td><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                                                <td><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                                                <td><i class="fa fa-close" style="font-size:16px;color:red"></i></td>
+                                                <td><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                                            </tr>
+                                            <tr>
+                                                <td>enabled</td>
+                                                <td>1</td>
+                                                <td><i class="fa fa-close" style="font-size:16px;color:red"></i></td>
+                                                <td><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                                                <td><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                                                <td><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                                                <td><i class="fa fa-close" style="font-size:16px;color:red"></i></td>
+                                            </tr>
+                                            <tr>
+                                                <td>browser</td>
+                                                <td>1</td>
+                                                <td><i class="fa fa-close" style="font-size:16px;color:red"></i></td>
+                                                <td><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                                                <td><i class="fa fa-close" style="font-size:16px;color:red"></i></td>
+                                                <td><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                                                <td><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <!-- --------------- Inner Table Ends -------------->
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-4 mt-4 mt-xl-0">
+        <h5 class="card-title">Website Visits</h5>
+        <ul class="list-unstyled">
+            <li class="mb-20">
+                <div class="media">
+                    <div class="position-relative">
+                        <img class="img-fluid mr-15 avatar-small" src="<?php echo $this->getSkinUrl('images/item/01.png', array('_secure' => true)); ?>" alt="">
+                    </div>
+                    <div class="media-body">
+                        <h6 class="mt-0 mb-0">Unique Visits  
+                            <span class="float-right text-danger"> 
+                                8,561 </span>  
+                        </h6>
+                        <p>Daily </p>
+                    </div>
+                </div>
+                <div class="divider dotted mt-20"></div>
+            </li>
+            <li class="mb-20">
+                <div class="media">
+                    <div class="position-relative clearfix">
+                        <img class="img-fluid mr-15 avatar-small" src="<?php echo $this->getSkinUrl('images/item/02.png', array('_secure' => true)); ?>" alt="">
+                    </div>
+                    <div class="media-body">
+                        <h6 class="mt-0 mb-0">Unique Visits   
+                            <span class="float-right text-warning"> 6,213 </span>  
+                        </h6>
+                        <p>Monthly </p>
+                    </div>
+                </div>
+                <div class="divider dotted mt-20"></div>
+            </li>
+            <li>
+                <div class="media">
+                    <div class="position-relative">
+                        <img class="img-fluid mr-15 avatar-small" src="<?php echo $this->getSkinUrl('images/item/03.png', array('_secure' => true)); ?>" alt="">
+                    </div>
+                    <div class="media-body">
+                        <h6 class="mt-0 mb-0">Unique Visits
+                            <span class="float-right text-success"> 2,926 </span>  
+                        </h6>
+                        <p> Yearly </p>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="col-xl-4 mt-4 mt-xl-0">
+        <h5 class="card-title">Pages Views</h5>
+        <ul class="list-unstyled">
+            <li class="mb-20">
+                <div class="media">
+                    <div class="position-relative">
+                        <img class="img-fluid mr-15 avatar-small" src="<?php echo $this->getSkinUrl('images/item/01.png', array('_secure' => true)); ?>" alt="">
+                    </div>
+                    <div class="media-body">
+                        <h6 class="mt-0 mb-0">Pages Views  
+                            <span class="float-right text-danger"> 
+                                8,561 </span>  
+                        </h6>
+                        <p>Daily </p>
+                    </div>
+                </div>
+                <div class="divider dotted mt-20"></div>
+            </li>
+            <li class="mb-20">
+                <div class="media">
+                    <div class="position-relative clearfix">
+                        <img class="img-fluid mr-15 avatar-small" src="<?php echo $this->getSkinUrl('images/item/02.png', array('_secure' => true)); ?>" alt="">
+                    </div>
+                    <div class="media-body">
+                        <h6 class="mt-0 mb-0">Pages Views  
+                            <span class="float-right text-warning"> 6,213 </span>  
+                        </h6>
+                        <p>Monthly </p>
+                    </div>
+                </div>
+                <div class="divider dotted mt-20"></div>
+            </li>
+            <li>
+                <div class="media">
+                    <div class="position-relative">
+                        <img class="img-fluid mr-15 avatar-small" src="<?php echo $this->getSkinUrl('images/item/03.png', array('_secure' => true)); ?>" alt="">
+                    </div>
+                    <div class="media-body">
+                        <h6 class="mt-0 mb-0">Pages Views
+                            <span class="float-right text-success"> 2,926 </span>  
+                        </h6>
+                        <p> Yearly </p>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="col-xl-4 mt-4 mt-xl-0">
+        <h5 class="card-title">Income</h5>
+        <ul class="list-unstyled">
+            <li class="mb-20">
+                <div class="media">
+                    <div class="position-relative">
+                        <img class="img-fluid mr-15 avatar-small" src="<?php echo $this->getSkinUrl('images/item/01.png', array('_secure' => true)); ?>" alt="">
+                    </div>
+                    <div class="media-body">
+                        <h6 class="mt-0 mb-0">Income
+                            <span class="float-right text-danger"> 
+                                $8,561 </span>  
+                        </h6>
+                        <p>Daily </p>
+                    </div>
+                </div>
+                <div class="divider dotted mt-20"></div>
+            </li>
+            <li class="mb-20">
+                <div class="media">
+                    <div class="position-relative clearfix">
+                        <img class="img-fluid mr-15 avatar-small" src="<?php echo $this->getSkinUrl('images/item/02.png', array('_secure' => true)); ?>" alt="">
+                    </div>
+                    <div class="media-body">
+                        <h6 class="mt-0 mb-0">Income
+                            <span class="float-right text-warning"> $6,213 </span>  
+                        </h6>
+                        <p>Monthly </p>
+                    </div>
+                </div>
+                <div class="divider dotted mt-20"></div>
+            </li>
+            <li>
+                <div class="media">
+                    <div class="position-relative">
+                        <img class="img-fluid mr-15 avatar-small" src="<?php echo $this->getSkinUrl('images/item/03.png', array('_secure' => true)); ?>" alt="">
+                    </div>
+                    <div class="media-body">
+                        <h6 class="mt-0 mb-0">Income
+                            <span class="float-right text-success"> $2,926 </span>  
+                        </h6>
+                        <p> Yearly </p>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<br><br><br><br>
+<div class="row">
+    <div class="col-xl-12 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <h5 class="mb-15 card-title pb-0 border-0">Desktop | Mobile Suggessions</h5>
+                <div class="table-responsive">
+                    <table class="table center-aligned-table mb-0">
+                        <thead>
+                            <tr class="text-dark">
+                                <th></th>
+                                <th>Topics</th>
+                                <th>Description</th>
+                                <th style="text-align: center;">Desktop</th>
+                                <th style="text-align: center;">Mobile </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/item/01.png', array('_secure' => true)); ?>" alt=""> </td>
+                                <td>Avoid landing page redirects</td>
+                                <td class="">Your page has no redirects. Learn more about avoiding landing page redirects</td>
+                                <td style="text-align: center;"><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                                <td style="text-align: center;"><i class="fa fa-close" style="font-size:16px;color:red"></i></td>
+                            </tr>
+                            <tr>
+                                <td> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/item/03.png', array('_secure' => true)); ?>" alt=""> </td>
+                                <td>Enable compression</td>
+                                <td class="text-warning">Compressing resources with gzip or deflate can reduce the number of bytes sent over the network. </td>
+                                <td style="text-align: center;"><i class="fa fa-close" style="font-size:16px;color:red"></i></td>
+                                <td style="text-align: center;"><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                            </tr>
+                            <tr>
+                                <td> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/item/01.png', array('_secure' => true)); ?>" alt=""> </td>
+                                <td>Leverage browser caching</td>
+                                <td class="text-danger">Setting an expiry date or a maximum age in the HTTP headers for static resources instructs the browser to load previously downloaded resources from local disk rather than over the network.</td>
+                                <td style="text-align: center;"><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                                <td style="text-align: center;"><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                            </tr>
+                            <tr>
+                                <td> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/item/03.png', array('_secure' => true)); ?>" alt=""> </td>
+                                <td>Reduce server response time</td>
+                                <td class="text-success">In our test, your server responded in {{RESPONSE_TIME}}.</td>
+                                <td style="text-align: center;"><i class="fa fa-close" style="font-size:16px;color:red"></i></td>
+                                <td style="text-align: center;"><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                            </tr>
+                            <tr>
+                                <td> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/item/01.png', array('_secure' => true)); ?>" alt=""> </td>
+                                <td>Minify CSS</td>
+                                <td class="text-dark">Your CSS is minified. Learn more about minifying CSS. </td>
+                                <td style="text-align: center;"><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                                <td style="text-align: center;"><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                            </tr>
+                            <tr>
+                                <td> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/item/02.png', array('_secure' => true)); ?>" alt=""> </td>
+                                <td>Minify HTML</td>
+                                <td class="text-dark">Your HTML is minified. Learn more about minifying CSS. </td>
+                                <td style="text-align: center;"><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                                <td style="text-align: center;"><i class="fa fa-close" style="font-size:16px;color:red"></i></td>
+                            </tr>
+                            <tr>
+                                <td> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/item/01.png', array('_secure' => true)); ?>" alt=""> </td>
+                                <td>Minify Java Scripts</td>
+                                <td class="text-dark">Your Java Scripts is minified. Learn more about minifying CSS. </td>
+                                <td style="text-align: center;"><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                                <td style="text-align: center;"><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                            </tr>
+                            <tr>
+                                <td> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/item/03.png', array('_secure' => true)); ?>" alt=""> </td>
+                                <td>Eliminate render-blocking JavaScript and CSS in...</td>
+                                <td class="text-dark">Your page has 2 blocking script resources and 1 blocking CSS resources. This causes a delay in rendering your page.  </td>
+                                <td style="text-align: center;"><i class="fa fa-close" style="font-size:16px;color:red"></i></td>
+                                <td style="text-align: center;"><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                            </tr>
+                            <tr>
+                                <td> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/item/01.png', array('_secure' => true)); ?>" alt=""> </td>
+                                <td>Optimize images</td>
+                                <td class="text-dark">Properly formatting and compressing images can save many bytes of data. </td>
+                                <td style="text-align: center;"><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                                <td style="text-align: center;"><i class="fa fa-close" style="font-size:16px;color:red"></i></td>
+                            </tr>
+                            <tr>
+                                <td> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/item/02.png', array('_secure' => true)); ?>" alt=""> </td>
+                                <td>Prioritize visible content</td>
+                                <td class="text-dark">Your page requires additional network round trips to render the above-the-fold content. For best performance, reduce the amount of HTML needed to render above-the-fold content. </td>
+                                <td style="text-align: center;"><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                                <td style="text-align: center;"><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                            </tr>
+                            <tr>
+                                <td> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/item/01.png', array('_secure' => true)); ?>" alt=""> </td>
+                                <td>Size content to viewport</td>
+                                <td class="text-dark">The contents of your page fit within the viewport. Learn more about sizing content to the viewport. </td>
+                                <td style="text-align: center;"><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                                <td style="text-align: center;"><i class="fa fa-close" style="font-size:16px;color:red"></i></td>
+                            </tr>
+                            <tr>
+                                <td> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/item/02.png', array('_secure' => true)); ?>" alt=""> </td>
+                                <td>Size tap targets appropriately</td>
+                                <td class="text-dark">Some of the links/buttons on your webpage may be too small for a user to easily tap on a touchscreen. Consider making these tap targets larger to provide a better user experience. </td>
+                                <td style="text-align: center;"><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                                <td style="text-align: center;"><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                            </tr>
+                            <tr>
+                                <td> <img class="img-fluid avatar-small" src="<?php echo $this->getSkinUrl('images/item/03.png', array('_secure' => true)); ?>" alt=""> </td>
+                                <td>Use legible font sizes</td>
+                                <td class="text-dark">The text on your page is legible. Learn more about using legible font sizes. </td>
+                                <td style="text-align: center;"><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                                <td style="text-align: center;"><i class="fa fa-check" style="font-size:16px; color: green;"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-8 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <h5 class="card-title pb-0 mb-15 border-0">Speed And Optimization Tips </h5>
+                <div class="table-responsive">
+                    <table class="table center-aligned-table mb-0">
+                        <tbody>
+                            <tr>
+                                <td style="width: 10%;"><i class="fa fa-warning" style="font-size:18px; color: orange;"></i></td>
+                                <td style="width: 30%;">Title Website</td>
+                                <td style="width: 30%;">
+                                    Warning! Your title is not optimized
+                                </td>
+                                <td style="width: 30%;">
+                                    <div class="progress progress-small mt-2">
+                                        <div class="skill2-bar bg-warning" role="progressbar" style="width: 41%" aria-valuenow="41" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 10%;"><i class="fa fa-check-square-o" style="font-size:18px; color: green;"></i></td>
+                                <td style="width: 30%;">Description Website</td>
+                                <td style="width: 30%;">
+                                    Congratulations! Your description is optimized
+                                </td>
+                                <td style="width: 30%;">
+                                    <div class="progress progress-small mt-2">
+                                        <div class="skill2-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 10%;"><i class="fa fa-times-circle-o" style="font-size:18px; color: red;"></i></td>
+                                <td style="width: 30%;">Robots.txt</td>
+                                <td style="width: 30%;">
+                                    Congratulations! Your site have a robots.txt file
+                                </td>
+                                <td style="width: 30%;">
+                                    <div class="progress progress-small mt-2">
+                                        <div class="skill2-bar bg-danger" role="progressbar" style="width: 8%" aria-valuenow="8" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 10%;"><i class="fa fa-check-square-o" style="font-size:18px; color: green;"></i></td>
+                                <td style="width: 30%;"> Sitemap.xml</td>
+                                <td style="width: 30%;">
+                                    Congratulations! We've found a sitemap file for your website
+                                </td>
+                                <td style="width: 30%;">
+                                    <div class="progress progress-small mt-2">
+                                        <div class="skill2-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 10%;"><i class="fa fa-check-square-o" style="font-size:18px; color: green;"></i></td>
+                                <td style="width: 30%;"> SSL Secure</td>
+                                <td style="width: 30%;">
+                                    Congratulations! Your site have Support to HTTPS
+                                </td>
+                                <td style="width: 30%;">
+                                    <div class="progress progress-small mt-2">
+                                        <div class="skill2-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 10%;"><i class="fa fa-warning" style="font-size:18px; color: orange;"></i></td>
+                                <td style="width: 30%;">Pagespeed</td>
+                                <td style="width: 30%;">
+                                    Warning! Your site load very slow on Desktop devices. need improve this 
+                                </td>
+                                <td style="width: 30%;">
+                                    <div class="progress progress-small mt-2">
+                                        <div class="skill2-bar bg-warning" role="progressbar" style="width: 41%" aria-valuenow="41" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 10%;"><i class="fa fa-times-circle-o" style="font-size:18px; color: red;"></i></td>
+                                <td style="width: 30%;">PageSpeed Mobile</td>
+                                <td style="width: 30%;">
+                                    Warning! Your site load very slow on mobiles devices. need improve this 
+                                </td>
+                                <td style="width: 30%;">
+                                    <div class="progress progress-small mt-2">
+                                        <div class="skill2-bar bg-danger" role="progressbar" style="width: 8%" aria-valuenow="8" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 10%;"><i class="fa fa-times-circle-o" style="font-size:18px; color: red;"></i></td>
+                                <td style="width: 30%;">Headings</td>
+                                <td style="width: 30%;">
+                                    Warning! Your page not contain any H1 and H2 headings. H1 and H2 headings help indicate the important topics of your page to search engines 
+                                </td>
+                                <td style="width: 30%;">
+                                    <div class="progress progress-small mt-2">
+                                        <div class="skill2-bar bg-danger" role="progressbar" style="width: 8%" aria-valuenow="8" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 10%;"><i class="fa fa-check-square-o" style="font-size:18px; color: green;"></i></td>
+                                <td style="width: 30%;"> Blacklist</td>
+                                <td style="width: 30%;">
+                                    Congratulations! Your site is not listed in a blacklist
+                                </td>
+                                <td style="width: 30%;">
+                                    <div class="progress progress-small mt-2">
+                                        <div class="skill2-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 10%;"><i class="fa fa-check-square-o" style="font-size:18px; color: green;"></i></td>
+                                <td style="width: 30%;"> W3C Validator</td>
+                                <td style="width: 30%;">
+                                    Congratulations! Your site not have errors W3C
+                                </td>
+                                <td style="width: 30%;">
+                                    <div class="progress progress-small mt-2">
+                                        <div class="skill2-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 10%;"><i class="fa fa-warning" style="font-size:18px; color: orange;"></i></td>
+                                <td style="width: 30%;">Accelerated Mobile Pages (AMP)</td>
+                                <td style="width: 30%;">
+                                    Warning! Your site not have AMP Version
+                                </td>
+                                <td style="width: 30%;">
+                                    <div class="progress progress-small mt-2">
+                                        <div class="skill2-bar bg-warning" role="progressbar" style="width: 41%" aria-valuenow="41" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 10%;"><i class="fa fa-times-circle-o" style="font-size:18px; color: red;"></i></td>
+                                <td style="width: 30%;">Domain Authority</td>
+                                <td style="width: 30%;">
+                                    Warning! Domain Authority of your website is slow. It is good to have domain authority more than 25. 
+                                </td>
+                                <td style="width: 30%;">
+                                    <div class="progress progress-small mt-2">
+                                        <div class="skill2-bar bg-danger" role="progressbar" style="width: 8%" aria-valuenow="8" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 10%;"><i class="fa fa-times-circle-o" style="font-size:18px; color: red;"></i></td>
+                                <td style="width: 30%;">GZIP Compress</td>
+                                <td style="width: 30%;">
+                                    Warning! Your site not is compressed, this can make slower response for the visitors
+                                </td>
+                                <td style="width: 30%;">
+                                    <div class="progress progress-small mt-2">
+                                        <div class="skill2-bar bg-danger" role="progressbar" style="width: 8%" aria-valuenow="8" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 10%;"><i class="fa fa-check-square-o" style="font-size:18px; color: green;"></i></td>
+                                <td style="width: 30%;">Favicon</td>
+                                <td style="width: 30%;">
+                                    Congratulations! Your website appears to have a favicon. 
+                                </td>
+                                <td style="width: 30%;">
+                                    <div class="progress progress-small mt-2">
+                                        <div class="skill2-bar bg-info" role="progressbar" style="width: 85%" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 10%;"><i class="fa fa-check-square-o" style="font-size:18px; color: green;"></i></td>
+                                <td style="width: 30%;">Broken Links</td>
+                                <td style="width: 30%;">
+                                    Congratulations! You not have broken links View links
+                                </td>
+                                <td style="width: 30%;">
+                                    <div class="progress progress-small mt-2">
+                                        <div class="skill2-bar bg-info" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 mb-30">
+        <div class="card card-statistics h-100">
+            <div class="card-body">
+                <div class="tab nav-border" style="position: relative;">
+                    <div class="d-block d-md-flex justify-content-between">
+                        <div class="d-block w-100">
+                            <h6 class="card-title">Google Stats</h6>
+                        </div>
+                        <div class="d-block d-md-flex nav-tabs-custom">
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active show" id="months-tab" data-toggle="tab" href="#months" role="tab" aria-controls="months" aria-selected="true"> Desktop</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="year-tab" data-toggle="tab" href="#year" role="tab" aria-controls="year" aria-selected="false">Mobile </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade active show" id="months" role="tabpanel" aria-labelledby="months-tab">
+                            <?php if (!empty($pageStatsDesktop['desktop'])): ?>
+                                <ul class="list-unstyled">
+                                    <li class="mb-20">
+                                        <div class="media">
+                                            <div class="position-relative">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/01.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">Number Resources  
+                                                    <span class="float-right text-danger"> <?php echo $pageStatsDesktop['desktop']['numberResources']?> </span>  
+                                                </h6>
+                                                <p>Automotive WordPress Theme </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                    <li class="mb-20">
+                                        <div class="media">
+                                            <div class="position-relative clearfix">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/02.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">Number Hosts   
+                                                    <span class="float-right text-warning"><?php echo $pageStatsDesktop['desktop']['numberHosts']?> </span>  
+                                                </h6>
+                                                <p>Multi-purpose HTML5 Template </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                    <li>
+                                        <div class="media">
+                                            <div class="position-relative">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/03.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">Total Request   
+                                                    <span class="float-right text-success"> <?php echo convertToReadableSize($pageStatsDesktop['desktop']['totalRequestBytes'])?> </span>  
+                                                </h6>
+                                                <p> Multi-Purpose WordPress Theme </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                    <li class="mb-20">
+                                        <div class="media">
+                                            <div class="position-relative clearfix">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/02.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">No of Static Resources   
+                                                    <span class="float-right text-warning"><?php echo $pageStatsDesktop['desktop']['numberStaticResources']?> </span>  
+                                                </h6>
+                                                <p>Multi-purpose HTML5 Template </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                    <li>
+                                        <div class="media">
+                                            <div class="position-relative">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/01.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">HTML Response   
+                                                    <span class="float-right text-success"> <?php echo convertToReadableSize($pageStatsDesktop['desktop']['htmlResponseBytes'])?> </span>  
+                                                </h6>
+                                                <p> Multi-Purpose WordPress Theme </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                    <li>
+                                        <div class="media">
+                                            <div class="position-relative">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/01.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">TEXT Response   
+                                                    <span class="float-right text-success"> <?php echo convertToReadableSize($pageStatsDesktop['desktop']['textResponseBytes'])?> </span>  
+                                                </h6>
+                                                <p> Multi-Purpose WordPress Theme </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                    <li class="mb-20">
+                                        <div class="media">
+                                            <div class="position-relative clearfix">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/03.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">CSS Response   
+                                                    <span class="float-right text-warning"><?php echo convertToReadableSize($pageStatsDesktop['desktop']['cssResponseBytes'])?> </span>  
+                                                </h6>
+                                                <p>Multi-purpose HTML5 Template </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                    <li>
+                                        <div class="media">
+                                            <div class="position-relative">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/02.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">Image Response  
+                                                    <span class="float-right text-success"> <?php echo convertToReadableSize($pageStatsDesktop['desktop']['imageResponseBytes'])?> </span>  
+                                                </h6>
+                                                <p> Multi-Purpose WordPress Theme </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                    <li class="mb-20">
+                                        <div class="media">
+                                            <div class="position-relative clearfix">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/01.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">Javascript Response
+                                                    <span class="float-right text-warning"><?php echo convertToReadableSize($pageStatsDesktop['desktop']['javascriptResponseBytes'])?> </span>  
+                                                </h6>
+                                                <p>Multi-purpose HTML5 Template </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                    <li>
+                                        <div class="media">
+                                            <div class="position-relative">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/03.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">Other Response
+                                                    <span class="float-right text-success"> <?php echo convertToReadableSize($pageStatsDesktop['desktop']['otherResponseBytes'])?> </span>  
+                                                </h6>
+                                                <p> Multi-Purpose WordPress Theme </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                    <li class="mb-20">
+                                        <div class="media">
+                                            <div class="position-relative clearfix">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/02.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">Number JS Resources
+                                                    <span class="float-right text-warning"><?php echo $pageStatsDesktop['desktop']['numberJsResources']; ?> </span>  
+                                                </h6>
+                                                <p>Multi-purpose HTML5 Template </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                    <li>
+                                        <div class="media">
+                                            <div class="position-relative">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/01.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">Number CSS Resources
+                                                    <span class="float-right text-success"> <?php echo $pageStatsDesktop['desktop']['numberCssResources']; ?> </span>  
+                                                </h6>
+                                                <p> Multi-Purpose WordPress Theme </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                </ul>
+                            <?php else: ?>
+                            <b>No Data Found for desktop!</b>
+                            <?php endif; ?>
+
+                        </div> 
+                        <div class="tab-pane fade" id="year" role="tabpanel" aria-labelledby="year-tab">
+                            <?php if (!empty($pageStatsDesktop['mobile'])): ?>
+                                <ul class="list-unstyled">
+                                    <li class="mb-20">
+                                        <div class="media">
+                                            <div class="position-relative">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/01.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">Number Resources  
+                                                    <span class="float-right text-danger"> <?php echo $pageStatsDesktop['mobile']['numberResources']?> </span>  
+                                                </h6>
+                                                <p>Automotive WordPress Theme </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                    <li class="mb-20">
+                                        <div class="media">
+                                            <div class="position-relative clearfix">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/02.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">Number Hosts   
+                                                    <span class="float-right text-warning"><?php echo $pageStatsDesktop['mobile']['numberHosts']?> </span>  
+                                                </h6>
+                                                <p>Multi-purpose HTML5 Template </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                    <li>
+                                        <div class="media">
+                                            <div class="position-relative">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/03.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">Total Request   
+                                                    <span class="float-right text-success"> <?php echo convertToReadableSize($pageStatsDesktop['mobile']['totalRequestBytes'])?> </span>  
+                                                </h6>
+                                                <p> Multi-Purpose WordPress Theme </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                    <li class="mb-20">
+                                        <div class="media">
+                                            <div class="position-relative clearfix">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/02.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">No of Static Resources   
+                                                    <span class="float-right text-warning"><?php echo $pageStatsDesktop['mobile']['numberStaticResources']?> </span>  
+                                                </h6>
+                                                <p>Multi-purpose HTML5 Template </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                    <li>
+                                        <div class="media">
+                                            <div class="position-relative">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/01.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">HTML Response   
+                                                    <span class="float-right text-success"> <?php echo convertToReadableSize($pageStatsDesktop['mobile']['htmlResponseBytes'])?> </span>  
+                                                </h6>
+                                                <p> Multi-Purpose WordPress Theme </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                    <li>
+                                        <div class="media">
+                                            <div class="position-relative">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/01.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">TEXT Response   
+                                                    <span class="float-right text-success"> <?php echo convertToReadableSize($pageStatsDesktop['mobile']['textResponseBytes'])?> </span>  
+                                                </h6>
+                                                <p> Multi-Purpose WordPress Theme </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                    <li class="mb-20">
+                                        <div class="media">
+                                            <div class="position-relative clearfix">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/03.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">CSS Response   
+                                                    <span class="float-right text-warning"><?php echo convertToReadableSize($pageStatsDesktop['mobile']['cssResponseBytes'])?> </span>  
+                                                </h6>
+                                                <p>Multi-purpose HTML5 Template </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                    <li>
+                                        <div class="media">
+                                            <div class="position-relative">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/02.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">Image Response  
+                                                    <span class="float-right text-success"> <?php echo convertToReadableSize($pageStatsDesktop['mobile']['imageResponseBytes'])?> </span>  
+                                                </h6>
+                                                <p> Multi-Purpose WordPress Theme </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                    <li class="mb-20">
+                                        <div class="media">
+                                            <div class="position-relative clearfix">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/01.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">Javascript Response
+                                                    <span class="float-right text-warning"><?php echo convertToReadableSize($pageStatsDesktop['mobile']['javascriptResponseBytes'])?> </span>  
+                                                </h6>
+                                                <p>Multi-purpose HTML5 Template </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                    <li>
+                                        <div class="media">
+                                            <div class="position-relative">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/03.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">Other Response
+                                                    <span class="float-right text-success"> <?php echo convertToReadableSize($pageStatsDesktop['mobile']['otherResponseBytes'])?> </span>  
+                                                </h6>
+                                                <p> Multi-Purpose WordPress Theme </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                    <li class="mb-20">
+                                        <div class="media">
+                                            <div class="position-relative clearfix">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/02.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">Number JS Resources
+                                                    <span class="float-right text-warning"><?php echo $pageStatsDesktop['mobile']['numberJsResources']; ?> </span>  
+                                                </h6>
+                                                <p>Multi-purpose HTML5 Template </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                    <li>
+                                        <div class="media">
+                                            <div class="position-relative">
+                                                <img class="img-fluid mr-15 avatar-small" src="http://18.191.143.160/Project_SEO/skin/frontend/seo/default/images/item/01.png" alt="">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">Number CSS Resources
+                                                    <span class="float-right text-success"> <?php echo $pageStatsDesktop['mobile']['numberCssResources']; ?> </span>  
+                                                </h6>
+                                                <p> Multi-Purpose WordPress Theme </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                </ul>
+                            <?php else: ?>
+                            <b>No data found for mobile</b>
+                            <?php endif; ?>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

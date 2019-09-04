@@ -1,0 +1,236 @@
+<!-- --------------------- Modal Large Start------------------>
+
+<button style="display: none;" id="btnModalLarge" type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button> 
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="mb-30" style="margin-bottom: 0rem !important;">
+                        <h6>Create Campaign</h6>
+                    </div>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- --------------------------------->
+                <div class="tab tab-border">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active show" id="home-10-tab" data-toggle="tab" href="#home-10" role="tab" aria-controls="home-10" aria-selected="true"> <i class="fa fa-home"></i> Campaign Type</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="profile-10-tab" data-toggle="tab" href="#profile-10" role="tab" aria-controls="profile-10" aria-selected="false"><i class="fa fa-user"></i> Campaign Info </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="portfolio-10-tab" data-toggle="tab" href="#portfolio-10" role="tab" aria-controls="portfolio-10" aria-selected="false"><i class="fa fa-picture-o"></i> Template Selection </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="contact-10-tab" data-toggle="tab" href="#contact-10" role="tab" aria-controls="contact-10" aria-selected="false"><i class="fa fa-check-square-o"></i> Email Content </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade active show" id="home-10" role="tabpanel" aria-labelledby="home-10-tab">
+                            <a href="#" class="btn btn-outline-success btn-sm">Regular Campaign</a>
+                            <a href="#" class="btn btn-outline-warning btn-sm">Plain Text</a>
+                        </div>
+                        <div class="tab-pane fade" id="profile-10" role="tabpanel" aria-labelledby="profile-10-tab">
+                            <form>
+                                <div class="row" style="margin: 5px;">
+                                    <div class="col">
+                                        <input type="text" class="form-control" placeholder="Campaign name">
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control" placeholder="Email Sunject">
+                                    </div>
+                                </div>
+                                <div class="row" style="margin: 5px;">
+                                    <div class="col">
+                                        <input type="text" class="form-control" placeholder="From">
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control" placeholder="From Email">
+                                    </div>
+                                </div>
+                                <div class="row" style="margin: 5px;">
+                                    <div class="col">
+                                        <input type="text" class="form-control" placeholder="Reply To">
+                                    </div>
+                                </div>
+                                <div class="row" style="margin: 5px;">
+                                    <div class="col">
+                                        <h6 class="card-title"> Track</h6>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                            <label class="custom-control-label" for="customCheck1">Track On Open Email</label>
+                                        </div>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="customCheck2">
+                                            <label class="custom-control-label" for="customCheck2">Track On Click Content</label>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <h6 class="card-title"> Add DKIM Signature</h6>
+                                        <div class="custom-control custom-checkbox">
+                                            <a href="" class="button">
+                                                <i class="fa fa-plus" id="selectedUpdateCustom" style="font-size:16px"></i>
+                                                <span>Add DKIM Signature</span>
+                                            </a>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="portfolio-10" role="tabpanel" aria-labelledby="portfolio-10-tab">
+                            <p>Benjamin Franklin, inventor, statesman, writer, publisher and economist relates in his autobiography that early in his life he decided to focus on arriving at moral perfection. He made a list of 13 virtues, assigning a page to each. Under each virtue he wrote a summary that gave it fuller meaning. Then he practiced each one for a certain length of time. To make these virtues a habit, Franklin can up with a method to grade himself on his daily actions.</p>
+                        </div>
+                        <div class="tab-pane fade" id="contact-10" role="tabpanel" aria-labelledby="contact-10-tab">
+                            <p>The other virtues practice in succession by Franklin were silence, order, resolution, frugality, industry, sincerity, Justice, moderation, cleanliness, tranquility, chastity and humility. For the summary order he followed a little scheme of employing his time each day. From five to seven each morning he spent in bodily personal attention, saying a short prayer, thinking over the day’s business and resolutions.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- ---------------------------------->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- --------------------- Modal Large Ends ------------------>
+<div class="page-title">
+    <div class="row" style="margin-bottom: 15px;">
+        <div class="col-sm-4">
+            <h4 class="mb-0"> Campaign</h4>
+        </div>
+        <div class="col-sm-8">
+            <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                <li class="breadcrumb-item"><a href="<?php echo Mage::getBaseUrl(); ?>" class="default-color">Home</a></li>
+                <li class="breadcrumb-item"><a href="<?php echo Mage::getBaseUrl(); ?>emailmarketing">Email Marketing</a></li>
+                <li class="breadcrumb-item active">Manage Campaign</li>
+            </ol>
+        </div>
+    </div>
+</div>
+<div class="row">   
+    <div class="col-xl-12 mb-30">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        <div class="alert alert-danger" id="msgbox_error" role="alert" style="width: 100%; display: none;">This is a danger alert—check it out!</div>
+                        <div class="alert alert-success" id="msgbox_success" role="alert" style="width: 100%; display: none;">This is a success alert—check it out!</div>
+                        <div class="alert alert-warning" id="msgbox_warning" role="alert" style="width: 100%; display: none;">This is a warning alert—check it out!</div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-4" style="float: left; padding: 0px;">
+                    <form id="addDomainFrm">
+                        <div class="input-group mb-3">
+                            <input id="domain_name_root" name="search_campaign" placeholder="Search Campaign" class="form-control" aria-label="Text input with checkbox" type="search" required="required">
+                            <div class="input-group-prepend">
+                                <button class="button" type="button" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="">Search</button>
+
+                            </div>
+                        </div>
+                        <input type="submit" id="searchCampaignBtn" style="display: none;">
+                    </form>
+                </div>
+                <div class="col-sm-12 col-md-8" style="float: left; padding: 0px;">
+                    <a href="" class="button" style="float: right;">
+                        <i class="fa fa-cloud-download" style="font-size:16px"></i>
+                        <span>Download Records</span>
+                    </a>
+
+                    <a href="javascript:launchModal('add_campaign');" class="button">
+                        <i class="fa fa-plus" id="selectedUpdateCustom" style="font-size:16px"></i>
+                        <span>Add Campaign</span>
+                    </a>
+
+                    <a href="" class="button">
+                        <i class="fa fa-trash-o" style="font-size:16px"></i>
+                        <span>Delete Campaign</span>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">   
+    <div class="col-xl-12 mb-30">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <div class="d-block d-md-flex justify-content-between">
+                    <div class="d-block">
+                        <h5 class="card-title pb-0 border-0">Campaign List</h5>
+                    </div>
+                    <div class="d-block d-md-flex clearfix sm-mt-20">
+                        <div class="clearfix">
+                            <div class="box">
+                                <select class="fancyselect sm-mb-20 mr-20" style="display: none;">
+                                    <option value="1">Some option</option>
+                                    <option value="2">Another option</option>
+                                    <option value="3">A option</option>
+                                    <option value="4">Potato</option>
+                                </select>
+                                <div style="height: 40px;line-height: 37px;" class="nice-select fancyselect sm-mb-20 mr-20" tabindex="0"><span class="current">Some option</span><ul class="list"><li data-value="1" class="option selected">Some option</li><li data-value="2" class="option">Another option</li><li data-value="3" class="option">A option</li><li data-value="4" class="option">Potato</li></ul></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive mt-15">
+                    <table class="table center-aligned-table mb-0">
+                        <thead>
+                            <tr class="text-dark">
+                                <th>#</th>
+                                <th>Id</th>
+                                <th>Campaign name</th>
+                                <th>No. of emails</th>
+                                <th>Start Date & Time</th>
+                                <th>Campaign Status</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td>1</td>
+                                <td>Test</td>
+                                <td>21245</td>
+                                <td>16 / 2 / 2019, 12:00 AM</td>
+                                <td><label class="badge badge-success" style="padding: 8px;">Open</label></td>
+                                <td><a href="#" class="btn btn-outline-success btn-sm">View Campaign</a></td>
+                                <td><a href="#" class="btn btn-outline-warning btn-sm">Stop Campaign</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<script>
+    function launchModal(modalPage) {
+        /*jQuery("#pre-loader").css("opacity", '0.8');
+         jQuery("#pre-loader").show();
+         jQuery.ajax({
+         type: "POST",
+         url: url,
+         data: '',
+         success: function (data)
+         {*/
+        //var objData = jQuery.parseJSON(data);
+        //document.getElementById(idDisplayContainer).innerHTML = '<table class="table" style="text-align: center;"><tbody><tr><td colspan="3"><h1> Your Website Test Results are <br><br></h1></td></tr><tr><td><h2 style="text-align: center;" class="text-success"><b>Success -  </b>' + objData.success + '</h2></td><td><h2 style="text-align: center;" class="text-warning"><b>Warnings -  </b>' + objData.warning + '</h2></td><td><h2 style="text-align: center;" class="text-danger"><b>Errors -  </b>' + objData.errors + '</h2></td></tr></tbody></table>';
+        document.getElementById("btnModalLarge").click();
+        /*jQuery("#pre-loader").hide();
+         }
+         });*/
+    }
+</script>

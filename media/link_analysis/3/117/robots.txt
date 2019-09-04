@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /*?comments=all
+Disallow: /wp-content/themes/neilpatel/js/script-comments.js

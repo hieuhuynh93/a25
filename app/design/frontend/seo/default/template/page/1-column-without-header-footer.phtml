@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="<?php echo $this->getLang(); ?>" id="top" class="no-js"> <!--<![endif]-->
+    <head>
+        <?php //echo $this->getChildHtml('head'); ?>
+        <link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:200,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900">
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('css/style.css', array('_secure' => true)); ?>" />
+        <link rel="icon" href="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB); ?>socicos/images/FileDownload1.png" type="image/x-icon">
+    </head>
+    <body>
+        <?php echo $this->getChildHtml('global_notices') ?>
+        <div class="wrapper">
+            <div id="pre-loader">
+                <img src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+            </div>
+            <?php //echo $this->getChildHtml('global_messages') ?>
+            <div id="content">
+                <?php echo $this->getChildHtml('content') ?>
+            </div>
+        </div>
+
+        <script src="<?php echo $this->getSkinUrl('js/jquery-3.3.1.min.js', array('_secure' => true)); ?>"></script>
+        <script src="<?php echo $this->getSkinUrl('js/plugins-jquery.js', array('_secure' => true)); ?>"></script>
+        <script src="<?php echo $this->getSkinUrl('js/bootstrap-datatables/jquery.dataTables.min.js', array('_secure' => true)); ?>"></script>
+        <script src="<?php echo $this->getSkinUrl('js/bootstrap-datatables/dataTables.bootstrap4.min.js', array('_secure' => true)); ?>"></script>
+        <script>var plugin_path = '<?php echo $this->getSkinUrl('js/', array('_secure' => true)); ?>';</script>
+        <script src="<?php echo $this->getSkinUrl('js/chart-init.js', array('_secure' => true)); ?>"></script>
+        <script src="<?php echo $this->getSkinUrl('js/calendar.init.js', array('_secure' => true)); ?>"></script>
+        <script src="<?php echo $this->getSkinUrl('js/sparkline.init.js', array('_secure' => true)); ?>"></script>
+        <script src="<?php echo $this->getSkinUrl('js/morris.init.js', array('_secure' => true)); ?>"></script>
+        <script src="<?php echo $this->getSkinUrl('js/datepicker.js', array('_secure' => true)); ?>"></script>
+        <script src="<?php echo $this->getSkinUrl('js/sweetalert2.js', array('_secure' => true)); ?>"></script>
+        <script src="<?php echo $this->getSkinUrl('js/toastr.js', array('_secure' => true)); ?>"></script>
+        <script src="<?php echo $this->getSkinUrl('js/validation.js', array('_secure' => true)); ?>"></script>
+        <script src="<?php echo $this->getSkinUrl('js/lobilist.js', array('_secure' => true)); ?>"></script>
+        <script src="<?php echo $this->getSkinUrl('js/custom.js', array('_secure' => true)); ?>"></script>
+    </body>
+</html>

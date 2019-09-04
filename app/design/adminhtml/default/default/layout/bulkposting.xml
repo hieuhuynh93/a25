@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <bulkposting_adminhtml_bulkposting_index>
+        <reference name="content">
+            <block type="bulkposting/adminhtml_bulkposting" name="bulkposting" />
+        </reference>
+    </bulkposting_adminhtml_bulkposting_index>
+</layout>

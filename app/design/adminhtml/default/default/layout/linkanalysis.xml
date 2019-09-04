@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <linkanalysis_adminhtml_linkanalysis_index>
+        <reference name="content">
+            <block type="linkanalysis/adminhtml_linkanalysis" name="linkanalysis" />
+        </reference>
+    </linkanalysis_adminhtml_linkanalysis_index>
+</layout>

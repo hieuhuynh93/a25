@@ -1,0 +1,404 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.3.1/js/fileinput.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.3.1/css/fileinput.css">
+
+<?php
+$newDate = "";
+$dateCustom = $_REQUEST['date'];
+$dateCustomArr = array();
+if($dateCustom != ''){
+    $dateCustomArr = explode("-", $dateCustom);
+}
+
+if (!empty($dateCustomArr)) {
+    $year = $dateCustomArr[0];
+    $month = $dateCustomArr[1];
+    $day = $dateCustomArr[2];
+
+    $newDate = $day . "-" . $month . "-" . $year;
+} else {
+    $date = new DateTime("now", new DateTimeZone('Asia/Calcutta'));
+    $formatedDateAndTime = $date->format('Y-m-d H:i:s');
+
+    $year = $date->format('Y');
+    $month = number_format($date->format('m'));
+    $day = number_format($date->format('d'));
+
+    $newDate = $day . "-" . $month . "-" . $year;
+}
+
+
+$customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
+
+$schedulePostCollection = Mage::getModel('schedulepost/schedulepost')
+        ->getCollection()
+        ->addFieldToFilter('scheduled_post_day', $day)
+        ->addFieldToFilter('customer_id', $customerId)
+        ->addFieldToFilter('scheduled_post_month', $month)
+        ->addFieldToFilter('scheduled_post_year', $year)
+        ->addFieldToFilter('post_type', 'simple_post')
+        ->addFieldToFilter('status', '1');
+
+//echo "<pre>"; print_r($schedulePostCollection->getData()); die();
+
+$schedulePostCollectionStory = Mage::getModel('schedulepost/schedulepost')
+        ->getCollection()
+        ->addFieldToFilter('scheduled_post_day', $day)
+        ->addFieldToFilter('customer_id', $customerId)
+        ->addFieldToFilter('scheduled_post_month', $month)
+        ->addFieldToFilter('scheduled_post_year', $year)
+        ->addFieldToFilter('post_type', 'story')
+        ->addFieldToFilter('status', '1');
+
+$schedulePostCollectionCarrousal = Mage::getModel('schedulepost/schedulepost')
+        ->getCollection()
+        ->addFieldToFilter('scheduled_post_day', $day)
+        ->addFieldToFilter('customer_id', $customerId)
+        ->addFieldToFilter('scheduled_post_month', $month)
+        ->addFieldToFilter('scheduled_post_year', $year)
+        ->addFieldToFilter('post_type', 'carrousal')
+        ->addFieldToFilter('status', '1');
+?>
+<!-- --------------- Add New Schedule Form Starts ------------- -->
+<?php /*?><div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="padding-bottom: 0px !important;">
+                <div class="modal-title">
+                    <div class="mb-30" style="margin-bottom: 0rem !important;">
+                        <h6>Add New Schedule</h6>
+                    </div>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xl-7 mb-30"> 
+                        <div class="h-100"> 
+                            <div class="card-body" style="padding: 0px !important;">
+                                <h5 class="card-title">Messages</h5>
+                                <!-- -->
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">
+                                        Attachment(s)
+                                        (Attach multiple files.)
+                                    </label>
+                                    <div class="col-sm-9">
+                                        <span class="btn btn-default btn-file">
+                                            <input id="input-2" name="input2[]" type="file" class="file" multiple data-show-upload="true" data-show-caption="true">
+                                        </span>
+                                    </div>
+                                </div>
+                                <!-- -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-5 mb-30">     
+                        <div class="h-100"> 
+                            <div class="card-body" style="padding: 0px !important;">
+                                <h5 class="card-title">
+                                    <div style="border: solid 1px #ccc;" class="widget-search ml-0 clearfix">
+                                        <i style="padding: 12px 15px;" class="fa fa-search"></i>
+                                        <input style="padding: 10px 10px 10px 10px;" type="search" class="form-control" placeholder="Search....">
+                                    </div>
+                                </h5>
+                                <ul class="list-unstyled" style="height: 300px; overflow: auto;">
+                                    <?php for ($i = 0; $i < 10; $i++): ?>
+                                        <li class="mb-30">
+                                            <div class="media">
+                                                <div class="position-relative">
+                                                    <img class="img-fluid mr-15 avatar-small" src="images/team/01.jpg" alt="">
+                                                    <i class="avatar-online bg-success"></i>
+                                                </div> 
+                                                <div class="media-body">
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" class="custom-control-input" id="customCheck<?php echo $i; ?>">
+                                                        <label class="custom-control-label mt-0" style="font-size: 1rem; padding-bottom: 5px;" for="customCheck<?php echo $i; ?>">Martin smith</label>
+                                                    </div>
+                                                    <!--<h6 class=""> </h6>-->
+                                                    <label style="float: left;" class="badge badge-success" for="customCheck<?php echo $i; ?>">masterajib</label>
+
+                                                </div>
+                                            </div>
+                                        </li>
+                                    <?php endfor; ?>
+                                </ul>
+                            </div>
+                        </div>   
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div><?php */?>
+<!-- --------------- Add New Schedule Form Ends --------------- -->
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <h5 class="card-title" style="border: none;"> Shedule</h5>
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6" id="schedule_content">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <h5 id="panelTitle" style="float:left;font-size: 1.1rem;" class="card-title"> Simple Post</h5>
+                <div style="float:right;">
+                    <a href="javascript:redirectLocation('https://www.socicos.com/index.php/smm-post-instagram?reffer=schedule')" class="btn btn-outline-success btn-sm">
+                        <i class="fa fa-calendar" style="font-size:16px;"></i>
+                        New Schedule
+                    </a>
+                    <a href="#" class="btn btn-outline-warning btn-sm">
+                        <i class="fa fa-trash-o" style="font-size:16px;"></i>
+                        Delete
+                    </a>                                                                                                                                                       
+                </div>
+                <div class="table-responsive">
+                    <div class="tab tab-border">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a onclick="setPanel('simple_post');" class="nav-link active show" id="home-10-tab" data-toggle="tab" href="#home-10" role="tab" aria-controls="home-10" aria-selected="true"> <i class="fa fa-home"></i> Simple post</a>
+                            </li>
+                            <li class="nav-item">
+                                <a onclick="setPanel('story');" class="nav-link" id="profile-10-tab" data-toggle="tab" href="#profile-10" role="tab" aria-controls="profile-10" aria-selected="false"><i class="fa fa-user"></i> Story </a>
+                            </li>
+                            <li class="nav-item">
+                                <a onclick="setPanel('carrousal');" class="nav-link" id="portfolio-10-tab" data-toggle="tab" href="#portfolio-10" role="tab" aria-controls="portfolio-10" aria-selected="false"><i class="fa fa-picture-o"></i> Carrousal </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" style="padding: 0px; padding-top: 3px;">
+                            <div class="tab-pane fade active show" id="home-10" role="tabpanel" aria-labelledby="home-10-tab">
+                                <?php if ($schedulePostCollection->getSize() >= 1): ?>
+                                    <table class="table center-aligned-table mb-0">
+                                        <thead>
+                                            <tr class="text-dark">
+                                                <th style="text-align: center;"><input type="checkbox"></th>
+                                                <th style="text-align: center; width: 5.4em;">Media</th>
+                                                <th style="text-align: center; width: 5.4em;"">Users</th>
+                                                <th style="text-align: left;">Shedule</th>
+                                                <th style="text-align: center; width: 85px;">Status </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($schedulePostCollection as $schedulePost): ?>
+                                                <tr>
+                                                    <td style="text-align: center;"> <input type="checkbox"> </td>
+                                                    <td style="text-align: center;">
+                                                        <?php if ($schedulePost->getPostType() == "simple_post"): ?>
+                                                            <img id="img23" style="width: 5em; border: solid 1px #ccc; padding: 1px; border-radius: .5em;" class="img-fluid" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . substr($schedulePost->getMediaPath(), 14); ?>" alt="">
+                                                        <?php else: ?>
+
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td class="text-info" style="text-align: center;">
+                                                        <img src="<?php echo Mage::getModel('influencerusers/influencerusers')->load($schedulePost->getInfluencerusersId())->getProfilePicture(); ?>" width="40" style="border: solid 1px #ccc; padding: 1px; border-radius: 50%;">
+                                                    </td>
+                                                    <td style="text-align: left;" style="text-align: center;">
+                                                        <p><?php echo $schedulePost->getScheduledPostDay(); ?>-<?php echo $schedulePost->getScheduledPostMonth(); ?>-<?php echo $schedulePost->getScheduledPostYear(); ?> | <?php echo $schedulePost->getScheduledPostHours(); ?>:<?php echo $schedulePost->getScheduledPostMinutes(); ?></p>
+                                                        
+                                                        <p>
+                                                            <?php if ($schedulePost->getPostStatus() > 0): ?>
+                                                                <label class="badge badge-success">Completed</label>
+                                                                <?php echo (strlen($schedulePost->getPostFrom()) >= 1 ? ' | ' . $schedulePost->getPostFrom() : ''); ?>
+                                                            <?php else: ?>
+                                                                <label class="badge badge-warning">Pending</label>
+                                                                <?php echo (strlen($schedulePost->getPostFrom()) >= 1 ? ' | ' . $schedulePost->getPostFrom() : ''); ?>
+                                                            <?php endif; ?>
+                                                        </p>
+                                                    </td>
+                                                    <td>
+                                                        <a style="border-radius: 5px;" href="javascript:editSchedulePost('<?php echo $schedulePost->getId(); ?>');" class="btn btn-outline-success btn-sm">
+                                                            <i class="fa fa-edit" style="font-size:15px;"></i>
+                                                        </a>
+                                                        <a style="border-radius: 5px;float:right;" href="javascript:deleteSchedulePost('<?php echo $schedulePost->getId(); ?>');" class="btn btn-outline-warning btn-sm">
+                                                            <i class="fa fa-trash-o" style="font-size:15px;"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                <?php else: ?>
+                                    <div class="alert alert-danger" role="alert">Sorry! No Post for <?php echo $newDate; ?></div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="tab-pane fade" id="profile-10" role="tabpanel" aria-labelledby="profile-10-tab">
+                                <?php if ($schedulePostCollectionStory->getSize() >= 1): ?>
+                                    <table class="table center-aligned-table mb-0">
+                                        <thead>
+                                            <tr class="text-dark">
+                                                <th style="text-align: center;"><input type="checkbox"></th>
+                                                <th style="text-align: center; width: 5.4em;">Media</th>
+                                                <th style="text-align: center;">Users</th>
+                                                <th style="text-align: center;">Shedule</th>
+                                                <th style="text-align: center; width: 85px;">Status </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($schedulePostCollectionStory as $schedulePostStory): ?>
+                                                <tr>
+                                                    <td style="text-align: center;"> <input type="checkbox"> </td>
+                                                    <td style="text-align: center;">
+                                                        <?php //if ($schedulePostStory->getPostType() == "simple_post"):  ?>
+                                                        <img id="img23" style="width: 5em; border: solid 1px #ccc; padding: 1px; border-radius: .5em;" class="img-fluid" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . substr($schedulePostStory->getMediaPath(), 14); ?>" alt="">
+                                                        <?php //else:  ?>
+
+                                                        <?php //endif;  ?>
+                                                    </td>
+                                                    <td class="text-info" style="text-align: center;">
+                                                        <?php echo count(explode(",", $schedulePostStory->getInfluencerusersId())); ?>
+                                                    </td>
+                                                    <td style="text-align: center;" style="text-align: center;">
+                                                        <p><?php echo $schedulePostStory->getScheduledPostDay(); ?>-<?php echo $schedulePostStory->getScheduledPostMonth(); ?>-<?php echo $schedulePostStory->getScheduledPostYear(); ?></p>
+                                                        <p><?php echo $schedulePostStory->getScheduledPostHours(); ?>:<?php echo $schedulePostStory->getScheduledPostMinutes(); ?></p>
+                                                        <p>
+                                                            <?php if ($schedulePostStory->getPostStatus() > 0): ?>
+                                                                <label class="badge badge-success">Completed</label>
+                                                            <?php else: ?>
+                                                                <label class="badge badge-warning">Pending</label>
+                                                            <?php endif; ?>
+                                                        </p>
+                                                    </td>
+                                                    <td>
+                                                        <a style="border-radius: 5px;" href="javascript:editSchedulePost('<?php echo $schedulePostStory->getId(); ?>');" class="btn btn-outline-success btn-sm">
+                                                            <i class="fa fa-edit" style="font-size:15px;"></i>
+                                                        </a>
+                                                        <a style="border-radius: 5px;float:right;" href="javascript:deleteSchedulePost('<?php echo $schedulePostStory->getId(); ?>');" class="btn btn-outline-warning btn-sm">
+                                                            <i class="fa fa-trash-o" style="font-size:15px;"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                <?php else: ?>
+                                    <div class="alert alert-danger" role="alert">Sorry! No Story Created for <?php echo $newDate; ?></div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="tab-pane fade" id="portfolio-10" role="tabpanel" aria-labelledby="portfolio-10-tab">
+                                <?php if ($schedulePostCollectionCarrousal->getSize() >= 1): ?>
+                                    <table class="table center-aligned-table mb-0">
+                                        <thead>
+                                            <tr class="text-dark">
+                                                <th style="text-align: center;"><input type="checkbox"></th>
+                                                <th style="text-align: center; width: 5.4em;">Media</th>
+                                                <th style="text-align: center;">Users</th>
+                                                <th style="text-align: center;">Shedule</th>
+                                                <th style="text-align: center; width: 85px;">Status </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($schedulePostCollectionCarrousal as $schedulePostCarrousal): ?>
+                                                <tr>
+                                                    <td style="text-align: center;"> <input type="checkbox"> </td>
+                                                    <td style="text-align: center;">
+                                                        <?php //if ($schedulePostStory->getPostType() == "simple_post"):  ?>
+                                                        <img id="img23" style="width: 5em; border: solid 1px #ccc; padding: 1px; border-radius: .5em;" class="img-fluid" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . substr($schedulePostCarrousal->getMediaPath(), 14); ?>" alt="">
+                                                        <?php //else:  ?>
+
+                                                        <?php //endif;  ?>
+                                                    </td>
+                                                    <td class="text-info" style="text-align: center;">
+                                                        <?php echo count(explode(",", $schedulePostCarrousal->getInfluencerusersId())); ?>
+                                                    </td>
+                                                    <td style="text-align: center;" style="text-align: center;">
+                                                        <p><?php echo $schedulePostCarrousal->getScheduledPostDay(); ?>-<?php echo $schedulePostCarrousal->getScheduledPostMonth(); ?>-<?php echo $schedulePostCarrousal->getScheduledPostYear(); ?></p>
+                                                        <p><?php echo $schedulePostCarrousal->getScheduledPostHours(); ?>:<?php echo $schedulePostCarrousal->getScheduledPostMinutes(); ?></p>
+                                                        <p>
+                                                            <?php if ($schedulePostCarrousal->getPostStatus() > 0): ?>
+                                                                <label class="badge badge-success">Completed</label>
+                                                            <?php else: ?>
+                                                                <label class="badge badge-warning">Pending</label>
+                                                            <?php endif; ?>
+                                                        </p>
+                                                    </td>
+                                                    <td>
+                                                        <a style="border-radius: 5px;" href="javascript:editSchedulePost('<?php echo $schedulePostCarrousal->getId(); ?>');" class="btn btn-outline-success btn-sm">
+                                                            <i class="fa fa-edit" style="font-size:15px;"></i>
+                                                        </a>
+                                                        <a style="border-radius: 5px;float:right;" href="javascript:deleteSchedulePost('<?php echo $schedulePostCarrousal->getId(); ?>');" class="btn btn-outline-warning btn-sm">
+                                                            <i class="fa fa-trash-o" style="font-size:15px;"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                <?php else: ?>
+                                    <div class="alert alert-danger" role="alert">Sorry! No Carrousal Created for <?php echo $newDate; ?></div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function redirectLocation(url){
+        document.location.href = url;
+    }
+
+    function setPanel(panel_type) {
+        if (panel_type == "simple_post") {
+            document.getElementById("panelTitle").innerHTML = "Simple Post";
+        } else if (panel_type == "story") {
+            document.getElementById("panelTitle").innerHTML = "Story";
+        } else if (panel_type == "carrousal") {
+            document.getElementById("panelTitle").innerHTML = "Carrousal";
+        }
+
+    }
+
+    function deleteSchedulePost(schedulePostId) {
+
+    }
+
+    document.body.addEventListener('click', function (evt) {
+        if (evt.target.className === 'fc-day-number') {
+            var date = evt.target.parentNode.getAttribute('data-date');
+            //alert(date);
+            var url = '<?php echo Mage::getBaseUrl(); ?>schedule?date=' + date;
+            jQuery("#pre-loader").css("opacity", '0.8');
+            jQuery("#pre-loader").show();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: "",
+                success: function (data)
+                {
+                    var $result = jQuery(data).find('#schedule_content').html();
+                    jQuery("#schedule_content").html($result);
+                    jQuery("#pre-loader").hide();
+                }
+            });
+        }
+    }, false);
+</script>
+
+<style>
+
+    .fc-day-number{
+        cursor: pointer;
+    }
+
+    .fc-day-number:hover{
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .alert-danger{
+        margin: 5px;
+    }
+</style>

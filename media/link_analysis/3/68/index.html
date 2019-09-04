@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<title> rakCha premium web directory and web resources. Website Directory</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<base href="http://www.rakcha.com/" />
+	<link rel="shortcut icon" href="http://www.rakcha.com/admin/img/favicon.ico" />		
+	<link href="/templates/prima/css/style.css" type="text/css" rel="stylesheet" />
+	<meta name="description" content="rakCha web directory provides a selection of fine web resources. Listings are human edited to preserve the quality of our index." />
+	<meta name="keywords" content="rakCha web directory, web resources, premium internet directory, suggest link, directory listings" />
+		<script type="text/javascript" src="http://www.rakcha.com/templates/prima/js/contextual.js"></script>
+
+</head>
+
+<body>
+
+<div class="upperheader">
+<h1>
+rakCha Premium Web Directory and web resources</h1>
+</div>
+<div id="container">
+<div id="header" style="padding-left:510px; height:104px">
+<form action="search.php" method="get">
+<input type="text" class="what" name="what" size="20" style="margin-top: 55px;"/>
+<input name="search_top" type="submit" value="GO" />
+</form></div>
+<div id="main">
+<div id="content">
+<div id="breadcrumb"></div>
+<br/>
+
+<table id="categories" align="center" width="600" border="0" cellspacing="3">
+  <tr>
+    <td><a href="http://www.rakcha.com/autos/"  title="Autos">Autos</a></td>
+    <td><a href="http://www.rakcha.com/employment/"  title="Employment">Employment</a></td>
+    <td><a href="http://www.rakcha.com/insurance/"  title="Insurance">Insurance</a></td>
+    <td><a href="http://www.rakcha.com/shopping/"  title="Shopping">Shopping</a></td>
+  </tr>
+  <tr>
+    <td><a href="http://www.rakcha.com/business/"  title="Business">Business</a> </td>
+    <td><a href="http://www.rakcha.com/financial/"  title="Finance">Finance</a></td>
+    <td><a href="http://www.rakcha.com/internet/"  title="Internet">Internet</a></td>
+    <td><a href="http://www.rakcha.com/society/"  title="Society">Society</a></td>
+  </tr>
+  <tr>
+    <td><a href="http://www.rakcha.com/computer/"  title="Computer">Computer</a></td>
+    <td><a href="http://www.rakcha.com/health/"  title="Health">Health</a></td>
+    <td><a href="http://www.rakcha.com/real-estate/"  title="Real Estate">Real Estate</a></td>
+    <td><a href="http://www.rakcha.com/transportation/"  title="Transportation">Transportation</a></td>
+  </tr>
+  <tr>
+    <td><a href="http://www.rakcha.com/education/"  title="Education">Education</a></td>
+    <td><a href="http://www.rakcha.com/house-home/"  title="House &amp;amp; Home">House &amp; Home</a></td>
+    <td><a href="http://www.rakcha.com/recreation/"  title="Recreation">Recreation</a></td>
+    <td><a href="http://www.rakcha.com/travel/"  title="Travel">Travel</a></td>
+  </tr>
+</table>
+  
+	
+<br/>
+<br/><br/>
+
+<br /><br /><br />
+
+</div>	
+</div>
+<div id="footer2">
+<a href="http://blog.rakcha.com" rel="nofollow">Resources</a> - 
+<a href="http://blog.rakcha.com/contact/" rel="nofollow">Contact</a></div>
+
+<div id="footer2"><a href="/"  title="web directory">rakCha web directory</a>
+ - <a href="http://www.rakcha.com/new-links.html" >New Listings</a> - <a href="http://www.rakcha.com/suggest-link.php" >Suggest a Listing</a><br />&copy; 2007 - 2011</div>
+<br />
+<div>
+<a rel="nofollow" href="http://www.db2go.com/"><img src="/templates/prima/img/120x60.gif" border="0"></a>&nbsp;&nbsp;&nbsp;&nbsp;<a rel="nofollow" href="http://www.bestwebforms.com/"><img src="/templates/prima/img/b-120x60.gif" border="0"></a>
+</div>
+<br />
+
+</div> <!-- Container -->
+
+<script type="text/javascript">
+	var root = '{$config.base}{$config.dir}';
+	var a = document.getElementsByTagName("a");
+
+	for(i=0; i < a.length; i++)
+	{
+		if(a[i].id != '')
+		{
+			a[i].onclick = count_link;
+		}
+	}
+
+	function count_link()
+	{
+		// l = link, b = banner
+		var tp = this.id.charAt(0);
+		if(tp != 'l' &&  tp != 'b')
+		{
+			return true;
+		}
+		if(this.id.length < 2)
+		{
+			return true;
+		}
+		itemid = this.id.substring(1);
+		if(parseInt(itemid.charAt(0)) < 1 || itemid.match(/\D/))
+		{
+			return true;
+		}
+		i = new Image();
+		h = Math.random();
+
+		i.src= root + 'click-count.php?id='+itemid+'&type='+tp+'&;h='+h;
+
+		return true;
+	}
+</script>
+
+
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+
+
+<script type="text/javascript">
+try {
+_uacct = "UA-5316287-31";
+urchinTracker();
+} catch(err) {}</script>
+
+
+<script type = "text/javascript" src ="http://arec.us/ads/ad2.js"> </script>
+
+</body>
+</html>

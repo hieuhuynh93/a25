@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Masterajib_Pagebuilder>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Masterajib_Pagebuilder>
+    </modules>
+</config> 

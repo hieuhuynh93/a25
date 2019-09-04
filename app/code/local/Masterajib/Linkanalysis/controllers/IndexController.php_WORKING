@@ -1,0 +1,414 @@
+<?php
+
+class Masterajib_Linkanalysis_IndexController extends Mage_Core_Controller_Front_Action {
+    
+    public function keywordsearchurlAction(){
+        $kword = $_REQUEST['keywords_name'];
+        $html = '';
+        $helper = Mage::helper('linkanalysis/data');
+        $arrUrls = $helper->getKeywordSearchUrl($kword);
+        $count = 0;
+        if (!empty($arrUrls)){
+            foreach ($arrUrls as $keywordSearchUrl){
+                $count++;
+                $pa = 12;//$helper->getPageAuthority($keywordSearchUrl);
+                $da = 125;//$helper->getDomainAuthority($keywordSearchUrl);
+                $share = '2345';
+                $backlink = '45';
+                $link_juice = '54';
+                $pageSize = '';//$helper->getFileSize($keywordSearchUrl);
+                $estdTraffic = '45';
+                $alexaRank = '';
+                $html .= '<hr>
+                        <table style="width: 100%;">
+                            <tr>
+                                <td>'.$count.'</td>
+                                <td colspan="7">
+                                    <a href="'.$keywordSearchUrl.'" target="_blank">
+                                        '.$keywordSearchUrl.'
+                                    </a>
+                                </td>
+                            </tr> 
+                            <tr>
+                                <td>PA</td>
+                                <td>DA</td>
+                                <td>SHARE</td>
+                                <td>BACKLINKS</td>
+                                <td>LINK JUICE</td>
+                                <td>PAGE SIZE</td>
+                                <td>ESTD TRAFFIC</td>
+                                <td>ELEXA RANKING</td>
+                            </tr>
+                            <tr>
+                                <td>'.$pa.'</td>
+                                <td>'.$da.'</td>
+                                <td>'.$share.'</td>
+                                <td>'.$backlink.'</td>
+                                <td>'.$link_juice.'</td>
+                                <td>'.$pageSize.'</td>
+                                <td>'.$estdTraffic.'</td>
+                                <td>'.$alexaRank.'</td>
+                            </tr>
+                        </table>';
+            }
+        }else{
+            $html = '<hr><div class="alert alert-danger" role="alert">Sorry!, No Data Found</div>';
+        }
+        echo $html;
+    }
+
+    public function deletekeywordAction() {
+        $arrNewKeywords = array();
+        $keywords_name = $_REQUEST['keywords_name'];
+        $linkDetailsId = $_REQUEST['linkDetailsId'];
+        $linkdetails = Mage::getModel('linkdetails/linkdetails')->load($linkDetailsId);
+        $existKeyWordsArr = explode(",", $linkdetails->getMetaKeywords());
+        foreach ($existKeyWordsArr as $existKeyWords) {
+            if (!in_array($existKeyWords, explode(",", $keywords_name))) {
+                array_push($arrNewKeywords, $existKeyWords);
+            }
+        }
+        $message = "";
+        $newKeywords = implode(",", $arrNewKeywords);
+        $linkdetails->setMetaKeywords($newKeywords);
+        try {
+            $linkdetails->save();
+            $message = "Successfully deleted!";
+        } catch (Exception $ex) {
+            $message = $ex;
+        }
+        $count = 1;
+        foreach ($arrNewKeywords as $keywords_data) {
+            $content .= '<tr>
+                            <td class="keywordcheckbox"><input name="keyword_checkbox" value="' . $keywords_data . '" type="checkbox"></td>
+                            <td class="keywordcount">' . $count . '</td>
+                            <td>' . $keywords_data . '</td>
+                        </tr>';
+            $count++;
+        }
+        echo json_encode(array(
+            'content' => $content,
+            'msg' => $message
+                )
+        );
+    }
+
+    public function addkeywordAction() {
+        $message = "";
+        $linkDetailsId = $_REQUEST['linkDetailsId'];
+        $keywords_name = $_REQUEST['keywords_name'];
+        $linkdetails = Mage::getModel('linkdetails/linkdetails')->load($linkDetailsId);
+        $keywordsArr = explode(",", $linkdetails->getMetaKeywords());
+        if (in_array($keywords_name, $keywordsArr)) {
+            $message = '<div class="alert alert-danger" role="alert" style="width: 100%;">' . $keywords_name . ' already exist!</div>';
+        } else {
+            array_push($keywordsArr, $keywords_name);
+        }
+        $keywords = implode(",", $keywordsArr);
+        $linkdetails->setMetaKeywords(ltrim($keywords, ","));
+        $content = '';
+        try {
+            $linkdetails->save();
+            $message = '<div class="alert alert-success" role="alert" style="width: 100%;">' . $keywords_name . ' added successfully.</div>';
+        } catch (Exception $ex) {
+            $message = $ex;
+            $message = '<div class="alert alert-danger" role="alert" style="width: 100%;">' . $ex . ' already exist!</div>';
+        }
+        $count = 1;
+        foreach ($keywordsArr as $keywords_data) {
+            $content .= '<tr>
+                            <td class="keywordcheckbox"><input name="keyword_checkbox" value="' . $keywords_data . '" type="checkbox"></td>
+                            <td class="keywordcount">' . $count . '</td>
+                            <td>' . $keywords_data . '</td>
+                        </tr>';
+            $count++;
+        }
+        
+        echo json_encode(array(
+            'content' => $content,
+            'msg' => $message,
+            'keywords' => $keywords
+                )
+        );
+    }
+
+    public function linkdetailsAction() {
+        $this->loadLayout();
+        $this->renderLayout();
+    }
+
+    public function isURL($url) {
+        $status = false;
+        $filterStrings = array(
+            "javascript:void(0);",
+            "javascript:;",
+            "javscript:void(0)",
+            "javascript:void(0)",
+            "javscript:void(0);",
+            "javascript:void(0)",
+            "javascript:void(0)",
+            "javascript:history.back();",
+            "#"
+        );
+        if (!in_array($url, $filterStrings)) {
+            $status = true;
+        }
+        return $status;
+    }
+
+    public function getAllURL($filePath, $primaryDomain) {
+        $parseURL = parse_url($primaryDomain);
+        if (count($parseURL) > 0) {
+            $primaryDomain = ($parseURL['scheme'] == '' ? '' : $parseURL['scheme'] . '://') . $parseURL['host'];
+        }
+        //$filePath = "";
+        $relatedUrls = array();
+        $myfile = fopen($filePath, "r") or die("Unable to open file!");
+        $input = fread($myfile, filesize($filePath)); //@file_get_contents($url);
+        fclose($myfile);
+        $regexp = "<a\s[^>]*href=(\"??)([^\" >]*?)\\1[^>]*>(.*)<\/a>";
+        if (preg_match_all("/$regexp/siU", $input, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                if (strlen($match[2]) > 5 && $match[2][0] != '#') {
+                    if (strpos($match[2], '@') == false) {
+                        if ($match[2][0] == "/") {
+                            $newURL = rtrim($primaryURL, "/") . "/" . ltrim($match[2], "/");
+                        } else {
+                            $newURL = $match[2];
+                        }
+                        $newURL = ltrim(trim($newURL, "'"), "/");
+
+                        if ($this->isURL($newURL)) {
+                            $newURL = ltrim($newURL, "/");
+                            if (substr($newURL, 0, 3) == 'htt' || substr($newURL, 0, 3) == 'www') {
+                                
+                            } else {
+                                $newURL = $primaryDomain . '/' . $newURL;
+                            }
+                            array_push($relatedUrls, $newURL);
+                        }
+                    }
+                }
+            }
+        }
+        array_unique($relatedUrls);
+        return $relatedUrls;
+    }
+
+    /* public function getDocRoot() {
+      $docRootArr = explode("/", getcwd());
+      $docRoot = '';
+      foreach ($docRootArr as $docRootStr) {
+      if ($docRootStr == "app") {
+      exit();
+      } else {
+      $docRoot .= $docRootStr . "/";
+      }
+      }
+      return $docRoot;
+      } */
+
+    public function setStatusComplete($relatedUrl) {
+        $customerId = Mage::getSingleton('customer/session')->getCustomer()->getEntityId();
+        $linkdetailsModel = Mage::getModel('linkdetails/linkdetails');
+        $existReccords = $linkdetailsModel
+                ->getCollection()
+                ->addFieldToFilter('customer_id', $customerId)
+                ->addFieldToFilter('related_url', $relatedUrl);
+        if ($existReccords->getSize() > 0) {
+            foreach ($existReccords as $existReccord) {
+                Mage::getModel('linkdetails/linkdetails')
+                        ->load($existReccord->getId())
+                        ->setStatus(2)
+                        ->save();
+            }
+        }
+    }
+
+    public function startAnalyseAction() {
+        $output = '';
+        $fileName = '';
+        $allUrls = array();
+        $completedUrl = '';
+        $linkId = $_REQUEST['linkId'];
+        $helper = Mage::helper('linkanalysis/data');
+        $customerId = Mage::getSingleton('customer/session')->getCustomer()->getEntityId();
+        $linkAnalysis = Mage::getModel('linkanalysis/linkanalysis')->load($linkId);
+        $linkAnalysis->setStatus(1);
+        $linkAnalysis->save();
+        if ($linkAnalysis->getCustomerId() == $customerId) {
+            $docRoot = $helper->getDocRoot() . "media/link_analysis/" . $customerId . "/" . $linkId . "/";
+            if ($linkAnalysis->getUrlType() == 1) {
+                $fileName = $docRoot . 'index.html';
+            } else {
+                // URL is not primary domain
+            }
+            if (file_exists($fileName)) {
+                shell_exec('rm -rf ' . $fileName);
+            }
+            $command = 'wget ' . $linkAnalysis->getUrl() . ' -P ' . $docRoot;
+
+            if (is_dir($docRoot)) {
+                $output = shell_exec($command);
+                $completedUrl = $linkAnalysis->getUrl();
+            } else {
+                if (mkdir($docRoot, 0777, true)) {
+                    $output = shell_exec($command);
+                    $completedUrl = $linkAnalysis->getUrl();
+                } else {
+                    die('Permission problem! Failed to create folders...');
+                }
+            }
+            if (!file_exists($docRoot . "robots.txt")) {
+                echo $robotsUrl = rtrim($linkAnalysis->getUrl(), "/") . "/robots.txt";
+                $commandRobot = 'wget ' . $robotsUrl . ' -P ' . $docRoot;
+                shell_exec($commandRobot);
+            }
+
+            $allUrls = $this->getAllURL($fileName, $linkAnalysis->getUrl());
+            //shell_exec('rm -rf ' . $fileName);
+        } else {
+            die("Requested domain is not authorised");
+        }
+
+        $count = 0;
+        $noOfUrl = $linkAnalysis->getNoOfUrl();
+        foreach ($allUrls as $allUrl) {
+            $linkModel = Mage::getModel('linkanalysis/linkanalysis')->load($linkId);
+            if ($linkModel->getStatus() == 1) {
+                $linkdetailsModel = Mage::getModel('linkdetails/linkdetails');
+                $existReccords = $linkdetailsModel
+                        ->getCollection()
+                        ->addFieldToFilter('customer_id', $customerId)
+                        ->addFieldToFilter('related_url', $allUrl);
+                //------------ Checking For External URL starts -------------
+                $domain = rtrim($linkModel->getUrl(), "/");
+                $allUrlNew = rtrim($allUrl, "/");
+                /* if (substr($allUrlNew, 0, strlen($domain)) == $domain) {
+                  return true;
+                  } */
+                //------------ Checking For External URL ends ---------------
+                if ($existReccords->getSize() == 0 && substr($allUrlNew, 0, strlen($domain)) == $domain) {
+                    $metaTagContent = $helper->get_meta_custom($allUrl);
+                    $linkdetailsModel->setLinkanalysisId($linkId);
+                    $linkdetailsModel->setCustomerId($customerId);
+                    $linkdetailsModel->setRelatedUrl($allUrl);
+                    $linkdetailsModel->setStatus(3);
+                    $linkdetailsModel->setRobotTxt('');
+                    $linkdetailsModel->setPageSize($helper->getFileSize($allUrl));
+                    $linkdetailsModel->setLoadTime($helper->getPageLoadTime($allUrl));
+                    $linkdetailsModel->setUrlType('');
+                    $linkdetailsModel->setAnalysisStatus('');
+                    $linkdetailsModel->setPageAuthority('');
+                    $linkdetailsModel->setDomainAuthority('');
+                    $linkdetailsModel->setFollow('');
+                    $linkdetailsModel->setDoFollow('');
+                    $linkdetailsModel->setLinkJuice('');
+                    $linkdetailsModel->setNoOfExternalLink('');
+                    $linkdetailsModel->setAlexaRanking('');
+                    $linkdetailsModel->setMetaTitle($metaTagContent['title']);
+                    $linkdetailsModel->setMetaKeywords(ltrim($metaTagContent['keywords'], ","));
+                    $linkdetailsModel->setMetaDescription($metaTagContent['description']);
+                    if ($linkdetailsModel->getCreatedTime == NULL || $linkdetailsModel->getUpdateTime() == NULL) {
+                        $linkdetailsModel->setCreatedTime(now())->setUpdateTime(now());
+                    } else {
+                        $linkdetailsModel->setUpdateTime(now());
+                    }
+
+                    $linkdetailsModel->save();
+                    $count++;
+                    $linkAnalysis->setNoOfUrl($noOfUrl + $count);
+                    $linkAnalysis->save();
+                }
+            } else {
+                exit();
+            }
+        }
+        $this->setStatusComplete($completedUrl);
+        $linkAnalysis->setStatus(2);
+        $linkAnalysis->save();
+        //-------------- Save in Database ---------------
+    }
+
+    public function deletedomainAction() {
+        $linkIds = $_REQUEST['linkIds'];
+        $status = 0;
+        $count = 0;
+        $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
+        $linkIdsArr = explode(",", $linkIds);
+        foreach ($linkIdsArr as $linkId) {
+            try {
+                $linkdetailsCollection = Mage::getModel('linkdetails/linkdetails')
+                        ->getCollection()
+                        ->addFieldToFilter('linkanalysis_id', $linkId)
+                        ->addFieldToFilter('customer_id', $customerId);
+                foreach ($linkdetailsCollection as $linkdetails) {
+                    Mage::getModel('linkdetails/linkdetails')->load($linkdetails->getId())->delete();
+                }
+                $helper = Mage::helper('linkanalysis/data');
+                $userDir = $helper->getDocRoot() . "media/link_analysis/" . $customerId . "/" . $linkId;
+                shell_exec('rm -rf ' . $userDir);
+                Mage::getModel('linkanalysis/linkanalysis')->load($linkId)->delete();
+                $count++;
+                $status = 1;
+                $message = $count . " Records Deleted!";
+            } catch (Exception $ex) {
+                $message = $ex;
+            }
+        }
+        $customerId = Mage::getSingleton('customer/session')->getCustomer()->getEntityId();
+        $content = @file_get_contents(Mage::getBaseUrl() . 'linkanalysis?customer_id=' . $customerId);
+        echo json_encode(array(
+            'status' => $status,
+            'content' => $content,
+            'msg' => $message
+                )
+        );
+    }
+
+    public function adddomainAction() {
+        $customerId = Mage::getSingleton('customer/session')->getCustomer()->getEntityId();
+        $message = '';
+        $status = 0;
+        $content = "";
+
+        $customerId = Mage::getSingleton('customer/session')->getCustomer()->getEntityId();
+        $domain_name = $_REQUEST['domain_name'];
+        $model = Mage::getModel('linkanalysis/linkanalysis');
+        $model->setUrl($domain_name);
+        $model->setUrlType(1);
+        $model->setStatus(3);
+        $model->setCustomer_id($customerId);
+        $model->setFilename('');
+
+        try {
+            if ($model->getCreatedTime == NULL || $model->getUpdateTime() == NULL) {
+                $model->setCreatedTime(now())
+                        ->setUpdateTime(now());
+            } else {
+                $model->setUpdateTime(now());
+            }
+
+            $model->save();
+            $status = 1;
+            $message = "Domain Successfully Added!";
+            $content = @file_get_contents(Mage::getBaseUrl() . 'linkanalysis?customer_id=' . $customerId);
+        } catch (Exception $ex) {
+            $message = $ex;
+        }
+
+
+        echo json_encode(array(
+            'status' => $status,
+            'content' => $content,
+            'msg' => $message
+                )
+        );
+    }
+
+    public function indexAction() {
+        $this->loadLayout();
+        $this->renderLayout();
+    }
+
+}

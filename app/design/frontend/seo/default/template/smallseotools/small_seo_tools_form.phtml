@@ -1,0 +1,2913 @@
+<style>
+    .form-control{
+        border: 1px solid #ccc !important;
+        /*border-radius: 10px !important;*/
+    }
+
+    .mb-30 {
+        margin-bottom: 0.143rem !important;
+    }
+</style>
+<?php if (isset($_REQUEST['section'])): ?>
+    <?php $section = $_REQUEST['section']; ?>
+    <?php if ($section == 'showArticalWriter'): ?>
+        <div class="modal-body">
+            <div class="row">   
+                <div class="col-md-6 mb-30">     
+                    <textarea onkeyup="calculateWordAndCharacter(this, 'wordCountSource', 'charCountSource')" placeholder='Enter The Article Here' name="dataRaw" id="dataRaw" rows="20" class="form-control"></textarea>
+                </div>
+
+                <div class="col-md-6 mb-30">     
+                    <textarea readonly="readonly" placeholder='Your Article is Here' name="dataFinal" id="dataFinal" rows="20" class="form-control"></textarea>
+                </div> 
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-30">
+                    <div class="widget-body">
+                        <div class="widget-main">
+                            <div id="resultBox">
+                                <div id="countBox1" style="font-size: 16px;"> 
+                                    Word Count: 
+                                    <span id="wordCountSource" style="font-weight: bold;">0</span> 
+                                    | Character Count: 
+                                    <span id="charCountSource" style="font-weight: bold;">0</span> 
+
+                                    <span style="float: right;">
+                                        <a onclick="clearAll('dataRaw', 'dataFinal', 'wordCountSource', 'charCountSource')" href="#" class="btn btn-outline-success btn-sm">
+                                            <b>
+                                                <i class="fa fa-trash-o" style="font-size:14px; margin-right: 4px;"></i>
+                                                Clear All
+                                            </b>
+                                        </a>
+                                    </span>
+
+                                </div>
+                            </div>
+                        </div><!-- /.widget-main -->
+                    </div>
+                </div>
+                <div class="col-md-6 mb-30">
+                    <div class="widget-body">
+                        <div class="widget-main">
+                            <div id="resultBox">
+                                <div id="countBox2" style="font-size: 16px;">
+                                    Word Count: 
+                                    <span id="wordCountDestination" style="font-weight: bold;">0</span> 
+                                    | Character Count: 
+                                    <span id="charCountDestination" style="font-weight: bold;">0</span> 
+
+                                    <span style="float: right;">
+
+                                        <a href="#" class="btn btn-outline-success btn-sm">
+                                            <b>
+                                                <i class="fa fa-pencil-square-o" style="font-size:14px; margin-right: 4px;"></i>
+                                                Reset
+                                            </b>
+                                        </a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div><!-- /.widget-main -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+            <a class="button small" href="javascript:generateArtical();">Generate Article</a>
+        </div>
+    <?php elseif ($section == 'backlinkMaker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-4 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="url" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:createBacklink();">Create Backlinks</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive">
+                        <table id="datatable" class="table table-striped table-bordered p-0">
+                            <thead>
+                                <tr>
+                                    <th>SL</th>
+                                    <th>Pages Containing Backlink</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableRowData">
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'builtWith'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="url" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a  class="button small" href="javascript:builtWith();">Check Built With</a>
+                </div>
+            </div>
+            <div class="row">
+                <!--<div class="col-md-4 mb-30">
+                    <img src="" id="screenshot">
+                </div>-->
+                <div class="col-md-8 mb-30">
+                    <div class="table-responsive mb-10">
+                        <table class="table center-aligned-table">
+                            <thead>
+                                <tr class="text-dark">
+                                    <th>No </th>
+                                    <th>Name </th>
+                                    <th>Type</th>
+                                    <th>Redirect URL</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableRowData">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+        </div>
+    <?php elseif ($section == 'showKeywordDensity'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlKeyWordDensity" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:showKeywordDensity();">Check Keyword Density</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive">
+                        <table id="datatable" class="table table-striped table-bordered p-0">
+                            <thead>
+                                <tr>
+                                    <th>SL</th>
+                                    <th>Keyword</th>
+                                    <th>Count</th>
+                                    <th>Percentage</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableRowDataKeyWordDensity">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showGoogleMalwareChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlGoogleMalware" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:showGoogleMalwareChecker();">Check Google Malware</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive">
+                        <iframe width="100%" frameborder="0" id="googleMalwareResult"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showBlacklistLookup'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlBlacklistLookup" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:showBlacklistLookup();">Blacklist Lookup </a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+                    <div class="card card-statistics h-100">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <div class="float-left">
+                                    <span class="text-danger">
+                                        <i class="fa fa-bar-chart-o highlight-icon" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="float-right text-right">
+                                    <p class="card-text text-dark">Domain</p>
+                                    <h6 id="host"></h6>
+                                </div>
+                            </div>
+                            <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                                <i class="fa fa-exclamation-circle mr-1" aria-hidden="true"></i> 81% lower growth
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+                    <div class="card card-statistics h-100">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <div class="float-left">
+                                    <span class="text-warning">
+                                        <i class="fa fa-shopping-cart highlight-icon" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="float-right text-right">
+                                    <p class="card-text text-dark">Domain IP</p>
+                                    <h6 id="ip"></h6>
+                                </div>
+                            </div>
+                            <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                                <i class="fa fa-bookmark-o mr-1" aria-hidden="true"></i> Total sales
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-6 col-md-6 mb-30">
+                    <div class="card card-statistics h-100">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <div class="float-left">
+                                    <span class="text-success">
+                                        <i class="fa fa-dollar highlight-icon" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="float-right text-right">
+                                    <p class="card-text text-dark">Overall</p>
+                                    <h6 id="overall"></h6>
+                                </div>
+                            </div>
+                            <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                                <i class="fa fa-calendar mr-1" aria-hidden="true"></i> Sales Per Week 
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive">
+                        <table id="datatable" class="table table-striped table-bordered p-0">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>SPAM Database Server</th>
+                                    <th>Listing Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="blacklistLookup">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showSuspiciousDomain'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlSuspiciousDomainChecker" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:showSuspiciousDomain();">Check Suspicious Domain </a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <h5 class="card-title border-0 pb-0">Anti-virus stats of each website</h5>
+                    <div class="table-responsive">
+                        <table id="datatable" class="table table-striped table-bordered p-0">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Domain</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableSuspiciousDomain">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showLinkPriceCalculator'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <form method="post" id="showLinkPriceCalculator">
+                        <textarea name="data" id="linkPrice" rows="5" class="form-control" placeholder="Enter upto 10 URLs (Each URL must be on a separate line)"></textarea>
+                    </form>
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:showLinkPriceCalculator();">Show Link Prices </a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <h5 class="card-title border-0 pb-0">Price of each website</h5>
+                    <div class="table-responsive">
+                        <table id="datatable" class="table table-striped table-bordered p-0">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>URLs</th>
+                                    <th>Approximate Price</th>
+                                </tr>
+                            </thead>
+                            <tbody id="linkPriceCalculator">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showWebsiteLinksCount'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input type="text" name="urlWebsiteLink" id="urlWebsiteLinkChecker" value="" class="form-control" placeholder="Enter URL here" required="required" autofocus="">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:showWebsiteLinksCount();">Show Result </a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive">
+                        <table id="datatable" class="table table-striped table-bordered p-0">
+                            <thead>
+                                <tr>
+                                    <th>URL</th>
+                                    <th>Total Links</th>
+                                    <th>Internal Links</th>
+                                    <th>External links</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableWebsiteLinksCount">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showGetSourceCodeOfWebpage'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlSourceCode" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:showGetSourceCodeOfWebpage();">Get Source Code</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <h6 class="card-title border-0 pb-0">Source Code</h6>
+                    <textarea id="textAreaSourceCode" rows="15" class="form-control" readonly=""></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showBrokenLinksFinder'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlBrokenLink" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:showBrokenLinksFinder();">Get Broken Links</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tableBrokenLink">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showKeywordsSuggestionTool'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlKeywordsSuggestionTool" placeholder="Enter Keyword Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlKeywordsSuggestionTool', 'keyword_suggestion', 'tblKeywordsSuggestionTool');">Get Keyword Suggestion</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <h5 class="card-title border-0 pb-0">Keywords Suggestion</h5>
+                    <div class="table-responsive" id="tblKeywordsSuggestionTool">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showMetaTagsAnalyzer'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlMetaDetails" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:showMetaTagsAnalyzer();">Get Meta Details</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <h6 class="card-title border-0 pb-0">Meta Analyser Result</h6>
+                    <div class="table-responsive">
+                        <table id="datatable" class="table table-striped table-bordered p-0">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Tag Name</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableMeta">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showClassCIPChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlClassCIp" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:showClassCIPChecker();">Get Class C IP</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <h6 class="card-title border-0 pb-0">Class C IP</h6>
+                    <div class="table-responsive">
+                        <table id="datatable" class="table table-striped table-bordered p-0">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Host</th>
+                                    <th>IP</th>
+                                    <th>Class C IP</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableClassCIP">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showAlexaInformationFetcher'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlAlexaInfo" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:showAlexaInformationFetcher();">Get Alexa Info</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <h6 class="card-title border-0 pb-0">Alexa Information</h6>
+                </div>
+            </div>
+            <div id="htmlAlexaInfo">
+
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showDomainIntoIPConverter'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="utlDomainToIp" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:showDomainIntoIPConverter();">Get Domain To IP</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <h6 class="card-title border-0 pb-0">Result</h6>
+                    <div class="table-responsive">
+                        <table id="datatable" class="table table-striped table-bordered p-0">
+                            <thead>
+                                <tr>
+                                    <th>Domain</th>
+                                    <th>IP</th>
+                                    <th>Country</th>
+                                    <th>ISP</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableDomainToIp">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showKeywordAnalyzer'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="utlKeywordAnalyser" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:showKeywordAnalyzer();">Analyse Keywords</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row" id="tablePhraseKeywords">
+
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showLinkAnalyzer'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlLinkAnalyzer" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:showLinkAnalyzer();">Start Link Analyser </a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <h5 class="card-title border-0 pb-0">Link Analyser Results</h5>
+                    <div class="table-responsive" id="tblLinkAnalyser">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showReverseIPDomainChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlReverseIPDomain" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:showReverseIPDomainChecker();">Reverse IP Domain</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <h5 class="card-title border-0 pb-0">Reverse IP Domain Checker Results</h5>
+                    <div class="table-responsive" id="tblReverseDomainIP">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showServerStatusChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlServerStatusChecker" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:showServerStatusChecker();">Check Server OR URL</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <h5 class="card-title border-0 pb-0">Server OR URL Status Checker Results</h5>
+                    <div class="table-responsive" id="tblServerStatusChecker">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showWebsiteRedirectChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlWebsiteRedirectChecker" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlWebsiteRedirectChecker', 'redirect_checker', 'tblWebsiteRedirectChecker');">Check Website Redirect</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <h5 class="card-title border-0 pb-0">Website Redirect Checker Results</h5>
+                    <div class="table-responsive" id="tblWebsiteRedirectChecker">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showURLEncoderDecoder'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlEncoderDecoder" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlEncoderDecoder', 'url_encoder', 'tblUrlEncoderDecoder');">Encode & Decode</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <h5 class="card-title border-0 pb-0">Encode & Decode URL</h5>
+                    <div class="table-responsive" id="tblUrlEncoderDecoder">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showWebsiteDescriptionFetcher'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlWebsiteDescriptionFetcher" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlWebsiteDescriptionFetcher', 'website_description', 'tblWebsiteDescriptionFetcher');">Get Website Description</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <h5 class="card-title border-0 pb-0">Website Description Result</h5>
+                    <div class="table-responsive" id="tblWebsiteDescriptionFetcher">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showMetaTagGenerator'): ?>
+        <div class="modal-body">
+            <form method="POST" action="" id="frmMeta"> 
+                <style>
+                    .form-control {
+                        border-radius: 3px;
+                        font-size: 13px;
+                        height: auto;
+                        line-height: 1.33333;
+                        padding: 10px 10px 10px 10px;
+                        background: #f6f7f8;
+                        color: #323232;
+                        border: 0px solid transparent;
+                        box-shadow: none;
+                        margin-bottom: 10px;
+                    }
+                </style>
+                <div class="row">
+                    <div class="col-md-12" >
+                        <h6><?php echo 'Site Title'; ?> <small id="limitBarT"></small></h6>
+                        <input type="text" id="metatitle" name="title" class="form-control" placeholder="Title should be within 70 characters" autofocus/>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><?php echo 'Site Description'; ?> <small id="limitBar"></small></h6>
+                        <textarea id="description" name="description" class="form-control" rows="3" placeholder="Description must be within 320 characters" autofocus></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><?php echo 'Site Keywords <small>(Separate with commas)</small>'; ?></h6>
+                        <textarea id="keywords" name="keywords" class="form-control" rows="3" placeholder="Keyword1,Keyword2,Keyword3..." autofocus></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><?php echo 'Allow robots to index your website?'; ?></h6>
+
+                        <select name="robotsIndex" class="form-control">
+                            <option value="index"><?php echo 'Yes'; ?></option>
+                            <option value="noindex"><?php echo 'No'; ?></option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><?php echo 'Allow robots to follow all links?'; ?></h6>
+
+                        <select name="robotsLinks" class="form-control">
+                            <option value="follow"><?php echo 'Yes'; ?></option>
+                            <option value="nofollow"><?php echo 'No'; ?></option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><?php echo 'What type of Content will your site Display?'; ?></h6>
+
+                        <select name="contentType" class="form-control">
+                            <option value="text/html; charset=utf-8">UTF-8</option>
+                            <option value="text/html; charset=utf-16">UTF-16</option>
+                            <option value="text/html; charset=iso-8859-1">ISO-8859-1</option>
+                            <option value="text/html; charset=windows-1252">WINDOWS-1252</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><?php echo 'What is your site\'s primary Language?'; ?></h6>
+
+                        <select name="language" class="form-control">
+                            <option value="English">English</option>
+                            <option value="French">French</option>
+                            <option value="Spanish">Spanish</option>
+                            <option value="Russian">Russian</option>
+                            <option value="Arabic">Arabic</option>
+                            <option value="Japanese">Japanese</option>
+                            <option value="Korean">Korean</option>
+                            <option value="Hindi">Hindi</option>
+                            <option value="Portuguese">Portuguese</option>
+                            <option value="N/A">No Language Tag</option>
+                        </select>
+                    </div>
+                </div>
+
+                <hr />
+                <div class="text-center" style="margin-bottom: 30px;" ><b><?php echo '(Optional Meta Tags)'; ?></b></div>
+                <p>
+                    <input type="checkbox" value="yes" name="revisit"/> <?php echo 'Search Engines should revisit this page after'; ?> &nbsp;
+                    <input type="text" class="form-control" style="width:10%; display: inline;" name="revisitdays" autofocus/>  &nbsp; <?php echo 'days.'; ?>.
+                </p>
+                <br />
+                <p><input type="checkbox" value="yes" name="author" /> <?php echo 'Author:'; ?> 
+                    <input type="text" class="form-control" name="authorname" style="width:50%; display: inline;" autofocus/>
+                </p>
+
+
+                <br />
+                <?php //if ($toolCap) echo $captchaCode; ?>
+                <input onclick="submitDataForMetaTag()" class="btn btn-info" type="button" value="<?php echo 'Generate MetaTags'; ?>" name="submit"/>
+                <div class="row">
+                    <hr><br><br>
+                    <div class="col-md-12" id="metaResult">
+
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showWHOISChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlWHOISChecker" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlWHOISChecker', 'whois_checker', 'tblWHOISChecker');">Get Whois Data</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblWHOISChecker">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showURLRewritingTool'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlRewritingTool" placeholder="Enter URL Here">
+                    <code>Eg. http://www.example.com/test.php?firstid=1&amp;secondid=10</code>
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlRewritingTool', 'url_rewrite', 'tblRewritingTool');">Check URL Rewrite</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <h5 class="card-title border-0 pb-0">URL Rewriting Tools Results</h5>
+                    <div class="table-responsive" id="tblRewritingTool">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showUltimateXMLSiteMapGenerator'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlUltimateXMLSiteMapGenerator" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlUltimateXMLSiteMapGenerator', 'xml_sitemap', 'tblUltimateXMLSiteMapGenerator');">Generate Ultimate XMLSiteMap</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <h5 class="card-title border-0 pb-0">Ultimate XMLSiteMap Generator Results</h5>
+                    <div class="table-responsive" id="tblUltimateXMLSiteMapGenerator">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showAlexaRankChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlAlexaRankChecker" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlAlexaRankChecker', 'alexa_rank', 'tblAlexaRankChecker');">Check Alexa Rank</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblAlexaRankChecker">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showOnlineMD5Generator'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlOnlineMD5Generator" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlOnlineMD5Generator', 'online_md5', 'tblOnlineMD5Generator');">Generate MD5</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblOnlineMD5Generator">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showPageSpeedChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlPageSpeedChecker" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getPageSpeedChecker();">Check Page Speed</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <h5 class="card-title border-0 pb-0">Page Speed Checker Results</h5>
+                    <div class="table-responsive" id="tblPageSpeedChecker">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showCodetoTextRatioChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlCodetoTextRatioChecker" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlCodetoTextRatioChecker', 'code_text_ratio', 'tblCodetoTextRatioChecker');">Code To Text Ratio</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblCodetoTextRatioChecker">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showFindDNSRecords'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlFindDNSRecords" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlFindDNSRecords', 'dns_checker', 'tblFindDNSRecords');">Get DNS Records</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblFindDNSRecords">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showWhatIsMyBrowser'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-9 mb-30" style="display: none;">
+                    <input value="<?php echo Mage::getBaseUrl(); ?>" style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlWhatIsMyBrowser" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlWhatIsMyBrowser', 'my_browser', 'tblWhatIsMyBrowser');">Get My Browser Details</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblWhatIsMyBrowser">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showEmailPrivacy'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlEmailPrivacy" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlEmailPrivacy', 'email_privacy', 'tblEmailPrivacy');">Get Email Privacy Status</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <h5 class="card-title border-0 pb-0">Email Privacy Check Results</h5>
+                    <div class="table-responsive" id="tblEmailPrivacy">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showSearchEngineSpiderSimulator'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlSearchEngineSpiderSimulator" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlSearchEngineSpiderSimulator', 'spider', 'tblSearchEngineSpiderSimulator');">Get Search Engine Spider Simulator</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <h5 class="card-title border-0 pb-0">Email Privacy Check Results</h5>
+                    <div class="table-responsive" id="tblSearchEngineSpiderSimulator">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showRobotstxtGenerator'): ?>
+        <style>
+            .form-control {
+                border-radius: 3px;
+                font-size: 13px;
+                height: auto;
+                line-height: 1.33333;
+                padding: 9px 15px 10px 20px;
+                background: #f6f7f8;
+                color: #323232;
+                border: 0px solid transparent;
+                box-shadow: none;
+            }
+        </style>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <form style='display: block;'>
+                        <div>
+                            <table id="roboTable" class="nostyle">
+                                <tbody><tr>
+                                        <td><b><?php echo 'Default - All Robots are'; ?>:</b></td>
+                                        <td>
+                                            <select size="1" name="allow" id="allow" class="form-control" required autofocus >
+                                                <option value=" " selected=""><?php echo 'Allowed'; ?></option>
+                                                <option value=" /"><?php echo 'Refused'; ?></option> </select></td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+
+                                    <tr><td>&nbsp;</td><td>&nbsp;</td> <td>&nbsp;</td></tr>
+
+                                    <tr>
+                                        <td><b><?php echo 'Crawl-Delay'; ?>:</b></td>
+                                        <td colspan="2">
+                                            <select size="1" name="delay" id="delay" class="form-control" required autofocus>
+                                                <option value="" selected=""><?php echo 'Default - No Delay'; ?></option>
+                                                <option value="5">5 Seconds</option>
+                                                <option value="10">10 Seconds</option>
+                                                <option value="20">20 Seconds</option>
+                                                <option value="60">60 seconds</option>
+                                                <option value="120">120 Seconds</option> </select></td>
+                                    </tr>
+
+                                    <tr><td>&nbsp;</td><td>&nbsp;</td> <td>&nbsp;</td></tr>
+
+                                    <tr>
+                                        <td><strong><?php echo 'SiteMap'; ?>: <small><?php echo '(leave blank if you don\'t have)'; ?>&nbsp;</small></strong></td>
+                                        <td colspan="2">
+                                            <input type="text" value="" placeholder="http://www.example.com/sitemap.xml" name="sitemap" class="form-control" required autofocus /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>
+                                            &nbsp;</td>
+                                        <td>
+                                            &nbsp;</td>
+                                    </tr><tr>
+                                        <td><b><?php echo 'Search Robots'; ?>:</b></td>
+                                        <td>
+                                            Google</td>
+                                        <td>
+                                            <select size="1" name="google" id="google" class="form-control" required autofocus>
+                                                <option value="" selected=""><?php echo 'Same As Default'; ?></option>
+                                                <option value=" "><?php echo 'Allowed'; ?></option>
+                                                <option value=" /"><?php echo 'Refused'; ?></option>
+                                            </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>
+                                            Google Image</td>
+                                        <td>
+                                            <select size="1" name="gimage" id="gimage" class="form-control" required autofocus>
+                                                <option value="" selected=""><?php echo 'Same As Default'; ?></option>
+                                                <option value=" "><?php echo 'Allowed'; ?></option>
+                                                <option value=" /"><?php echo 'Refused'; ?></option>
+                                            </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>
+                                            Google Mobile</td>
+                                        <td>
+                                            <select size="1" name="gmobile" id="gmobile" class="form-control" required autofocus>
+                                                <option value="" selected=""><?php echo 'Same As Default'; ?></option>
+                                                <option value=" "><?php echo 'Allowed'; ?></option>
+                                                <option value=" /"><?php echo 'Refused'; ?></option>
+                                            </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>
+                                            MSN Search</td>
+                                        <td>
+                                            <select size="1" name="msn" id="msn" class="form-control" required autofocus>
+                                                <option value="" selected=""><?php echo 'Same As Default'; ?></option>
+                                                <option value=" "><?php echo 'Allowed'; ?></option>
+                                                <option value=" /"><?php echo 'Refused'; ?></option>
+                                            </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>
+                                            Yahoo</td>
+                                        <td>
+                                            <select size="1" name="yahoo" id="yahoo" class="form-control" required autofocus>
+                                                <option value="" selected=""><?php echo 'Same As Default'; ?></option>
+                                                <option value=" "><?php echo 'Allowed'; ?></option>
+                                                <option value=" /"><?php echo 'Refused'; ?></option>
+                                            </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>
+                                            Yahoo MM</td>
+                                        <td>
+                                            <select size="1" name="ymm" id="ymm" class="form-control" required autofocus>
+                                                <option value="" selected=""><?php echo 'Same As Default'; ?></option>
+                                                <option value=" "><?php echo 'Allowed'; ?></option>
+                                                <option value=" /"><?php echo 'Refused'; ?></option>
+                                            </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>
+                                            Yahoo Blogs</td>
+                                        <td>
+                                            <select size="1" name="blogs" id="blogs" class="form-control" required autofocus>
+                                                <option value="" selected=""><?php echo 'Same As Default'; ?></option>
+                                                <option value=" "><?php echo 'Allowed'; ?></option>
+                                                <option value=" /"><?php echo 'Refused'; ?></option>
+                                            </select></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>
+                                            Ask/Teoma</td>
+                                        <td>
+                                            <select size="1" name="teoma" id="teoma" class="form-control" required autofocus>
+                                                <option value="" selected=""><?php echo 'Same As Default'; ?></option>
+                                                <option value=" "><?php echo 'Allowed'; ?></option>
+                                                <option value=" /"><?php echo 'Refused'; ?></option>
+                                            </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>
+                                            GigaBlast</td>
+                                        <td>
+                                            <select size="1" name="gigablast" id="gigablast" class="form-control" required autofocus>
+                                                <option value="" selected=""><?php echo 'Same As Default'; ?></option>
+                                                <option value=" "><?php echo 'Allowed'; ?></option>
+                                                <option value=" /"><?php echo 'Refused'; ?></option>
+                                            </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>
+                                            DMOZ Checker</td>
+                                        <td>
+                                            <select size="1" name="dmoz" id="dmoz" class="form-control" required autofocus>
+                                                <option value="" selected=""><?php echo 'Same As Default'; ?></option>
+                                                <option value=" "><?php echo 'Allowed'; ?></option>
+                                                <option value=" /"><?php echo 'Refused'; ?></option>
+                                            </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>
+                                            Nutch</td>
+                                        <td>
+                                            <select size="1" name="nutch" id="nutch" class="form-control" required autofocus>
+                                                <option value="" selected=""><?php echo 'Same As Default'; ?></option>
+                                                <option value=" "><?php echo 'Allowed'; ?></option>
+                                                <option value=" /"><?php echo 'Refused'; ?></option>
+                                            </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>
+                                            Alexa/Wayback</td>
+                                        <td>
+                                            <select size="1" name="alexa" id="alexa" class="form-control" required autofocus>
+                                                <option value="" selected=""><?php echo 'Same As Default'; ?></option>
+                                                <option value=" "><?php echo 'Allowed'; ?></option>
+                                                <option value=" /"><?php echo 'Refused'; ?></option>
+                                            </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>
+                                            Baidu</td>
+                                        <td>
+                                            <select size="1" name="baidu" id="baidu" class="form-control" required autofocus>
+                                                <option value="" selected=""><?php echo 'Same As Default'; ?></option>
+                                                <option value=" "><?php echo 'Allowed'; ?></option>
+                                                <option value=" /"><?php echo 'Refused'; ?></option>
+                                            </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>
+                                            Naver</td>
+                                        <td>
+                                            <select size="1" name="naver" id="naver" class="form-control" required autofocus>
+                                                <option value="" selected=""><?php echo 'Same As Default'; ?></option>
+                                                <option value=" "><?php echo 'Allowed'; ?></option>
+                                                <option value=" /"><?php echo 'Refused'; ?></option>
+                                            </select></td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>
+                                            MSN PicSearch</td>
+                                        <td>
+                                            <select size="1" name="psbot" id="psbot" class="form-control" required autofocus>
+                                                <option value="" selected=""><?php echo 'Same As Default'; ?></option>
+                                                <option value=" "><?php echo 'Allowed'; ?></option>
+                                                <option value=" /"><?php echo 'Refused'; ?></option>
+                                            </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td colspan="2">
+                                            &nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td><b><?php echo 'Restricted Directories'; ?>:</b></td>
+                                        <td colspan="2">
+                                            <i><?php echo ' The path is relative to root and must contain a trailing slash '; ?>"/"</i></td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td colspan="2">
+                                            <input type="text" value="/cgi-bin/" size="70" name="dir1" class="form-control" required autofocus /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td colspan="2">
+                                            <input type="text" size="70" name="dir2" class="form-control" required autofocus /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td colspan="2">
+                                            <input type="text" size="70" name="dir3" class="form-control" required autofocus /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td colspan="2">
+                                            <input type="text" size="70" name="dir4" class="form-control" required autofocus /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td colspan="2">
+                                            <input type="text" size="70" name="dir5" class="form-control" required autofocus /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td colspan="2">
+                                            <input type="text" size="70" name="dir6" class="form-control" required autofocus /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td colspan="2">
+                                            &nbsp;</td>
+                                    </tr>
+                                </tbody></table>
+                        </div>
+                        <p>
+                            <input type="button" class="btn btn-success" onclick="console.log(genRobots(this.form, msg1, msg2));" value="<?php echo 'Create Robots.txt'; ?>" /> 
+                            <input type="button" class="btn btn-danger" onclick="genRobots(this.form, msg1, msg2, true)" value="Create and Save as Robots.txt" /> 
+                            <input type="reset" class="btn btn-primary" value="Clear" /> 
+                            <br /><br />
+                            <textarea class="form-control" required autofocus readonly="" rows="10" id="robolist" name="robolist"></textarea>
+                        </p>
+                        <p><?php echo 'Now, Create \'robots.txt\' file at your root directory. Copy above text and paste into the text file.'; ?></p>
+
+                    </form>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <h5 class="card-title border-0 pb-0">Email Privacy Check Results</h5>
+                    <div class="table-responsive" id="tblEmailPrivacy">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showDomainAgeChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlDomainAgeChecker" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlDomainAgeChecker', 'domain_age', 'tblDomainAgeChecker');">Check Domain Age</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblDomainAgeChecker">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showMyIPAddress'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-9 mb-30" style="display: none;">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlMyIPAddress" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlMyIPAddress', 'my_ip_address', 'tblurlMyIPAddress');">Show My IP Address</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblurlMyIPAddress">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showDomainIPAddress'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlDomainIPAddress" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlDomainIPAddress', 'domain_ip_address', 'tblDomainIPAddress');">Get Domain Ip</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblDomainIPAddress">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showPageSizeChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlPageSizeChecker" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlPageSizeChecker', 'page_size', 'tblPageSizeChecker');">Get Page Size</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblPageSizeChecker">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showDomainHostingChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlDomainHostingChecker" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlDomainHostingChecker', 'domain_hosting', 'tblDomainHostingChecker');">Get Domain Hosting Info</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblDomainHostingChecker">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showGoogleIndexChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlGoogleIndexChecker" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlGoogleIndexChecker', 'google_index', 'tblGoogleIndexChecker');">Get Google Index Info</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblGoogleIndexChecker">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showWebpageScreenResolutionSimulator'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <form  onsubmit="doscreen_simulator();
+                            return false">	
+                        <p>
+                            <input class="form-control" type="text" name="url" id="url" value="" placeholder='Enter URL here' autofocus required/>
+
+                            <br />  <br />  <?php echo 'Select Screen Resolution'; ?>:<br /><br />
+                        <div class="radio-box">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-3 mb-30">
+                                        <input type="radio" id="160x160"  name="resolution" value="160x160" />
+                                        <label for="160x160">&nbsp;160x160 <?php echo 'Pixels'; ?></label>
+                                        <div class="clear">&nbsp;</div>
+                                    </div>
+                                    <div class="col-md-3 mb-30">
+                                        <input type="radio" id="320x320"  name="resolution" value="320x320"/>
+                                        <label for="320x320">&nbsp;320x320 <?php echo 'Pixels'; ?></label>
+                                        <div class="clear">&nbsp;</div>
+                                    </div>
+
+                                    <div class="col-md-3 mb-30">
+                                        <input type="radio" id="640x480"  name="resolution" value="640x480"/>
+                                        <label for="640x480">&nbsp;640x480 <?php echo 'Pixels'; ?></label>
+                                        <div class="clear">&nbsp;</div>
+                                    </div>
+                                    <div class="col-md-3 mb-30">
+                                        <input type="radio" id="800x600"  name="resolution" value="800x600"/>
+                                        <label for="800x600">&nbsp;800x600 <?php echo 'Pixels'; ?></label>
+                                        <div class="clear">&nbsp;</div>
+                                    </div>
+                                    <div class="col-md-3 mb-30">
+                                        <input type="radio" id="1024x768"  name="resolution" value="1024x768" checked="checked" />
+                                        <label for="1024x768">&nbsp;1024x768 <?php echo 'Pixels'; ?></label>
+                                        <div class="clear">&nbsp;</div>
+                                    </div>
+                                    <div class="col-md-3 mb-30">
+                                        <input type="radio" id="1366x768"  name="resolution" value="1366x768" />
+                                        <label for="1366x768">&nbsp;1366x768 <?php echo 'Pixels'; ?></label>
+                                        <div class="clear">&nbsp;</div>
+                                    </div>
+                                    <div class="col-md-3 mb-30">
+                                        <input type="radio" id="1152x864"  name="resolution" value="1152x864"/>
+                                        <label for="1152x864">&nbsp;1152x864 <?php echo 'Pixels'; ?></label>
+                                        <div class="clear">&nbsp;</div>
+                                    </div>
+                                    <div class="col-md-3 mb-30">
+                                        <input type="radio" id="1600x1200"  name="resolution" value="1600x1200"/>
+                                        <label for="1600x1200">&nbsp;1600x1200 <?php echo 'Pixels'; ?></label>
+                                        <div class="clear">&nbsp;</div>	
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        </p>
+                        <div>
+                            <button class="btn btn-sm btn-info"><?php echo 'Check'; ?></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showGooglePageSpeedInsights'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlGooglePageSpeedInsights" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlGooglePageSpeedInsights', 'google_data', 'tblGooglePageSpeedInsights');">Get Google Page Insite</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblGooglePageSpeedInsights">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showWebsiteInformation'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlWebsiteInformation" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlWebsiteInformation', 'site_info', 'tblWebsiteInformation');">Get Website Info</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblWebsiteInformation">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showKeywordPositionChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-9 mb-30 ">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlKeywordPositionChecker" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30">
+                    <a style="float: right;" class="button small" href="javascript:getKeywordPosition('urlKeywordPositionChecker', 'urlKeyword', 'tblKeywordPositionChecker');">Check Keyword Position</a>
+                </div>
+                <div class="col-md-12 mb-30">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlKeyword" placeholder="Enter Keyword Here">
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblKeywordPositionChecker">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showWebsiteScoreCalculator'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlWebsiteScoreCalculator" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getWebsiteScore('urlWebsiteScoreCalculator', 'tblWebsiteScoreCalculator');">Get Website Score</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblWebsiteScoreCalculator">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showWebsiteTestResults'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlWebsiteTestResults" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getWebsiteTest('urlWebsiteTestResults', 'tblWebsiteTestResults');">Get Website Test Result</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblWebsiteTestResults">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showEstimationTrafficEarnings'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlEstimationTrafficEarnings" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlEstimationTrafficEarnings', 'traffic_estimation', 'tblEstimationTrafficEarnings');">Get Estimation Traffic Earnings</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblEstimationTrafficEarnings">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showMozRankChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlMozRankChecker" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlMozRankChecker', 'moz_rank', 'tblMozRankChecker');">Get Moz Rank</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblMozRankChecker">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showWebsiteScreenshotGenerator'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlWebsiteScreenshotGenerator" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlWebsiteScreenshotGenerator', 'website_screenshot', 'tblWebsiteScreenshotGenerator');">Get Screen Shot</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblWebsiteScreenshotGenerator">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showGoogleCacheChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlGoogleCacheChecker" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlGoogleCacheChecker', 'google_cache', 'tblGoogleCacheChecker');">Check Google Cache</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblGoogleCacheChecker">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showDomainAuthorityChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlDomainAuthorityChecker" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlDomainAuthorityChecker', 'da', 'tblDomainAuthorityChecker');">Get Domain Authority</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblDomainAuthorityChecker">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showPageAuthorityChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlPageAuthorityChecker" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlPageAuthorityChecker', 'pa', 'tblPageAuthorityChecker');">Get Page Authority</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblPageAuthorityChecker">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showResponsefromHeaders'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlResponsefromHeaders" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlResponsefromHeaders', 'headers_response', 'tblResponsefromHeaders');">Get Response From Header</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblResponsefromHeaders">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showResponsefromServer'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlResponsefromServer" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlResponsefromServer', 'server_response', 'tblResponsefromServer');">Get Response From Server</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblResponsefromServer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showDesktopMobileSuggestions'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlDesktopMobileSuggestions" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlDesktopMobileSuggestions', 'suggestions', 'tblDesktopMobileSuggestions');">Get Desktop & Mobile Suggession</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblDesktopMobileSuggestions">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showSpeedOptimizationTips'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlSpeedOptimizationTips" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlSpeedOptimizationTips', 'optimization', 'tblSpeedOptimizationTips');">Get Speed & Optimisation Tips</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblSpeedOptimizationTips">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showIPv6CompatibilityChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlIPv6CompatibilityChecker" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlIPv6CompatibilityChecker', 'ipv6_check', 'tblIPv6CompatibilityChecker');">Check IPv6 Compatibility</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblIPv6CompatibilityChecker">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showIPCanonicalizationChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlIPCanonicalizationChecker" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlIPCanonicalizationChecker', 'ip_canonical', 'tblIPCanonicalizationChecker');">Check IP Canonicalization</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblIPCanonicalizationChecker">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showPageStatusChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlPageStatusChecker" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlPageStatusChecker', 'page_status', 'tblPageStatusChecker');">Check Page Status</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblPageStatusChecker">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'showVirusTotalScanner'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="url" class="form-control" id="urlVirusTotalScanner" placeholder="Enter URL Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('urlVirusTotalScanner', 'virus_total', 'tblVirusTotalScanner');">Start Virus Scan</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblVirusTotalScanner">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'keywordCompetitionChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <textarea placeholder="Enter Keywords Here" name="keywordCompetitionChecker" id="keywordCompetitionChecker" rows="5" class="form-control"></textarea>
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('keywordCompetitionChecker', 'keyword_competetion', 'tblkeywordCompetitionChecker');">Check Keyword Competetion</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <h5 class="card-title border-0 pb-0">Keyword Competetion Checker Results</h5>
+                    <div class="table-responsive" id="tblkeywordCompetitionChecker">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'allInOneKeywordResearch'): ?>
+
+    <?php elseif ($section == 'androidKeywordResearch'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="text" class="form-control" id="androidKeywordResearch" placeholder="Enter Single Keyword Here">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('androidKeywordResearch', 'Android_Keyword_Research_Tool/ajax', 'tblAndroidKeywordResearch');">Get Keyword Research Result</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblAndroidKeywordResearch">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'fbAdsInterest'): ?>
+
+    <?php elseif ($section == 'googlePsKRT'): ?>
+
+    <?php elseif ($section == 'keywordDifficultyTool'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-7 mb-30">
+                    <input style="padding: 15px 15px 10px 20px;" type="text" class="form-control" id="keywordDifficultyTool" placeholder="Enter keyword e.g. real estate" required="required">
+                </div>
+                <div class="col-md-3 mb-30">
+                    <select name="se" id="selectKeywordDifficultyTool" class="field w-input">
+                        <optgroup label="Search Engine">
+                            <option value="yahoo">https://www.yahoo.com</option><option value="bing">https://www.bing.com</option><option value="com" selected="">https://www.google.com</option><option value="ad">https://www.google.ad</option><option value="ae">https://www.google.ae</option><option value="com.af">https://www.google.com.af</option><option value="com.ag">https://www.google.com.ag</option><option value="com.ai">https://www.google.com.ai</option><option value="am">https://www.google.am</option><option value="co.ao">https://www.google.co.ao</option><option value="com.ar">https://www.google.com.ar</option><option value="as">https://www.google.as</option><option value="at">https://www.google.at</option><option value="com.au">https://www.google.com.au</option><option value="az">https://www.google.az</option><option value="ba">https://www.google.ba</option><option value="com.bd">https://www.google.com.bd</option><option value="be">https://www.google.be</option><option value="bf">https://www.google.bf</option><option value="bg">https://www.google.bg</option><option value="com.bh">https://www.google.com.bh</option><option value="bi">https://www.google.bi</option><option value="bj">https://www.google.bj</option><option value="com.bn">https://www.google.com.bn</option><option value="com.bo">https://www.google.com.bo</option><option value="com.br">https://www.google.com.br</option><option value="bs">https://www.google.bs</option><option value="co.bw">https://www.google.co.bw</option><option value="by">https://www.google.by</option><option value="com.bz">https://www.google.com.bz</option><option value="ca">https://www.google.ca</option><option value="cd">https://www.google.cd</option><option value="cf">https://www.google.cf</option><option value="cg">https://www.google.cg</option><option value="ch">https://www.google.ch</option><option value="ci">https://www.google.ci</option><option value="co.ck">https://www.google.co.ck</option><option value="cl">https://www.google.cl</option><option value="cm">https://www.google.cm</option><option value="cn">https://www.google.cn</option><option value="com.co">https://www.google.com.co</option><option value="co.cr">https://www.google.co.cr</option><option value="com.cu">https://www.google.com.cu</option><option value="cv">https://www.google.cv</option><option value="cz">https://www.google.cz</option><option value="de">https://www.google.de</option><option value="dj">https://www.google.dj</option><option value="dk">https://www.google.dk</option><option value="dm">https://www.google.dm</option><option value="com.do">https://www.google.com.do</option><option value="dz">https://www.google.dz</option><option value="com.ec">https://www.google.com.ec</option><option value="ee">https://www.google.ee</option><option value="com.eg">https://www.google.com.eg</option><option value="es">https://www.google.es</option><option value="com.et">https://www.google.com.et</option><option value="fi">https://www.google.fi</option><option value="com.fj">https://www.google.com.fj</option><option value="fm">https://www.google.fm</option><option value="fr">https://www.google.fr</option><option value="ga">https://www.google.ga</option><option value="ge">https://www.google.ge</option><option value="gg">https://www.google.gg</option><option value="com.gh">https://www.google.com.gh</option><option value="com.gi">https://www.google.com.gi</option><option value="gl">https://www.google.gl</option><option value="gm">https://www.google.gm</option><option value="gp">https://www.google.gp</option> <option value="gr">https://www.google.gr</option><option value="com.gt">https://www.google.com.gt</option><option value="gy">https://www.google.gy</option><option value="com.hk">https://www.google.com.hk</option><option value="hn">https://www.google.hn</option><option value="hr">https://www.google.hr</option><option value="ht">https://www.google.ht</option><option value="hu">https://www.google.hu</option><option value="co.id">https://www.google.co.id</option><option value="ie">https://www.google.ie</option><option value="co.il">https://www.google.co.il</option><option value="im">https://www.google.im</option><option value="co.in">https://www.google.co.in</option><option value="iq">https://www.google.iq</option><option value="is">https://www.google.is</option><option value="it">https://www.google.it</option><option value="je">https://www.google.je</option><option value="com.jm">https://www.google.com.jm</option><option value="jo">https://www.google.jo</option><option value="co.jp">https://www.google.co.jp</option><option value="co.ke">https://www.google.co.ke</option><option value="com.kh">https://www.google.com.kh</option><option value="ki">https://www.google.ki</option><option value="kg">https://www.google.kg</option><option value="co.kr">https://www.google.co.kr</option><option value="com.kw">https://www.google.com.kw</option><option value="kz">https://www.google.kz</option><option value="la">https://www.google.la</option><option value="com.lb">https://www.google.com.lb</option><option value="li">https://www.google.li</option><option value="lk">https://www.google.lk</option><option value="co.ls">https://www.google.co.ls</option><option value="lt">https://www.google.lt</option><option value="lu">https://www.google.lu</option><option value="lv">https://www.google.lv</option><option value="com.ly">https://www.google.com.ly</option><option value="co.ma">https://www.google.co.ma</option><option value="md">https://www.google.md</option><option value="me">https://www.google.me</option><option value="mg">https://www.google.mg</option><option value="mk">https://www.google.mk</option><option value="ml">https://www.google.ml</option><option value="mn">https://www.google.mn</option><option value="ms">https://www.google.ms</option><option value="com.mt">https://www.google.com.mt</option><option value="mu">https://www.google.mu</option><option value="mv">https://www.google.mv</option><option value="mw">https://www.google.mw</option><option value="com.mx">https://www.google.com.mx</option><option value="com.my">https://www.google.com.my</option><option value="co.mz">https://www.google.co.mz</option><option value="com.na">https://www.google.com.na</option><option value="com.nf">https://www.google.com.nf</option><option value="com.ng">https://www.google.com.ng</option><option value="com.ni">https://www.google.com.ni</option><option value="ne">https://www.google.ne</option><option value="nl">https://www.google.nl</option><option value="no">https://www.google.no</option><option value="com.np">https://www.google.com.np</option><option value="nr">https://www.google.nr</option><option value="nu">https://www.google.nu</option><option value="co.nz">https://www.google.co.nz</option><option value="com.om">https://www.google.com.om</option><option value="com.pa">https://www.google.com.pa</option><option value="com.pe">https://www.google.com.pe</option><option value="com.ph">https://www.google.com.ph</option><option value="com.pk">https://www.google.com.pk</option><option value="pl">https://www.google.pl</option><option value="pn">https://www.google.pn</option><option value="com.pr">https://www.google.com.pr</option><option value="ps">https://www.google.ps</option><option value="pt">https://www.google.pt</option><option value="com.py">https://www.google.com.py</option><option value="com.qa">https://www.google.com.qa</option><option value="ro">https://www.google.ro</option><option value="ru">https://www.google.ru</option><option value="rw">https://www.google.rw</option><option value="com.sa">https://www.google.com.sa</option><option value="com.sb">https://www.google.com.sb</option><option value="sc">https://www.google.sc</option><option value="se">https://www.google.se</option><option value="com.sg">https://www.google.com.sg</option><option value="sh">https://www.google.sh</option><option value="si">https://www.google.si</option><option value="sk">https://www.google.sk</option><option value="com.sl">https://www.google.com.sl</option><option value="sn">https://www.google.sn</option><option value="so">https://www.google.so</option><option value="sm">https://www.google.sm</option><option value="st">https://www.google.st</option><option value="com.sv">https://www.google.com.sv</option><option value="td">https://www.google.td</option><option value="tg">https://www.google.tg</option><option value="co.th">https://www.google.co.th</option><option value="com.tj">https://www.google.com.tj</option><option value="tk">https://www.google.tk</option><option value="tl">https://www.google.tl</option><option value="tm">https://www.google.tm</option><option value="tn">https://www.google.tn</option><option value="to">https://www.google.to</option><option value="com.tr">https://www.google.com.tr</option><option value="tt">https://www.google.tt</option><option value="com.tw">https://www.google.com.tw</option><option value="co.tz">https://www.google.co.tz</option><option value="com.ua">https://www.google.com.ua</option><option value="co.ug">https://www.google.co.ug</option><option value="co.uk">https://www.google.co.uk</option><option value="com.uy">https://www.google.com.uy</option><option value="co.uz">https://www.google.co.uz</option><option value="com.vc">https://www.google.com.vc</option><option value="co.ve">https://www.google.co.ve</option><option value="vg">https://www.google.vg</option><option value="co.vi">https://www.google.co.vi</option><option value="com.vn">https://www.google.com.vn</option><option value="vu">https://www.google.vu</option><option value="ws">https://www.google.ws</option><option value="rs">https://www.google.rs</option><option value="co.za">https://www.google.co.za</option><option value="co.zm">https://www.google.co.zm</option><option value="co.zw">https://www.google.co.zw</option><option value="cat">https://www.google.cat</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="col-md-2 mb-30">
+                    <a style="float: right;" class="button small" href="javascript:getKeywordDifficultiesResults();">Get Results</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblKeywordDifficultyTool">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'articalCompAndUniChecker'): ?>
+
+    <?php elseif ($section == 'searchEnginesSubmitter'): ?>
+
+    <?php elseif ($section == 'backlinksCheckerTool'): ?>
+
+    <?php elseif ($section == 'bingYahooSearchAds'): ?>
+
+    <?php elseif ($section == 'plagiarismChecker'): ?>
+
+    <?php elseif ($section == 'localBusinessListingTool'): ?>
+
+    <?php elseif ($section == 'googleSuggestTool'): ?>
+
+    <?php elseif ($section == 'twitterTopicsKeywordFinder'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="text" class="form-control" id="twitterTopicsKeywordFinder" placeholder="Enter Single Keywords">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('twitterTopicsKeywordFinder', 'Twitter_Topics_Keyword_Finder/ajax', 'tblTwitterTopicsKeywordFinder');">Get Results</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblTwitterTopicsKeywordFinder">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'googleSuggestTool'): ?>
+
+    <?php elseif ($section == 'imageAltTextSEOChecker'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="text" class="form-control" id="imageAltTextSEOChecker" placeholder="Enter Webpage Url">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('imageAltTextSEOChecker', 'Image_Seo/ajax', 'tblImageAltTextSEOChecker');">Check Image SEO </a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblImageAltTextSEOChecker">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'socialMediaSentimentAnalysis'): ?>
+        <style>
+            /* reset */
+            html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-weight:inherit;font-style:inherit;font-size:100%;font-family:inherit;vertical-align:baseline}:focus{outline:0}body{line-height:1;color:black;background:white}ol,ul{list-style:none}table{border-collapse:separate;border-spacing:0}caption,th,td{text-align:left;font-weight:normal}blockquote:before,blockquote:after,q:before,q:after{content:""}blockquote,q{quotes:""""}
+
+            /* clearfix */
+            .clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden}.clearfix{display:inline-table}/* Hides from IE-mac \*/* html .clearfix{height:1%}*+html .clearfix{height:1%}.clearfix{display:block}/* End hide from IE-mac */
+
+            html,body{}
+
+            body{
+                -webkit-text-size-adjust:none;
+                font-family:helvetica,arial,sans-serif;
+                font-size:1em;
+                color:#333;
+                min-width:1000px;
+                /*background-color:#eee;*/
+            }
+
+            a, a:link, a:visited {color: #0059D0;}
+            a:hover {}
+
+            img{border:0;}
+
+            img.absmiddle{vertical-align:middle;}
+            table td.middle{vertical-align:middle;}
+
+            p{
+                display:block;
+                margin:0 0 1.5em 0;
+                line-height:1.25em;
+            }
+
+            strong{
+                font-weight:bold;	
+            }
+
+            h1,h2,h3{
+                padding-bottom: 0.5em;
+                font-weight: normal;
+                display:block;
+            }
+
+            h1{
+                font-size: 1.6em;
+                color: #555;
+                font-weight:bold;
+            }
+
+            h2{
+                color:#54555C;
+                font-size: 1.2em;
+                font-weight:bold;
+                font-family:Arial, Helvetica, sans-serif;
+                line-height:1.2em;
+                padding-bottom: 0.8em;
+            }
+
+            h3{
+                font-size:1.5em;
+                font-weight:bold;
+                line-height:1.25em;
+                /*margin:1.5em 0 0.5em;*/
+                padding:0;
+            }
+
+            h4 {
+                font-size:1.2em;
+                font-weight:normal;
+                margin:0 0 0.75em 0;
+                padding:0;
+            }
+
+            #container {
+                padding:10px 25px;
+                /*padding:25px;
+                margin:15px 20px;
+                background-color:#fff;
+                -moz-border-radius:8px;
+                -webkit-border-radius:8px;
+                border-radius:8px;
+                */
+            }
+
+            #header{
+
+                height:50px;
+                margin-bottom:30px;
+
+            }
+
+            #logo{
+                float:left;
+                margin-top:18px;
+            }
+
+            #search_top{
+                float:left;
+                margin-left:15px;
+            }
+
+            #search_types{
+                font-size:2em;
+            }
+
+            #search_types a{
+                margin-right:0.73em;
+                font-size:0.8em;
+            }
+            #search_line {
+
+                border-bottom:4px solid #ddd;
+            }
+
+            #search_types a.selected{
+                color:#54555C;
+                text-decoration:none;
+                font-weight:bold;
+            }
+
+            #search_top input[type="submit"]{
+                height:31px;
+                padding:0 5px;
+            }
+
+            .search_box{
+                margin-top:4px;
+                height: 24px;
+                font-size:1em; 
+
+                background-color:#f2f2f2;
+                padding: 3px 1px 0px 3px;
+            }
+
+            #search_options{
+                float:left;
+                margin:18px 0 0 5px;
+                font-size:0.6em;
+            }
+
+            #wrapper{
+                clear:both;
+            }
+
+            table.advanced_search td{
+                padding-bottom:4px;
+            }
+            #header_top_margin{
+                margin-top:20px;
+
+            }
+
+            input{padding:4px;}
+            select{padding:1px;}
+
+            #footer {
+                border-top:1px solid #ddd;
+                clear:both;
+                color:#838E96;
+                font-size:0.9sem;
+                line-height:19px;
+                padding:10px 0 0;
+                margin-top:20px;
+            }
+
+            #container_results {}
+
+            #container_results .total {
+                margin: 0 0 10px 0;
+                padding: 4px;
+                color:#fff;
+                background-color:#ccc;
+                font-weight: bold;
+                font-size:0.8em;
+                display:inline;
+            }
+
+            #column_left {
+                float:left;
+                width:200px;
+            }
+
+            #column_middle {
+                float:left;
+                width:555px;
+                margin:0 15px 20px 25px;
+            }
+
+            #column_right {
+                float:right;
+                width:160px;
+            }
+
+            #search_details {
+                font-size:0.9em;
+                margin:0 0 10px 0;
+            }
+
+            .column_ad {
+                border-top:1px solid #ccc;
+                padding:10px 0 0 0;
+                margin:0 0 0 0;
+            }
+
+            .box {
+                margin:0 0 10px 0;
+                padding:10px;
+                -moz-border-radius:4px;
+                -webkit-border-radius: 4px;
+                /*height:auto !important;*/
+            }
+
+            .box.text {
+                font-size:0.75em;
+                font-weight:bold;
+                margin:0 0 4px;
+            }
+
+            .box_analytics {
+                background:#eee none repeat scroll 0 0;
+                margin:0 0 4px 0;
+                -moz-border-radius:4px;
+                -webkit-border-radius: 4px;
+                float:left;
+                padding:10px 5px;
+                width:88px;
+                font-weight:bold;
+                text-align:center;
+            }
+
+            .box_analytics .score {
+                font-size:1.4em;
+                font-weight:bold;
+            }
+
+            .box_analytics .score_title {
+                font-size:0.9em;
+                font-weight:normal;
+            }
+
+            .box_segment {
+                padding:10px 0;
+                border-bottom:1px solid #ccc;	
+            }
+
+            #top_keywords table {
+            }
+
+            #top_keywords td {
+                font-size:0.75em;
+                font-weight:bold;
+                padding-bottom:7px;
+            }
+
+            #top_keywords a {
+                color:#000;
+                text-decoration:none;	
+            }
+
+            #top_keywords a:hover {
+                text-decoration:underline;	
+            }
+
+            .chart_bar {
+                -moz-border-radius:2px;
+                -webkit-border-radius: 2px;
+                background:#0060b6 none repeat scroll 0 0;
+            }
+
+            .box.grey {
+                background:#eee none repeat scroll 0 0;
+            }
+
+            .box.yellow {
+                background:#FCF7E3 none repeat scroll 0 0;
+                border:1px solid #FCDF6B;
+            }
+
+            .box.blue {
+                background:#F1F5FE none repeat scroll 0 0;
+                border:1px solid #C6DCFE;
+            }
+
+            .box p, .box table td {
+                font-size:0.9em;
+                margin-bottom:0.5em;
+            }
+
+            .column_top_area {
+                padding:10px;
+                margin: 0 0 10px 0;
+                font-size:0.9em;
+                background-color:#eee;
+                -moz-border-radius:4px;
+                -webkit-border-radius: 4px;
+                border-radius: 4px;
+            }
+
+            /* results */
+
+            #sort_show {
+                margin-bottom:20px;
+                font-size:0.8em;
+            }
+
+            #sort_show .show_results {
+                float:left;
+            }
+
+
+            #sort_show .sort_results {
+                text-align:right;
+            }
+
+            #sort_show  a {
+                color:#497BB6;
+            }
+
+            #sort_show a.selected {
+                font-weight:bold;
+                text-decoration:none;
+                color:#666666;
+            }
+
+            /* search results css */
+
+            #results {
+                max-width:36em;
+            }
+
+            /* full is for images and videos */
+            #results.full {
+                max-width:none;
+                padding-right:250px;
+            }
+
+            #results.full .result {
+                float:left;
+                margin:0 0 20px 20px;
+            }
+
+            #results.full .result.images {
+                /*height:225px;
+                width:225px;*/
+                text-align:center;
+                width:160px;
+            }
+
+            #results.full .result.images .description {
+                height:150px;
+                width:150px;
+            }
+
+            .result.images .description img {
+                height:150px;
+                max-width:150px;
+            }
+
+            #results.full .result.videos {
+                height:500px;
+                width:400px;
+            }
+
+            #results.full .result .description {}
+
+            /* standard results css */
+            #results .result {
+                margin-bottom:0px;
+            }
+
+            .user_image {
+                height:24px;
+                width:24px;
+                vertical-align:middle;
+                border:1px solid #ddd;
+                padding:2px;
+            }
+
+            .result .icon {
+                float:left;
+            }
+
+            .result .body {
+                margin-left:38px;
+            }
+
+            .result img {
+                max-height:150px;
+                max-width:200px;
+                overflow:hidden;
+                text-align:center;
+                /*margin:10px 0;*/
+            }
+
+            .result img.thumbnail {
+                border:1px solid #ddd;
+                float:right;
+                padding:2px;
+                margin:0 0 5px 5px;
+                max-height:75px;
+                max-width:100px;
+                overflow:hidden;
+                text-align:center;
+            }
+
+            .result .description embed {
+            }
+
+            .result .description {
+                font-size:0.9em;
+                line-height:1.3em;
+                margin-top:5px;
+            }
+
+            .result .info {
+                color:#666;
+                font-size:0.8em;
+                white-space:nowrap;
+                clear:both;
+            }
+
+            .info a.link {
+                color:#539D36;
+                text-decoration:none;
+            }
+
+            .info a.link:hover {
+                text-decoration:underline;
+            }
+
+            .result h3 {
+                display:inline;
+                font-weight:normal;
+                margin:0;
+                font-size:1.1em;
+            }
+
+            .postrank {
+                margin-top:4px;
+                height:16px;
+                width:40px;
+                background-image:url(/assets/img/icons/postrank.png);
+                background-repeat:no-repeat;
+                background-position:left top;
+                background-color:#ccc;
+                color:#000;
+                font-size:11px;
+                font-weight:bold;
+                font-family:Arial, Helvetica, sans-serif;
+            }
+            .postrank div {
+                padding:3px 0 0 0;
+                margin: 0 0 0 16px;
+                text-align:center;
+                width:24px;
+            }
+
+            /* analytics */
+
+            .social_index{
+                font-size: 5em;
+                color:#FB7C00;
+            }
+
+            .social_index_total{
+                font-size:2em;
+                color:#555;
+            }
+
+            .analytics_title{
+                font-size:1.3em;
+            }
+
+            .analytics_item_value{
+                font-size:1em;
+            }
+
+            .analytics_social_source{
+                padding:2px 4px;
+                -moz-border-radius:4px;
+                -webkit-border-radius: 4px;
+                border-radius: 4px;
+                background-color:#FB7C00;
+                color:#fff;
+                float:left;
+            }
+
+            .gchart{
+                text-align:center;
+                -moz-border-radius:4px;
+                -webkit-border-radius: 4px;
+                padding:5px;
+                background-color:#fff;
+            }
+
+            /* pagination */
+            .pagination {
+                clear:both;
+                padding-top:15px;
+                font-size:0.9em;
+                height:28px;
+            }
+
+            .pagination a {
+                text-decoration:none;
+                color:#0066CC;
+            }
+
+            .pagination div.page {
+                background-color:#fff;
+                border:1px solid #ccc;
+                float:left;
+                font-weight:bold;
+                margin-right:1px;
+                padding:5px 7px;
+            }
+
+            .pagination div.selected, .pagination a:hover div.page {
+                background-color:#ccc;
+                color:#fff;
+            }
+
+            .tagcloud {font-size:1em;line-height:1.4em; word-spacing:0.25em;}
+            .tagcloud .font1 {font-size:75%;}
+            .tagcloud .font2 {font-size:100%;}
+            .tagcloud .font3 {font-size:125%;}
+            .tagcloud .font4 {font-size:140%;}
+            .tagcloud .font5 {font-size:150%;}
+        </style>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="text" class="form-control" id="socialMediaSentimentAnalysis" placeholder="Please enter your search term ...">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('socialMediaSentimentAnalysis', 'Social_Media_Sentiment_Analysis/index', 'tblfbSocialMediaSentimentAnalysis');">Get Search Results</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblfbSocialMediaSentimentAnalysis">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'peopleSearchAPITool'): ?>
+
+    <?php elseif ($section == 'twitterPeopleProfileSearch'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 mb-30 pr-0">
+                    <input style="padding: 15px 15px 10px 20px;" type="text" class="form-control" id="twitterPeopleProfileSearch" placeholder="Enter Name Or Keywords">
+                </div>
+                <div class="col-md-3 mb-30 pl-0">
+                    <a class="button small" href="javascript:getCommonResultWithoutJSON('twitterPeopleProfileSearch', 'Twitter_People and_Profile_Search/ajax', 'tblTwitterPeopleProfileSearch');">Get Results</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblTwitterPeopleProfileSearch">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'localTwitterTrendsFinder'): ?>
+
+    <?php elseif ($section == 'fbBusinessSearchTool'): ?>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-7 mb-30">
+                    <input style="padding: 15px 15px 10px 20px;" type="text" class="form-control" id="fbBusinessSearchTool" placeholder="Enter Keyword and Location (e.g. resturents in india)">
+                </div>
+                <div class="col-md-2 mb-30">
+                    <select class="input-sm" name="max" id="select">
+                        <optgroup label="Max Results">
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-30">
+                    <a style="float: right;" class="button small" href="javascript:getCommonResultWithoutJSON('fbBusinessSearchTool', 'Facebook_Business_Search_Tools/ajax', 'tblfbBusinessSearchTool');">Get FB Business Search Results</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-30">
+                    <div class="table-responsive" id="tblfbBusinessSearchTool">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+
+        </div>
+    <?php elseif ($section == 'fbPagesFinder'): ?>
+
+    <?php endif; ?>
+<?php else: ?>
+
+<?php endif; ?>

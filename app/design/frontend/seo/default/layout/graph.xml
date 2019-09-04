@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <default>
+    </default>
+    <graph_index_index>
+        <reference name="root">
+            <action method="setTemplate">
+                <template>page/empty.phtml</template>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="graph/graph" name="graph" template="graph/graph.phtml" />
+        </reference>
+    </graph_index_index>
+</layout> 

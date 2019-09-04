@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <smallseotools_adminhtml_smallseotools_index>
+        <reference name="content">
+            <block type="smallseotools/adminhtml_smallseotools" name="smallseotools" />
+        </reference>
+    </smallseotools_adminhtml_smallseotools_index>
+</layout>

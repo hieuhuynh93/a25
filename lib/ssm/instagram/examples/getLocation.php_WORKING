@@ -1,0 +1,54 @@
+<?php
+
+ini_set('display_errors', 1);
+set_time_limit(0);
+umask(0);
+error_reporting(E_ALL);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$username = "masterajib";
+$password = "9804915618";
+$debug = true;
+$truncatedDebug = false;
+$ig = new \InstagramAPI\Instagram($debug, $truncatedDebug);
+try {
+    $ig->login($username, $password);
+} catch (\Exception $e) {
+    echo 'Something went wrong: ' . $e->getMessage() . "\n";
+    exit(0);
+}
+
+$place = $_REQUEST['place'];
+
+try {
+    //$location = $ig->location->search('22.5726', '88.3639')->getVenues()[0];
+    $location = $ig->location->findPlaces($place);
+} catch (\Exception $e) {
+    echo 'Something went wrong: ' . $e->getMessage() . "\n";
+}
+
+$html = '';
+
+$locationArr = json_decode($location, true);
+if(empty(!$locationArr)){
+    foreach($locationArr['items'] as $locatinData){
+        $locationName = $locatinData['location']['name'];
+        $locationAddress = $locatinData['location']['address'];
+        $locationCity = $locatinData['location']['city'];
+        $locationShortName = $locatinData['location']['short_name'];
+        $locationLng = $locatinData['location']['lng'];
+        $locationLat = $locatinData['location']['lat'];
+        $locationFacebookPlacesId = $locatinData['location']['facebook_places_id'];
+        $locationLng = $locatinData['location']['lng'];
+        
+        $html .= '<option value="'.$locationLat.'-'.$locationLng.'">'.$locationName.', '.$locationShortName.' | '.$locationCity.'</option>';
+        
+        //echo "<br>" . $placeImage = $locatinData['header_media']['media'][0]['image_versions2']['candidates'][0]['url'];
+    }
+}else{
+    
+}
+
+
+echo $html;

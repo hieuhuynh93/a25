@@ -1,0 +1,301 @@
+<?php
+if (isset($_REQUEST['id'])) {
+    $customerId = $_REQUEST['id'];
+} else {
+    $customerId = Mage::getSingleton('customer/session')->getCustomer()->getEntityId();
+}
+$customer = Mage::getModel('customer/customer')->load($customerId);
+
+
+
+$arrUserType = array(
+    "5" => "Admin",
+    "6" => "User"
+);
+//echo "<pre>"; print_r($customer->getData());
+$noOfFollowers = 0;
+if (strlen($customer->getFollowersIds()) >= 1) {
+    $followers_ids = str_replace(" ", "", rtrim(ltrim($customer->getFollowersIds(), ","), ","));
+    $noOfFollowers = count(explode(",", $followers_ids));
+}
+?>
+<!-- ----------------- Small Modal Starts --------------------->
+<?php
+$customerCollection = Mage::getModel('customer/customer')
+        ->getCollection()
+        ->addAttributeToSelect('firstname')
+        ->addAttributeToSelect('lastname')
+        ->addAttributeToSelect('confirm_friends')
+        ->addAttributeToSelect('followers_ids')
+        ->addAttributeToSelect('user_type');
+?>
+<div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm" style="max-width: 350px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="mb-30" style="margin-bottom: .1rem !important;">
+                        <h6>Followers</h6>
+                    </div>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xl-12 mt-12 mt-xl-0" style="height: 300px; overflow-y: scroll;">
+                        <ul class="list-unstyled" id="follower_popup">
+                            <?php foreach ($customerCollection as $customerCol): ?>
+                                <?php if ($customerId != $customerCol->getId()): ?>
+                                    <?php $name = $customerCol->getFirstname() . " " . $customerCol->getLastname(); ?>
+                                    <li class="mb-20">
+                                        <div class="media">
+                                            <div class="position-relative">
+                                                <?php if (strlen($customerCol->getProfilePicture()) >= 4): ?>
+                                                    <img class="img-fluid mr-15 avatar-small" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) . $customerCol->getProfilePicture(); ?>" alt="<?php echo $name; ?>">
+                                                <?php else: ?>
+                                                    <img class="img-fluid mr-15 avatar-small" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) . 'Unknown.png'; ?>" alt="<?php echo $name; ?>">
+                                                <?php endif; ?>
+
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0 mb-0">
+                                                    <a href="<?php echo Mage::getBaseUrl(); ?>my-profile?id=<?php echo $customerCol->getId(); ?>"><?php echo $name; ?></a>
+                                                    <span class="float-right text-danger"> <?php echo ($customerCol->getConfirmFriends() == '' ? '0' : $customerCol->getConfirmFriends()); ?> </span>  
+                                                </h6>
+                                                <p style="padding-top: 7px;">
+                                                    <?php if (in_array($customerCol->getId(), explode(",", $customer->getFollowersIds())) && !in_array($customerCol->getId(), explode(",", $customer->getConfirmFriends()))): ?>
+                                                        <span style="float: left;"><label class="badge badge-warning">Waiting for Confirmation</label></span>
+                                                    <?php elseif(in_array($customerCol->getId(), explode(",", $customer->getConfirmFriends())) || in_array($customer->getId(), explode(",", $customerCol->getConfirmFriends()))): ?>
+                                                        <span style="float: left;"><label class="badge badge-success">Friend</label></span>
+                                                    <?php else: ?>
+                                                        <!--<span style="float: left;"><label class="badge badge-warning">Pending</label></span>-->
+                                                    <?php endif; ?>
+
+
+                                                    <span style="float: right;">
+                                                        <?php if (in_array($customerCol->getId(), explode(",", $customer->getFollowersIds())) && !in_array($customerCol->getId(), explode(",", $customer->getConfirmFriends()))): ?>
+                                                            <a href="javascript:acceptFollowRequest('<?php echo $customerCol->getId(); ?>');" class="btn btn-outline-success btn-sm">
+                                                                <b>
+                                                                    <i class="fa fa-check-square-o" style="margin-right: 5px;"></i>
+                                                                    Accept
+                                                                </b>
+                                                            </a>
+                                                        <?php elseif (in_array($customer->getId(), explode(",", $customerCol->getFollowersIds())) && !in_array($customer->getId(), explode(",", $customerCol->getConfirmFriends()))): ?>
+                                                            <a href="javascript:sendFollowRequest('<?php echo $customerCol->getId(); ?>', 'follower_popup')" class="btn btn-outline-success btn-sm">
+                                                                <i class="fa fa-user-plus" style="margin-right: 5px;"></i>
+                                                                Follow Request Sent
+                                                            </a>
+                                                        <?php elseif(in_array($customerCol->getId(), explode(",", $customer->getConfirmFriends())) || in_array($customer->getId(), explode(",", $customerCol->getConfirmFriends()))): ?>
+                                                            <a href="javascript:void(0);" class="btn btn-outline-success btn-sm">
+                                                                <i class="fa fa-trash-o" style="margin-right: 5px;"></i>
+                                                                Un Follow
+                                                            </a>
+                                                        <?php else: ?>
+                                                            <a href="javascript:sendFollowRequest('<?php echo $customerCol->getId(); ?>', 'follower_popup')" class="btn btn-outline-success btn-sm">
+                                                                <i class="fa fa-user-plus" style="margin-right: 5px;"></i>
+                                                                Follow
+                                                            </a>
+                                                        <?php endif; ?>
+                                                    </span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="divider dotted mt-20"></div>
+                                    </li>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ----------------- Small Modal Ends ----------------------->
+<div class="page-title">
+    <div class="row">
+        <div class="col-sm-4">
+            <h4 class="mb-0"> My Profile</h4>
+        </div>
+        <div class="col-sm-8">
+            <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                <li class="breadcrumb-item"><a href="<?php echo Mage::getBaseUrl(); ?>" class="default-color">Home</a></li>
+                <li class="breadcrumb-item active">My Profile</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<div class="row profile-page">
+    <div class="col-lg-12 mb-30">
+        <div class="card">
+            <div class="card-body" style="padding: 1rem;">
+                <div class="user-bg" style="padding: 80px 0; background: url(<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) . $customer->getBackgroundPicture(); ?>); background-repeat: no-repeat; background-size: 100% 100%;">
+                    <div class="user-info">
+                        <div class="row" id="user_header">
+                            <div class="col-lg-6 align-self-center">
+                                <div class="user-dp" style="width: 35%"><img id="userdp" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) . $customer->getProfilePicture(); ?>" alt=""></div>
+                                <div class="user-detail">
+                                    <h2 class="name"><?php echo $customer->getName(); ?></h2>
+                                    <p class="designation mb-0">- <?php echo $arrUserType[$customer->getUserType()]; ?></p>
+                                    <?php if (!isset($_REQUEST['id'])): ?>
+                                        <form id="frmProfileImage" method="post" enctype="multipart/form-data" action="<?php echo Mage::getBaseUrl() . 'ajaxpages/index/uploadProfileAndBackgroundImage'; ?>">
+                                            <p>
+                                                <a href="javascript:changeDP();" class="btn btn-outline-success btn-sm">Change DP</a>
+                                                <input onchange="changeImage();" type="file" name="profiledp" id="profiledp" style="display: none;">
+                                                <input type="hidden" name="upload_type" id="upload_type">
+                                                <a href="javascript:changeBackground();" class="btn btn-outline-success btn-sm">Change Background</a>
+                                            </p>
+                                        </form>
+                                    <?php endif; ?>
+
+                                </div>
+                            </div>
+                            <div class="col-lg-6 text-right align-self-center">
+                                <?php if (!isset($_REQUEST['id'])): ?>
+                                    <button data-toggle="modal" data-target=".bd-example-modal-sm" type="button" class="btn btn-sm btn-danger"><i class="ti-user pr-1"></i>Followers (<?php echo $noOfFollowers; ?>)</button>
+                                <?php else: ?>
+                                    <?php if (in_array(Mage::getSingleton('customer/session')->getCustomer()->getID(), explode(",", $customer->getFollowersIds()))): ?>
+                                        <label style="line-height: 16px;" class="badge badge-warning"><i class="fa fa-check-square-o" style="margin-right: 10px;font-size:14px;"></i>Follow Request Sent</label>
+                                    <?php else: ?>
+                                        <button onclick="sendFollowRequest('<?php echo $customerId; ?>', 'user_header');" type="button" class="btn btn-sm btn-danger"><i class="fa fa-user-plus pr-1"></i>Follow</button>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                                
+                                <?php if(in_array(Mage::getSingleton('customer/session')->getCustomer()->getEntityId(), explode(",", $customer->getConfirmFriends()))): ?>
+                                     <button type="button" class="btn btn-sm btn-success"><i class="ti-email pr-1"></i>Message</button>
+                                <?php elseif(!isset($_REQUEST['id'])): ?>
+                                     <button type="button" class="btn btn-sm btn-success"><i class="ti-email pr-1"></i>Message</button>
+                                <?php endif; ?>
+                                
+                            </div>
+                        </div>              
+                    </div>              
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-12 mb-30">
+        <div class="card-body">
+            <h5 class="card-title"> User Timeline</h5>
+            <!-- action group -->
+            <div class="tickets-info" tabindex="3">
+                <ul class="list-unstyled">
+                    <?php for ($i = 0; $i < 15; $i++): ?>
+                        <li class="mb-15">
+                            <div class="media">
+                                <div class="position-relative">
+                                    <img class="img-fluid mr-15 avatar-small" src="<?php echo $this->getSkinUrl('images/team/05.jpg', array('_secure' => true)); ?>" alt="">
+                                    <i class="avatar-online bg-success"></i>
+                                </div> 
+                                <div class="media-body">
+                                    <h6 class="mt-0 ">Martin smith <small class="float-right">Just now</small> </h6>
+                                    <a href="#">You will sail along until you collide with an immovable object</a>
+                                    <p class="mt-10">You will begin to realise why this exercise is called the Dickens Pattern (with reference to the ghost showing Scrooge some different futures) as you notice that the idea of this exercise is to hypnotize yourself to be aware of two very real possibilities for your future.  </p>
+                                </div>
+                            </div>
+                            <div class="divider mt-15"></div>
+                        </li>
+                    <?php endfor; ?>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var uploadType = "";
+
+    function acceptFollowRequest(requestCustomerId) {
+        var url = "<?php echo Mage::getBaseUrl(); ?>ajaxpages/index/AcceptFollowRequest?custid=" + requestCustomerId;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: '',
+            success: function (data)
+            {
+                jQuery("#pre-loader").hide();
+                updatePage("follower_popup", "Successfully Follow Request Sent!");
+            }
+        });
+    }
+
+    function sendFollowRequest(customerToId, id) {
+        var url = "<?php echo Mage::getBaseUrl(); ?>ajaxpages/index/sendFollowRequest?custid=" + customerToId;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: '',
+            success: function (data)
+            {
+                updatePage(id, "Successfully Follow Request Sent!");
+            }
+        });
+    }
+
+    function updatePage(id, msg) {
+        var url = "<?php echo Mage::helper('core/url')->getCurrentUrl(); ?>";
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: '',
+            success: function (data)
+            {
+                var $result = jQuery(data).find('#' + id).html();
+                jQuery("#" + id).html($result);
+                jQuery("#pre-loader").hide();
+                swal("Congratulation!", msg, "success");
+            }
+        });
+    }
+
+    function changeImage() {
+
+        document.getElementById("frmProfileImage").submit();
+
+        /*jQuery("#pre-loader").css("opacity", '0.8');
+         jQuery("#pre-loader").show();
+         var file_data = document.querySelector('input[type="file"]');//jQuery('#profiledp').prop('files')[0];
+         var form_data = new FormData();
+         form_data.append('file', file_data.files[0]);
+         alert(form_data);
+         jQuery.ajax({
+         url: '<?php //echo Mage::getBaseUrl();         ?>ajaxpages/index/uploadProfileAndBackgroundImage',
+         dataType: 'text',
+         cache: false,
+         contentType: false,
+         enctype: 'multipart/form-data',
+         processData: false,
+         data: form_data,
+         type: 'post',
+         success: function (data) {
+         jQuery("#pre-loader").hide();
+         alert(data);
+         }
+         });*/
+    }
+
+    function changeBackground() {
+        uploadType = "BG";
+        document.getElementById("upload_type").value = "BG";
+        document.getElementById("profiledp").click();
+    }
+
+    function changeDP() {
+        uploadType = "DP";
+        document.getElementById("upload_type").value = "DP";
+        document.getElementById("profiledp").click();
+    }
+</script>

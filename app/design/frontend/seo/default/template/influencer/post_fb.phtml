@@ -1,0 +1,519 @@
+<?php
+$fbUserCollection = Mage::getModel('influencerusers/influencerusers')
+        ->getCollection()
+        ->addFieldToFilter('platform', '1')
+        ->addFieldToFilter('status', '1');
+?>
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title"><div class="mb-30">
+                        <h6>EXPERTISE</h6>
+                        <h2>Modal title</h2>
+                        <p>We are an innovative agency. We develop and design customers around the world. Our clients are some of the most forward-looking companies in the world.</p>
+                    </div>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="page-title">
+    <div class="row">
+        <div class="col-sm-6">
+            <h4 class="mb-0"> Social Media Management - Post</h4>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                <li class="breadcrumb-item"><a href="<?php echo Mage::getBaseUrl(); ?>" class="default-color">Home</a></li>
+                <li class="breadcrumb-item active">Post </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<?php //echo file_get_contents(Mage::getBaseUrl() . "options?active_option=post"); ?>
+
+<div class="row">
+    <div class="col-xl-4 mb-30">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <div class="row" style="border-bottom: solid 2px #ccc; margin-bottom: 5px; margin-top: 5px;">
+                    <div class="col-xl-7 mb-30" style="margin-bottom: 1.143rem !important; padding-left: 0px; padding-right: 0px;">
+                        <input type="checkbox" value="1" style="float: left; margin-top: 4px; margin-right: 5px;"> 
+                        <h6>Facebook Accounts</h6>
+                    </div>
+                    <div class="col-xl-5 mb-30" style="text-align: right;margin-bottom: 1.143rem !important; padding-left: 0px;">
+                        <a href="<?php echo Mage::getBaseUrl() . 'smm-post-fb'; ?>">
+                            <i class="fa fa-facebook-f innericon innericon-active" style="font-size:14px;"></i>
+                        </a>
+                        <a href="<?php echo Mage::getBaseUrl() . 'smm-post-instagram'; ?>">
+                            <i class="fa fa-instagram innericon" style="font-size:14px"></i>
+                        </a>
+                        <a href="<?php echo Mage::getBaseUrl() . 'smm-post-twitter'; ?>">
+                            <i class="fa fa-tumblr-square innericon" style="font-size:14px"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="scrollbar  max-h-350" style="overflow-y: hidden; outline: currentcolor none medium; margin-top: 5px; margin-left: -15px; margin-right: -5px;" tabindex="3">
+                    <ul class="list-unstyled">
+                        <?php if ($fbUserCollection->getSize() > 0): ?>
+                            <?php foreach ($fbUserCollection as $fbUser): ?>
+                                <li class="mb-30">
+                                    <a href="">
+                                        <div class="media">
+                                            <input type="checkbox" style="margin-right: 5px;">
+                                            <div class="position-relative">
+                                                <img class="img-fluid mr-15 avatar-small" src="<?php echo $fbUser->getProfilePicture(); ?>" alt="">
+                                                <i class="avatar-online bg-success"></i>
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="mt-0"> <?php echo $fbUser->getName(); ?>  <small class="float-right">6 days ago</small></h6>
+                                                <p><?php echo $fbUser->getEmail(); ?></p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <li class="mb-30">
+                                <div class="alert alert-danger" role="alert">
+                                    Soffy! No Facebook User Found.
+                                </div>
+                            </li>
+                        <?php endif; ?>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 mb-30">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <h5 class="card-title"> New Post</h5>
+                <div class="tab round">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a onclick="showPreview('fb_media');" class="nav-link active show" id="home-07-tab" data-toggle="tab" href="#home-07" role="tab" aria-controls="home-07" aria-selected="true"> <i class="fa fa-home"></i> Media</a>
+                        </li>
+                        <li class="nav-item">
+                            <a onclick="showPreview('fb_link');" class="nav-link" id="profile-07-tab" data-toggle="tab" href="#profile-07" role="tab" aria-controls="profile-07" aria-selected="false"><i class="fa fa-user"></i> Link </a>
+                        </li>
+                        <li class="nav-item">
+                            <a onclick="showPreview('fb_text');" class="nav-link" id="portfolio-07-tab" data-toggle="tab" href="#portfolio-07" role="tab" aria-controls="portfolio-07" aria-selected="false"><i class="fa fa-picture-o"></i> Text </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade active show" id="home-07" role="tabpanel" aria-labelledby="home-07-tab">
+                            <div style="border: solid 1px #ccc; width: 100%; min-height: 50px;">
+
+                            </div>
+                            <div style="margin-top: 5px;">
+                                <a data-toggle="modal" data-target=".bd-example-modal-lg" href="#" class="btn btn-outline-success btn-sm">File Manager</a>
+                                <a href="#" class="btn btn-outline-success btn-sm">Upload Media</a>
+                            </div>
+
+                            <div style="width: 100%; margin-top: 10px;">
+                                <table style="width: 100%;">
+                                    <tr>
+                                        <td style="width: 100%; text-align: center;">
+                                            <textarea rows="3" style="width: 100%;"></textarea>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-top: 5px;">
+                                            <a href="#" class="btn btn-outline-success btn-sm">
+                                                <i data-toggle="tooltip" data-placement="bottom" title="Click here to insert emoji" class="fa fa-adjust" style="font-size:16px"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-outline-success btn-sm">
+                                                <i data-toggle="tooltip" data-placement="bottom" title="Get Caption" class="fa fa-hdd-o" style="font-size:16px"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-outline-success btn-sm">
+                                                <i data-toggle="tooltip" data-placement="bottom" title="Save Caption" class="fa fa-floppy-o" style="font-size:16px"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-top: 20px;">
+                                            <input type="checkbox" style="margin-right: 5px;"> Schedule
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-group">
+                                                <select class="custom-select" required="">
+                                                    <option value="">Open this select menu</option>
+                                                    <option value="10">One</option>
+                                                    <option value="20">Two</option>
+                                                    <option value="30">Three</option>
+                                                </select>
+                                                <div class="invalid-feedback" style="display: block; color: green;">Post Interval Seconds</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right;">
+                                            <a href="" class="button" style="height: 40px; padding-top: 7px;">
+                                                <span>Post</span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="profile-07" role="tabpanel" aria-labelledby="profile-07-tab">
+                            <div style="width: 100%; margin-top: 10px;">
+                                <table style="width: 100%;">
+                                    <tr>
+                                        <td style="width: 100%; text-align: center;">
+                                            <textarea rows="3" style="width: 100%; padding: 5px;" placeholder="Add a Caption"></textarea>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-top: 5px;">
+                                            <a href="#" class="btn btn-outline-success btn-sm">
+                                                <i class="fa fa-adjust" style="font-size:16px"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-outline-success btn-sm">
+                                                <i class="fa fa-hdd-o" style="font-size:16px"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-outline-success btn-sm">
+                                                <i class="fa fa-floppy-o" style="font-size:16px"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-top: 10px;">
+                                            <input name="link" placeholder="Add Link" class="form-control" type="text" required="required">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-top: 20px;">
+                                            <input type="checkbox" style="margin-right: 5px;"> Schedule
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-group">
+                                                <select class="custom-select" required="">
+                                                    <option value="">Open this select menu</option>
+                                                    <option value="10">One</option>
+                                                    <option value="20">Two</option>
+                                                    <option value="30">Three</option>
+                                                </select>
+                                                <div class="invalid-feedback" style="display: block; color: green;">Post Interval Seconds</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right;">
+                                            <a href="" class="button" style="height: 40px; padding-top: 7px;">
+                                                <span>Post</span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="portfolio-07" role="tabpanel" aria-labelledby="portfolio-07-tab">
+                            <div style="width: 100%; margin-top: 10px;">
+                                <table style="width: 100%;">
+                                    <tr>
+                                        <td style="width: 100%; text-align: center;">
+                                            <textarea rows="3" style="width: 100%; padding: 5px;" placeholder="Add a Caption"></textarea>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-top: 5px;">
+                                            <a href="#" class="btn btn-outline-success btn-sm">
+                                                <i class="fa fa-adjust" style="font-size:16px"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-outline-success btn-sm">
+                                                <i class="fa fa-hdd-o" style="font-size:16px"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-outline-success btn-sm">
+                                                <i class="fa fa-floppy-o" style="font-size:16px"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-top: 20px;">
+                                            <input type="checkbox" style="margin-right: 5px;"> Schedule
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-group">
+                                                <select class="custom-select" required="">
+                                                    <option value="">Open this select menu</option>
+                                                    <option value="10">One</option>
+                                                    <option value="20">Two</option>
+                                                    <option value="30">Three</option>
+                                                </select>
+                                                <div class="invalid-feedback" style="display: block; color: green;">Post Interval Seconds</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right;">
+                                            <a href="" class="button" style="height: 40px; padding-top: 7px;">
+                                                <span>Post</span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 mb-30">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <h5 class="card-title"> Facebook</h5>
+                <table style="width: 100%;" id="fb_media">
+                    <tr>
+                        <td style="width: 60px;">
+                            <img width="50" class="img-circle" src="http://smilecaptured.com/instagram/stackpost/public/facebook/assets/img/avatar.png">
+                        </td>
+                        <td>
+                            <div class="text">
+                                <div class="name" style="color: #365899; font-weight: 600;"> Anonymous</div>
+                                <span> Just now . <i class="fa fa-globe" aria-hidden="true"></i></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div class="caption-info">
+                                <div class="line-no-text"></div>
+                                <div class="line-no-text"></div>
+                                <div class="line-no-text w50"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div class="preview-image"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div class="preview-comment">
+                                <div class="item">
+                                    <i class="fb-icon fa fa-thumbs-o-up" aria-hidden="true"></i> Like                        
+                                </div>
+                                <div class="item">
+                                    <i class="fb-icon fa fa-comments-o" aria-hidden="true"></i> Comment                        
+                                </div>
+                                <div class="item">
+                                    <i class="fb-icon fa fa-share-square-o" aria-hidden="true"></i> Share                        
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+                <table style="width: 100%; display: none;" id="fb_link">
+                    <tr>
+                        <td style="width: 60px;">
+                            <img width="50" class="img-circle" src="http://smilecaptured.com/instagram/stackpost/public/facebook/assets/img/avatar.png">
+                        </td>
+                        <td>
+                            <div class="text">
+                                <div class="name" style="color: #365899; font-weight: 600;"> Anonymous</div>
+                                <span> Just now . <i class="fa fa-globe" aria-hidden="true"></i></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div class="caption-info">
+                                <div class="line-no-text"></div>
+                                <div class="line-no-text"></div>
+                                <div class="line-no-text w50"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div class="preview-image"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div class="caption-info">
+                                <div class="line-no-text"></div>
+                                <div class="line-no-text"></div>
+                                <div class="line-no-text"></div>
+                                <div class="line-no-text"></div>
+                                <div class="line-no-text w50"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div class="preview-comment">
+                                <div class="item">
+                                    <i class="fb-icon fa fa-thumbs-o-up" aria-hidden="true"></i> Like                        
+                                </div>
+                                <div class="item">
+                                    <i class="fb-icon fa fa-comments-o" aria-hidden="true"></i> Comment                        
+                                </div>
+                                <div class="item">
+                                    <i class="fb-icon fa fa-share-square-o" aria-hidden="true"></i> Share                        
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+                <table style="width: 100%; display: none;" id="fb_text">
+                    <tr>
+                        <td style="width: 60px;">
+                            <img width="50" class="img-circle" src="http://smilecaptured.com/instagram/stackpost/public/facebook/assets/img/avatar.png">
+                        </td>
+                        <td>
+                            <div class="text">
+                                <div class="name" style="color: #365899; font-weight: 600;"> Anonymous</div>
+                                <span> Just now . <i class="fa fa-globe" aria-hidden="true"></i></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div class="caption-info">
+                                <div class="line-no-text"></div>
+                                <div class="line-no-text"></div>
+                                <div class="line-no-text w50"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div class="preview-comment">
+                                <div class="item">
+                                    <i class="fb-icon fa fa-thumbs-o-up" aria-hidden="true"></i> Like                        
+                                </div>
+                                <div class="item">
+                                    <i class="fb-icon fa fa-comments-o" aria-hidden="true"></i> Comment                        
+                                </div>
+                                <div class="item">
+                                    <i class="fb-icon fa fa-share-square-o" aria-hidden="true"></i> Share                        
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function showPreview(itemId) {
+        document.getElementById("fb_media").setAttribute("style", "display:none;");
+        document.getElementById("fb_link").setAttribute("style", "display:none;");
+        document.getElementById("fb_text").setAttribute("style", "display:none;");
+
+        document.getElementById(itemId).setAttribute("style", "display:table; width:100%;");
+    }
+</script>
+
+<style>
+    .w50{
+        width: 50%;
+    }
+
+    .tab .nav.nav-tabs li a {
+        padding: 6px 17px;
+    }
+
+    .innericon-active{
+        color:#84BA3F !important;
+    }
+
+    .innericon:hover{
+        color:#84BA3F;
+    }
+    .innericon {
+        box-sizing: border-box;
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        border-radius: 100%;
+        background: #f7f7f7;
+        background-image: none;
+        background-origin: padding-box;
+        background-image: none;
+        background-origin: padding-box;
+        line-height: 24px;
+        color: #666;
+        font-size: 18px;
+        text-align: center;
+        border: 1px solid #ccc;
+        border-bottom-color: rgb(204, 204, 204);
+        border-bottom-color: rgb(204, 204, 204);
+        border-bottom-color: #bbb;
+        background-origin: border-box;
+        background-image: -webkit-linear-gradient(top,#fff,#eee);
+        background-image: linear-gradient(to bottom,#fff,#eee);
+        text-shadow: 0 1px 0 #fff;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+
+    .line-no-text{
+        margin-bottom: 3px;
+        height: 13px;
+        background: #f5f5f5;
+    }
+
+    .caption-info{
+        padding-top: 10px;
+    }
+
+    .preview-image{
+        height: 217px;
+        background-size: cover;
+        background-position: center center;
+        background-color: #f5f5f5;
+        overflow: hidden;
+        position: relative;
+        padding-top: 10px;
+    }
+
+    .preview-comment{
+        position: relative;
+        padding: 7px 0px 12px;
+        color: #999;
+        text-align: center;
+        border-top: 1px solid #eee;
+        margin: 0 10px;
+        margin-top: 10px;
+    }
+
+    .item{
+        float: left;
+        margin-right: 25px;
+        font-weight: 600;
+        font-size: 12px;
+    }
+</style>

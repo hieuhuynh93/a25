@@ -1,0 +1,815 @@
+<?php if (Mage::getSingleton('customer/session')->isLoggedIn()): ?>
+    <?php
+    $igUserCollection = Mage::getModel('influencerusers/influencerusers')
+            ->getCollection()
+            ->addFieldToFilter('platform', '2')
+            ->addFieldToFilter('status', '1');
+
+    $emojiesCollection = Mage::getModel('emojis/emojis')
+            ->getCollection()
+            ->addFieldToFilter('status', '1');
+
+    $htmlEmoji = "";
+    //$count = 0;
+    foreach ($emojiesCollection as $emojiesColl) {
+        $htmlEmoji .= "<a class='captionemoji' href='javascript:setEmojiInCaption(" . $emojiesColl->getDec() . ")'>&#" . $emojiesColl->getDec() . "</a>";
+    }
+    ?>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <div class="page-title">
+        <div class="row">
+            <div class="col-sm-12">
+                <h6 class="mb-0"> 
+                    Social Media Management - Post
+                    <span class="zmdi zmdi-menu ti-align-right" style="font-size:23px;cursor:pointer; float: right;" onclick="openNav()"></span>
+                    <div id="mySidenav" class="sidenav">
+                        <div class="col-xl-12 mb-30">
+                            <a href="javascript:closeNav();">
+                                <i class="fa fa-close" style="font-size:24px; color: #506d7d;"></i>
+                            </a>
+                            <span class="mt-10 mb-10 text-muted pl-4 font-medium menu-title">MENU</span>
+                        </div>
+                        <hr>
+                    </div>
+                </h6>
+
+            </div>
+            <?php /* ?><div class="col-sm-5">
+              <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+              <li class="breadcrumb-item"><a href="<?php echo Mage::getBaseUrl(); ?>" class="default-color">Home</a></li>
+              <li class="breadcrumb-item active">Post </li>
+              </ol>
+              </div><?php */ ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-6 mb-30">
+            <div class="card card-statistics">
+                <div class="card-body">
+                    <table>
+                        <tr>
+                            <td>
+                                <img style="width: 35%;" src="<?php echo $this->getSkinUrl('images/instalogo.png', array('_secure' => true)); ?>">
+                                <hr>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <!-- -------------- User Ends ------------------>
+                        <center>
+                            <img style="display: none;" id="instabox-loader" src="<?php echo $this->getSkinUrl('images/pre-loader/loader-01.svg', array('_secure' => true)); ?>" alt="">
+                        </center>
+                        <div class="tab round" id="insta_box_container">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item">
+                                    <a onclick="setSection('simple_post')" class="nav-link active show" id="home-07-tab" data-toggle="tab" href="#home-07" role="tab" aria-controls="home-07" aria-selected="true"> <i class="fa fa-home"></i> <label id="postLable" style="margin-bottom: 0rem;">Post</label></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setSection('story')" class="nav-link" id="profile-07-tab" data-toggle="tab" href="#profile-07" role="tab" aria-controls="profile-07" aria-selected="false"><i class="fa fa-user"></i> <label id="storyLable" style="margin-bottom: 0rem;">Story </label></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a onclick="setSection('carrousal')" class="nav-link" id="portfolio-07-tab" data-toggle="tab" href="#portfolio-07" role="tab" aria-controls="portfolio-07" aria-selected="false"><i class="fa fa-picture-o"></i> <label id="carrousalLable" style="margin-bottom: 0rem;">Carousel </label></a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div class="tab-pane fade active show" id="home-07" role="tabpanel" aria-labelledby="home-07-tab">
+
+                                </div>
+                                <div class="tab-pane fade" id="profile-07" role="tabpanel" aria-labelledby="profile-07-tab">
+
+                                </div>
+                                <div class="tab-pane fade" id="portfolio-07" role="tabpanel" aria-labelledby="portfolio-07-tab">
+
+                                </div>
+                                <!-- --------------- Form Starts ---------------->
+                                <?php /* ?><form method="post" action="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true); ?>lib/ssm/instagram/examples/uploadPhoto.php" enctype="multipart/form-data"><?php */ ?>
+                                <form id="uploadPostForm" method="post" action="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true); ?>lib/ssm/instagram/examples/doPost.php" enctype="multipart/form-data">
+                                    <input id="section" type="hidden" name="section" value="simple_post">
+                                    <input type="hidden" name="files" id="filesCustom">
+                                    <div class="add-image" style="border: solid 1px #ccc; width: 100%; min-height: 75px; padding: 3px;" id="fileManagerPreview">
+
+                                    </div>
+                                    <div style="margin-top: 5px;">
+                                        <a data-toggle="modal" data-target=".bd-example-modal-lg" href="#" class="btn btn-outline-success btn-sm" style="margin-top: 7px;">File Manager</a>
+                                        <input accept="image/*" onchange="loadFile(event, 'localfile')" type="file" name="localfile" id="localfile" style="display: none;">
+                                        <a id="btnMedia" href="javascript:document.getElementById('localfile').click();" class="btn btn-outline-success btn-sm" style="margin-top: 7px;">Upload Media</a>
+                                    </div>
+
+                                    <div style="width: 100%; margin-top: 10px;">
+                                        <table style="width: 100%;">
+                                            <tr>
+                                                <td style="width: 90%; text-align: center; vertical-align: top;">
+                                                    <textarea id="captiontxt" name="captiontxt" rows="3" style="width: 100%; height: 90px;" placeholder="Add a caption" required="required"></textarea>
+                                                </td>
+                                                <td style="width: 10%; vertical-align: top; text-align: right;">
+                                                    <div style="width: 100%;">
+                                                        <!-- ----------------------->
+
+                                                        <!-- ----------------------->
+                                                        <p>
+                                                            <!--<a href="javascript:launchEmojiModel();" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Get Expressions">-->
+                                                            <a data-html="true" data-container="body" data-toggle="popover" data-placement="left" data-content="<?php echo $htmlEmoji; ?>" data-original-title="Emojis" title="Emojis" aria-describedby="popover403501" href="javascript:void(0);" class="btn btn-outline-success btn-sm">
+                                                                <i class="fa fa-adjust" style="font-size:14px"></i>
+                                                            </a>
+                                                        </p>
+                                                        <p>
+                                                            <a href="#" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Get Caption">
+                                                                <i class="fa fa-hdd-o" style="font-size:14px"></i>
+                                                            </a>
+                                                        </p>
+                                                        <p>
+                                                            <a href="#" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Save Caption">
+                                                                <i class="fa fa-floppy-o" style="font-size:14px"></i>
+                                                            </a>
+                                                        </p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-top: 20px;" colspan="2">
+                                                    <input type="checkbox" style="margin-right: 5px;"> Schedule
+                                                    <input checked="checked" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" type="checkbox" id="advanceoption" style="margin-right: 5px;margin-left: 25px;"> Advance Option
+                                                    <!-- ------------------------->
+                                                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                                                        <div class="input-group" style="margin-top: 5px;">
+                                                            <div class="input-group-prepend" style="width: 100%;">
+                                                                <div class="input-group-text" id="searchingProcess">
+                                                                    <i style="font-size: 20px;" class="fa fa-map-marker" aria-hidden="true"></i>
+                                                                </div>
+                                                                <input autocomplete="off" id="location" onkeyup="getInstagramLocation(event, this)" class="form-control" name="location" placeholder="Enter Location" type="text" style="height: 40px;padding: 3px 10px;" />
+                                                                <input type="hidden" name="locationLatLong" id="locationLatLong">
+                                                            </div>
+                                                            <small id="locationLbl" class="form-text text-muted">Enter Location</small>
+                                                            <!--<input class="form-control" id="inlineFormInputGroupUsername2" placeholder="Enter Location" type="text" style="height: 40px;">-->
+
+
+                                                            <!-- --------------------------------->
+                                                        </div>
+                                                        <div class="input-group" id="locationListFrmGroup">
+                                                        </div>
+
+                                                        <div class="input-group" style="height: 110px;" id="afterLocationDiv">
+                                                            <textarea id="commentText" name="commentText" rows="3" style="width: 100%;" placeholder="Add your first comment"></textarea>
+                                                            <div class="controls" style="padding-top: 5px;">
+                                                                <a href="javascript:launchEmojiModel();" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Get Expression">
+                                                                    <i class="fa fa-adjust" style="font-size:16px"></i>
+                                                                </a>
+                                                                <a href="#" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Get Caption">
+                                                                    <i class="fa fa-hdd-o" style="font-size:16px"></i>
+                                                                </a>
+                                                                <a href="#" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Save Caption">
+                                                                    <i class="fa fa-floppy-o" style="font-size:16px"></i>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                        <!-- ------------------------>
+                                                        <div class="accordion" id="accordion2">
+                                                            <div class="accordion-group">
+                                                                <div class="accordion-heading">
+                                                                    <a class="accordion-toggle" data-toggle="collapse" href="#collapse1">
+                                                                        Collapsible Group Item #1
+                                                                    </a>
+                                                                </div>
+                                                                <div id="collapse1" class="accordion-body collapse in">
+                                                                    <div class="accordion-inner">Item 1 Body</div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="accordion-group">
+                                                                <div class="accordion-heading"> 
+                                                                    <a class="accordion-toggle" data-toggle="collapse" href="#collapse2">
+                                                                        Collapsible Group Item #2
+                                                                    </a>
+                                                                </div>
+                                                                <div id="collapse2" class="accordion-body collapse">
+                                                                    <div class="accordion-inner">Item 2 Body</div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="accordion-group">
+                                                                <div class="accordion-heading"> 
+                                                                    <a class="accordion-toggle" data-toggle="collapse" href="#collapse3">
+                                                                        Collapsible Group Item #3
+                                                                    </a>
+                                                                </div>
+                                                                <div id="collapse3" class="accordion-body collapse">
+                                                                    <div class="accordion-inner">Item 2 Body</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- ------------------------->
+                                                    </div>
+                                                    <div id="show-hide-address">
+
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td colspan="2">
+                                                    <hr>
+                                                    <div class="accordion" id="accordion3">
+                                                        <div class="accordion-group">
+                                                            <div class="accordion-heading">
+                                                                <a class="accordion-toggle" data-toggle="collapse" href="#collapseuser">
+                                                                    <div class="custom-control custom-checkbox" style="margin-bottom: 10px;">
+                                                                        <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                                                        <label style="font-weight: 600; cursor: pointer;" class="custom-control-label text-success" for="customCheck1">
+                                                                            <i class="fa fa-group" style="font-size:16px;color:#28a956; margin-right: 5px;"></i>
+                                                                            Select Users
+                                                                        </label>
+                                                                        <div id="userErrorNotice" class="invalid-feedback">Please select users...</div>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
+                                                            <div id="collapseuser" class="accordion-body collapse in">
+                                                                <div class="d-block d-md-flex justify-content-between" style="width: 100%;">
+                                                                    <div class="d-block d-md-flex clearfix sm-mt-20" style="width: 100%;">
+                                                                        <div class="widget-search ml-0 clearfix" style="width: 100%;">
+                                                                            <i class="fa fa-search"></i>
+                                                                            <input type="search" class="form-control" placeholder="Search....">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <?php if ($igUserCollection->getSize() > 0): ?>
+                                                                    <div class="table-responsive mt-15" style="height: 250px;">
+                                                                        <table class="table center-aligned-table mb-0">
+                                                                            <thead>
+                                                                                <tr class="text-dark">
+                                                                                    <th><input id="ig_user" name="ig_user" value="15" type="checkbox" style="margin-right: 5px;"></th>
+                                                                                    <th>Image</th>
+                                                                                    <th>Name & User Name</th>
+                                                                                    <th></th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <?php foreach ($igUserCollection as $igUser): ?>
+                                                                                    <tr>
+                                                                                        <td><input onclick="selectUser('ig_user<?php echo $igUser->getId(); ?>', 'loader<?php echo $igUser->getId(); ?>')" id="ig_user<?php echo $igUser->getId(); ?>" name="ig_user" value="<?php echo $igUser->getId(); ?>" type="checkbox" style="margin-right: 5px;" <?php echo ($igUser->getPassword() == '' ? 'disabled' : ''); ?>></td>
+                                                                                        <td><img style="border: solid #ccc 1px; padding: 1px;" class="img-fluid mr-15 avatar-small" src="<?php echo $igUser->getProfilePicture(); ?>" alt=""></td>
+                                                                                        <td>
+                                                                                            <p><?php echo (strlen($igUser->getName()) > 20 ? substr($igUser->getName(), 0, 20) . ' ...' : $igUser->getName()); ?></p>
+                                                                                            <p>
+                                                                                                <?php
+                                                                                                if ($igUser->getPassword() == '' || strlen($igUser->getPassword()) <= 3) {
+                                                                                                    echo '<label class="badge badge-danger">Please Update Password</label>';
+                                                                                                } else {
+                                                                                                    echo $igUser->getUsername();
+                                                                                                    echo '<a style="float: right;padding-right: 10px;padding-top: 2px;" href="javascript:updatePassword(' . $igUser->getId() . '); "></a>';
+                                                                                                }
+                                                                                                ?>
+                                                                                            </p>
+                                                                                            <p style="font-size: 12px; font-weight: 500; color: orchid; display: none;" id="postProcessing<?php echo $igUser->getId(); ?>">
+                                                                                                <i class="fa fa-spinner fa-spin" style="font-size: 16px; margin-right: 7px; float: left; margin-top: 1px;"></i>
+                                                                                                <label>Posting . . .</label>
+                                                                                            </p>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <?php if ($igUser->getPassword() == '' || strlen($igUser->getPassword()) <= 3): ?>
+                                                                                                <a style="width: 100%;" href="javascript:updatePassword('<?php echo $igUser->getId(); ?>')" class="btn btn-outline-warning btn-sm">Update Password</a>
+                                                                                            <?php else: ?>
+                                                                                                <a style="width: 100%;" href="#" class="btn btn-outline-success btn-sm">Get Media</a>
+                                                                                            <?php endif; ?>
+
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                <?php endforeach; ?>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                <?php else: ?>
+                                                                    Sorry, No Users Found!
+                                                                <?php endif; ?>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <?php /* ?><div class="accordion">
+                                                      <div class="acd-group">
+                                                      <a href="#" class="acd-heading"><i class="fa fa-group" style="font-size:16px; margin-right: 10px;"></i>Select Users</a>
+                                                      <div class="scrollbar  max-h-350" style="overflow-y: hidden; outline: currentcolor none medium; margin-top: 5px;" tabindex="3">
+                                                      <ul class="list-unstyled">
+                                                      <?php if ($igUserCollection->getSize() > 0): ?>
+                                                      <?php foreach ($igUserCollection as $igUser): ?>
+                                                      <li class="mb-30">
+                                                      <a href="javascript:selectUser('ig_user<?php echo $igUser->getId(); ?>', 'loader<?php echo $igUser->getId(); ?>');">
+                                                      <div class="media">
+                                                      <input onclick="selectUser('ig_user<?php echo $igUser->getId(); ?>', 'loader<?php echo $igUser->getId(); ?>')" id="ig_user<?php echo $igUser->getId(); ?>" name="ig_user" value="<?php echo $igUser->getId(); ?>" type="checkbox" style="margin-right: 5px;" <?php echo ($igUser->getPassword() == '' ? 'disabled' : ''); ?>>
+                                                      <div class="position-relative">
+                                                      <img style="border: solid #ccc 1px; padding: 1px;" class="img-fluid mr-15 avatar-small" src="<?php echo $igUser->getProfilePicture(); ?>" alt="">
+                                                      <i class="avatar-online bg-success"></i>
+                                                      </div>
+                                                      <div class="media-body">
+
+                                                      <h6 style="font-size: 1rem; color: #333; text-transform: uppercase; font-family: 'Poppins', sans-serif;" class="mt-0"> <?php echo (strlen($igUser->getName()) > 15 ? substr($igUser->getName(), 0, 16) . ' ...' : $igUser->getName()); ?></h6>
+                                                      <p>
+                                                      <?php
+                                                      if ($igUser->getPassword() == '' || strlen($igUser->getPassword()) <= 3) {
+                                                      echo '<div style="width:80%; float:left;" class="alert alert-warning" role="alert">
+                                                      <i style="margin-right:5px;" class="fa fa-warning"></i>Update Password
+                                                      </div><a style="float: right;padding-right: 10px;padding-top: 12px;" href="javascript:updatePassword(' . $igUser->getId() . '); "><i class="fa fa-edit" style="font-size:18px; color:#28a745;"></i></a>';
+                                                      } else {
+                                                      echo $igUser->getUsername();
+                                                      echo '<a style="float: right;padding-right: 10px;padding-top: 2px;" href="javascript:updatePassword(' . $igUser->getId() . '); "><i class="fa fa-edit" style="font-size:18px; color:#28a745;"></i></a>';
+                                                      }
+                                                      ?>
+                                                      </p>
+                                                      <p style="font-size: 12px; font-weight: 500; color: orchid; display: none;" id="postProcessing<?php echo $igUser->getId(); ?>">
+                                                      <i class="fa fa-spinner fa-spin" style="font-size: 16px; margin-right: 7px; float: left; margin-top: 1px;"></i>
+                                                      <label>Posting . . .</label>
+                                                      </p>
+                                                      </div>
+                                                      </div>
+                                                      </a>
+                                                      </li>
+                                                      <?php endforeach; ?>
+                                                      <?php else: ?>
+                                                      <li class="mb-30">
+                                                      <div class="alert alert-danger" role="alert">
+                                                      Soffy! No Instagram User Found.
+                                                      </div>
+                                                      </li>
+                                                      <?php endif; ?>
+                                                      </ul>
+                                                      </div>
+                                                      </div>
+                                                      </div><?php */ ?>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="text-align: right;" colspan="2">
+                                                    <hr>
+                                                    <a data-toggle="modal" data-target=".bd-example-modal-lg" href="javascript:void(0);" class="button" style="height: 40px; padding-top: 7px;">
+                                                        <span>Preview</span>
+                                                    </a>
+                                                    <a href="javascript:document.getElementById('frmSubmitBtn').click();" class="button" style="height: 40px; padding-top: 7px;">
+                                                        <span>Post</span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <input type="submit" id="frmSubmitBtn" style="display: none;">
+                                </form>
+                                <!-- --------------- Form Ends ------------------>
+                            </div>
+                        </div>
+                        </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 mb-30">
+            <div class="card card-statistics">
+                <div class="card-body">
+                    dsada
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+
+        </div>
+    </div>
+    <script>
+        function setEmojiInCaption(emojiCode) {
+            var captiontxt = document.getElementById("captiontxt").value;
+            captiontxt = captiontxt + "&#" + emojiCode;
+            document.getElementById("captiontxt").value = captiontxt;
+            //document.getElementById("captiontxt").innerHTML = captiontxt;
+            //alert(captiontxt);
+        }
+
+        function setLocation(count) {
+            var locationName = document.getElementById("customRadioLbl" + count).innerHTML;
+            document.getElementById("location").value = locationName.replace(/<\/?[^>]+(>|$)/g, " ");
+            //document.getElementById("locationList").setAttribute("style", "display:none;");
+
+            var latLong = document.getElementById("customRadio" + count).value;
+            //alert(latLong);background-color: #f6f7f8;
+            document.getElementById("locationLatLong").value = latLong;
+
+            var allListArr = document.getElementsByClassName("locationListOptions");
+            for (var i = 0; i < allListArr.length; i++) {
+                allListArr[i].setAttribute("style", "background-color: #fff;");
+            }
+            document.getElementById("locationListOptions" + count).setAttribute("style", "background-color: #f6f7f8;");
+        }
+
+        function getInstagramLocation(event, e) {
+            var place = e.value;
+            var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true); ?>lib/ssm/instagram/examples/getLocation.php?place=" + place;
+            if (jQuery('#locationList').length > 0) {
+                jQuery("#locationList").show();
+            }
+            if (place.length >= 3 && event.keyCode != 8) {
+                jQuery("#locationLbl").html('<i class="fa fa-spinner fa-spin" style="font-size:18px; margin-right:5px;"></i> Searching location...');
+
+                //jQuery("searchingProcess").html('<i style="font-size: 20px;" class="fa fa-spinner fa-spin" aria-hidden="true"></i>');
+
+                jQuery.ajax({
+                    type: "POST",
+                    url: url,
+                    dataType: "text",
+                    data: "",
+                    success: function (data)
+                    {
+                        //var objData = jQuery.parseJSON(data);
+                        //alert(objData.html);
+                        //jQuery("searchingProcess").html('<i style="font-size: 20px;" class="fa fa-map-marker" aria-hidden="true"></i>');
+                        jQuery("#locationLbl").html('');
+                        document.getElementById("locationListFrmGroup").innerHTML = data;
+                        document.getElementById("afterLocationDiv").setAttribute("style", "margin-top:200px; height:110px;");
+                    }
+                });
+            }
+        }
+
+    </script>
+
+    <script>
+        function launchEmojiModel() {
+            document.getElementById("emojiModalBtn").click();
+        }
+
+        function setEmoji(emojiCode) {
+            var captiontxt = document.getElementById("captiontxt").value;
+            captiontxt = captiontxt + emojiCode;
+            document.getElementById("captiontxt").value = captiontxt;
+        }
+    </script>
+    <script>
+        function doPost(frmObj, arrUserIds, index) {
+            jQuery("#instabox-loader").css("opacity", '1');
+            jQuery("#instabox-loader").show();
+            jQuery("#insta_box_container").hide();
+
+            jQuery("#postProcessing" + arrUserIds[index]).show();
+
+            jQuery.ajax({
+                url: "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true); ?>lib/ssm/instagram/examples/doPost.php?userid=" + arrUserIds[index],
+                type: "POST",
+                data: new FormData(frmObj),
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    jQuery("#postProcessing" + arrUserIds[index]).hide();
+                    index++;
+                    if (index == arrUserIds.length) {
+                        jQuery("#instabox-loader").hide();
+                        jQuery("#insta_box_container").show();
+                        if (obj.status == "ok") {
+                            swal("Congratulation!", "Successfully Posted!", "success");
+                        } else {
+                            swal("Sorry!", "Error in Posting", "error");
+                        }
+                        
+                    } else {
+                        doPost(frmObj, arrUserIds, index);
+                    }
+
+                },
+                error: function () {}
+            });
+        }
+
+        jQuery(document).ready(function (e) {
+            jQuery("#uploadPostForm").on('submit', (function (e) {
+                e.preventDefault();
+                var ids = [];
+                jQuery.each($("input[name='ig_user']:checked"), function () {
+                    ids.push(jQuery(this).val());
+                });
+
+                var userIds = ids.join(",");
+
+                if (userIds == '' || userIds == null) {
+                    jQuery("#instabox-loader").hide();
+                    jQuery("#userErrorNotice").show();
+                    swal("Sorry!", "Please select user", "error");
+                } else {
+                    jQuery("#instabox-loader").css("opacity", '0.8');
+                    jQuery("#instabox-loader").show();
+                    jQuery("#insta_box_container").hide();
+                    var arrUserIds = userIds.split(",");
+                    doPost(this, arrUserIds, 0);
+                }
+
+                /*var result = doPost(this);
+                 if (parseInt(result) == 1) {
+                 swal("Congratulation!", "Successfully Posted!", "success");
+                 } else {
+                 swal("Sorry!", data, "error");
+                 }
+                 jQuery("#pre-loader").hide();*/
+            }));
+        });
+
+        var loadFile = function (event, sourceId) {
+            var images = ["jpg", "jpeg", "png", "gif"];
+            var videos = ["mp4", "mpeg", "avi"];
+            var filename = document.getElementById(sourceId).value;
+            var fileExtension = filename.substr((filename.lastIndexOf('.') + 1));
+            var fileManagerPreview = document.getElementById("fileManagerPreview");
+            var previewImageArr = document.getElementsByClassName("preview-image");
+            var indexImage = images.indexOf(fileExtension);
+
+
+
+            if (indexImage >= 0) {
+                var img = '';
+                for (var i = 0; i < event.target.files.length; i++) {
+                    img = img + '<img src="' + URL.createObjectURL(event.target.files[i]) + '" class="customImgPreview">';
+                }
+
+                fileManagerPreview.innerHTML = img;
+                /*previewImageArr[0].innerHTML = '<img width="100%" src="' + URL.createObjectURL(event.target.files[0]) + '">';*/
+            }
+            var indexVideo = videos.indexOf(fileExtension);
+            if (indexVideo >= 0) {
+                var img = '<video controls="" width="" height="60px"><source src="' + URL.createObjectURL(event.target.files[0]) + '" type="video/mp4"><div class="file-preview-other"><span class="file-icon-4x"><i class="glyphicon glyphicon-file"></i></span></div></video>';
+                fileManagerPreview.innerHTML = img;
+                previewImageArr[0].innerHTML = '<video controls="" width="100%" height="auto"><source src="' + URL.createObjectURL(event.target.files[0]) + '" type="video/mp4"><div class="file-preview-other"><span class="file-icon-4x"><i class="glyphicon glyphicon-file"></i></span></div></video>';
+            }
+
+        };
+
+    </script>
+
+    <script>
+        function setSection(sectionName) {
+            if (sectionName == 'simple_post') {
+                document.getElementById('section').value = 'simple_post';
+                document.getElementById("localfile").removeAttribute("multiple");
+                document.getElementById('localfile').setAttribute('name', 'localfile');
+                document.getElementById("btnMedia").innerHTML = "Upload Media";
+            } else if (sectionName == 'story') {
+                document.getElementById('section').value = 'story';
+                document.getElementById('localfile').setAttribute('multiple', 'multiple');
+                document.getElementById('localfile').setAttribute('name', 'localfile[]');
+                document.getElementById("btnMedia").innerHTML = "Upload Multiple Media";
+            } else if (sectionName == 'carrousal') {
+                document.getElementById('section').value = 'carrousal';
+                document.getElementById('localfile').setAttribute('multiple', 'multiple');
+                document.getElementById('localfile').setAttribute('name', 'localfile[]');
+                document.getElementById("btnMedia").innerHTML = "Upload Multiple Media";
+            } else {
+
+            }
+        }
+    </script>
+    <style>
+
+        .invalid-feedback {
+            display: none;
+            width: 100%;
+            margin-top: .25rem;
+            font-size: 90%;
+            color: #dc3545;
+        }
+
+        .popover-header {
+            padding: .1rem .75rem;
+        }
+
+        .captionemoji{
+            font-size: 18px;
+            padding: 3px;
+        }
+
+        .captionemoji:hover{
+            font-size: 18px;
+            padding: 3px;
+            background-color: #f7f7f7;
+        }
+
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            right: 0;
+            background-color: #282a39;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+        .sidenav a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        @media screen and (max-height: 450px) {
+            .sidenav {padding-top: 15px;}
+            .sidenav a {font-size: 18px;}
+        }
+    </style>
+    <script>
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "200px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
+    </script>
+    <style>
+        ul, ol {
+            padding-left: 0px;
+        }
+
+        .locationList{
+            list-style-type:none;
+            background: #fff; 
+            width: 100%; 
+            position: absolute; 
+            z-index: 9; 
+            border-top: solid 1px #ccc;
+            border-left: solid 1px #ccc;
+            border-right: solid 1px #ccc;
+        }
+
+        .locationListOptions{
+            border-bottom: solid 1px #ccc; 
+            padding-top: 4px;
+            height: 50px;
+        }
+
+        .locationListOptions:hover{
+            background-color: #f6f7f8;
+        }
+
+        .emoji1{
+            font-size:1.8rem; 
+            padding: 2px;
+            /*-webkit-transition: width 1s;*/
+            cursor: pointer;
+
+        }
+
+        .emoji1:hover{
+            /*font-size:2.0rem;*/
+        }
+
+        .customImgPreview{
+            width: 109px;
+            border: solid 1px #ccc; 
+            padding: 3px; 
+            border-radius: 5px; 
+            margin: 1px; 
+            vertical-align: middle;
+            height: 65px;
+        }
+
+        .image-checkbox{
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            width: 150px;
+        }
+
+        .image-checkbox:hover{
+            box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+        }
+
+        .input-group{
+            height: 40px;
+        }
+        #show-hide-address{
+            display: none;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .add-image{
+            padding: 10px;
+            text-align: left;
+            color: #eaeaea;
+            text-transform: uppercase;
+            float: left;
+        }
+
+        .w50{
+            width: 50%;
+        }
+
+        .tab .nav.nav-tabs li a {
+            padding: 6px 17px;
+        }
+
+        .innericon-active{
+            color:#84BA3F !important;
+        }
+
+        .innericon:hover{
+            color:#84BA3F;
+        }
+        .innericon {
+            box-sizing: border-box;
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border-radius: 100%;
+            background: #f7f7f7;
+            background-image: none;
+            background-origin: padding-box;
+            background-image: none;
+            background-origin: padding-box;
+            line-height: 24px;
+            color: #666;
+            font-size: 18px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-bottom-color: rgb(204, 204, 204);
+            border-bottom-color: rgb(204, 204, 204);
+            border-bottom-color: #bbb;
+            background-origin: border-box;
+            background-image: -webkit-linear-gradient(top,#fff,#eee);
+            background-image: linear-gradient(to bottom,#fff,#eee);
+            text-shadow: 0 1px 0 #fff;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .line-no-text{
+            margin-bottom: 3px;
+            height: 13px;
+            background: #f5f5f5;
+        }
+
+        .caption-info{
+            padding-top: 10px;
+        }
+
+        .preview-image{
+            height: 217px;
+            background-size: cover;
+            background-position: center center;
+            background-color: #f5f5f5;
+            overflow: hidden;
+            position: relative;
+            padding-top: 10px;
+        }
+
+        .post-info{
+            padding: 10px 20px;
+            word-break: break-all;
+        }
+
+        .pull-left {
+            float: left !important;
+        }
+
+        .pull-right {
+            float: right !important;
+        }
+
+        .preview-comment {
+            position: relative;
+            border-top: 1px solid #eee;
+            padding: 15px 50px;
+            color: #999;
+            background: url(<?php echo $this->getSkinUrl('images/heart-icon.png', array('_secure' => true)); ?>) no-repeat 20px;
+        }
+
+        .item{
+            float: left;
+            margin-right: 25px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .nav-link{
+            margin-right: 4px;
+        }
+
+        .tab .nav.nav-tabs li a {
+            padding: 6px 14px !important;
+        }
+    </style>
+<?php else: ?>
+    <?php $url = Mage::getUrl('customer/account/login'); ?>
+    <?php Mage::app()->getFrontController()->getResponse()->setRedirect($url); ?>
+<?php endif; ?>

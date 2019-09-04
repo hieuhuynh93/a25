@@ -1,0 +1,918 @@
+<?php
+$categoryCollection = Mage::getModel('catalog/category')
+        ->getCollection()
+        ->addAttributeToFilter('is_active', 1)
+        ->addAttributeToFilter('level', 2)
+        ->addAttributeToSelect('name')
+        ->addAttributeToSort('position', 'ASC');
+
+$modelBulkpostingCollection = Mage::getModel('bulkposting/bulkposting')
+        ->getCollection()
+        ->addFieldToFilter('status', '1')
+        ->setOrder('bulkposting_id', 'DESC');
+
+$igUserCollection = Mage::getModel('influencerusers/influencerusers')
+        ->getCollection()
+        ->addFieldToFilter('platform', '2')
+        ->addFieldToFilter('customer_id', Mage::getSingleton('customer/session')->getCustomer()->getId())
+        ->addFieldToFilter('status', '1');
+
+function convertToHoursMins($time, $format = '%02d:%02d') {
+    if ($time < 1) {
+        return;
+    }
+    $hours = floor($time / 60);
+    $minutes = ($time % 60);
+    return sprintf($format, $hours, $minutes);
+}
+
+$influencersIds = '';
+?>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<?php if (Mage::getSingleton('customer/session')->isLoggedIn()): ?>
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-hidden="true">
+        <form action="<?php echo Mage::getBaseUrl() . 'bulkposting/index/savebulkpost'; ?>" method="post" id="uploadBulkpostPostForm" enctype="multipart/form-data" onsubmit="return saveBulkPosting(this);">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header" style="padding-bottom: 0px;">
+                        <div class="modal-title" style="width: 100%;">
+                            <div class="mb-30" style="margin-bottom: 0rem !important;">
+                                <div style="width: 100%;">
+                                    <h6 style="font-size: 1.1rem; float: left;" class="text-secondary mb-0">Create New Bulk Post</h6>
+                                    <h6 id="formheading" style="font-size: 1.1rem; float: right;" class="text-secondary mb-0">Page - 1</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <center>
+                            <img style="display: none;" id="modal_loading" src="<?php echo $this->getSkinUrl('images/pre-loader/loader-01.svg', array('_secure' => true)); ?>" alt="">
+                        </center>
+                        <div class="row" id="part1">
+                            <div class="col-xl-12 mt-12 mt-xl-12">
+                                <h6 class="card-title text-secondary mb-0" style="padding-bottom: 0px;font-size: 1.0rem;">User List</h6>
+                                <ul class="list-unstyled" style="height: 140px; overflow: auto;">
+                                    <?php foreach ($igUserCollection as $igUser): ?>
+                                        <li class="mb-20">
+                                            <div class="media">
+                                                <div class="position-relative">
+                                                    <img class="img-fluid mr-15 avatar-small" src="<?php echo (strlen($igUser->getLocalProfileImage()) >= 4 ? $igUser->getLocalProfileImage() : $igUser->getProfilePicture()); ?>" alt="">
+                                                </div>
+                                                <input value="<?php echo $igUser->getId(); ?>" id="ig_user<?php echo $igUser->getId(); ?>" type="checkbox" name="ig_user" style="float: left; margin-top: 6px; margin-right: 5px;">
+                                                <div class="media-body">
+                                                    <h6 class="mt-0 mb-0"><?php echo $igUser->getUsername(); ?>  </h6>
+                                                    <p><?php echo $igUser->getName(); ?> </p>
+                                                </div>
+                                            </div>
+                                            <div class="divider dotted mt-20" style="margin-top: .429rem !important;"></div>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul> 
+                            </div>
+                            <div class="col-xl-12 mb-30" style="margin-bottom: 0rem !important;">
+                                <h6 class="card-title text-secondary mb-0" style="padding-top: 0px; margin-bottom: 0px;font-size: 1.0rem;">Campaign Type</h6>
+                                <div class="form-group">
+                                    <select onchange="getPostInfo()" id="posttype" name="posttype" class="custom-select" required="">
+                                        <option value="">Select Post Type</option>
+                                        <option value="simple_post">Simple Post</option>
+                                        <option value="story">Story</option>
+                                        <option value="carrousal">Carrousal</option>
+                                    </select>
+                                    <div class="invalid-feedback" id="postinfo">Please select post type</div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-12 mb-30" style="margin-bottom: 0rem !important; display: none;" id="location">
+                                <h6 class="card-title text-secondary mb-0" style="padding-top: 0px; margin-bottom: 0px;font-size: 1.0rem;">Location</h6>
+                                <!--    <div class="form-group">
+                                        <input type="text" name="bulkpostlocation" class="form-control" id="bulkpostlocation" placeholder="Enter Location">
+                                        <div class="invalid-feedback" id="postinfo">Please type your location</div>
+                                    </div>-->
+
+                                <div class="input-group" style="margin-top: 5px;">
+                                    <div class="input-group-prepend" style="width: 100%;">
+                                        <div class="input-group-text" id="searchingProcess">
+                                            <i style="font-size: 20px;" class="fa fa-map-marker" aria-hidden="true"></i>
+                                        </div>
+                                        <input autocomplete="off" id="locationtxtcustom" onkeyup="getInstagramLocation(event, this)" class="form-control" name="location" placeholder="Enter Location" type="text" style="height: 40px;padding: 3px 0px; padding-left: 5px;">
+                                        <input type="hidden" name="locationLatLong" id="locationLatLong">
+                                    </div>
+                                    <small id="locationLbl" class="form-text text-muted">Enter Location</small>
+                                </div>
+                                <div class="input-group" id="locationListFrmGroup"></div>
+
+
+                            </div>
+                            <div id="afterLocationDiv" class="row" style="padding: 15px;">
+                                <div class="col-xl-6 mb-30" style="margin-bottom: 0rem !important;">
+                                    <h6 class="card-title text-secondary mb-0" style="padding-top: 0px; margin-bottom: 0px;font-size: 1.0rem;">Add to influencers list</h6>
+                                    <div class="custom-control custom-radio">
+                                        <input value="1" type="radio" id="customRadio1" name="addtoinfluencer">YES
+                                    </div>
+                                    <div class="custom-control custom-radio">
+                                        <input value="0" type="radio" id="customRadio2" name="addtoinfluencer">No
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 mb-30" style="margin-bottom: 0rem !important;">
+                                    <h6 class="card-title text-secondary mb-0" style="padding-top: 0px; margin-bottom: 0px;font-size: 1.0rem;">Live Streaming</h6>
+                                    <div class="custom-control custom-radio">
+                                        <input value="1" type="radio" id="customRadio3" name="livestreaming">YES
+                                    </div>
+                                    <div class="custom-control custom-radio">
+                                        <input value="0" type="radio" id="customRadio4" name="livestreaming">No
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row" id="part2" style="display: none;">
+                            <div class="col-xl-6 mb-30" style="margin-bottom: 0rem !important;">
+                                <h6>Upload Media</h6>
+                                <div class="custom-control custom-radio">
+                                    <input value="1" onclick="showHidePanel('fileuploadpanel', 'socicosdirectory');" type="radio" id="customRadio5" name="fileuploadmedium">Upload Folder
+                                </div>
+                                <div class="custom-control custom-radio">
+                                    <input value="2" onclick="showHidePanel('socicosdirectory', 'fileuploadpanel');" type="radio" id="customRadio6" name="fileuploadmedium">Use Socicos Directory
+                                </div>
+                            </div>
+                            <div class="col-xl-6 mb-30" style="margin-bottom: 0rem !important;">
+                                <h6>Files / Folders</h6>
+                                <div class="form-group">
+                                    <div class="custom-file" id="fileuploadpanel" style="display: none;">
+                                        <input onchange="loadFile(event, 'localfile')" name="localfile" type="file" class="custom-file-input" id="localfile" required="">
+                                        <label class="custom-file-label" for="validatedCustomFile">Choose file...</label>
+                                        <div id="zipfilemsg" class="invalid-feedback">Please select file (zip)</div>
+                                    </div>
+                                    <small id="selectedFileName"></small>
+                                </div>
+                                <div class="form-group" id="socicosdirectory" style="display: none;">
+                                    <select class="custom-select" required="" name="socicos_category" id="socicos_category">
+                                        <option value="">Select Socicos Category</option>
+                                        <?php foreach ($categoryCollection as $category): ?>
+                                            <?php if ($category->getId() != '7'): ?>
+                                                <option value="<?php echo $category->getId(); ?>"><?php echo $category->getName(); ?></option>
+                                            <?php endif; ?>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <div class="invalid-feedback">Example invalid custom select feedback</div>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 mb-30" style="margin-top: 1rem !important;">
+                                <h6>Select Media Type</h6>
+                                <div class="form-group">
+                                    <select class="custom-select" id="filetype" name="filetype" required="">
+                                        <option value="">Select File Type</option>
+                                        <option value="1">Image</option>
+                                        <option value="2">Video</option>
+                                        <option value="3">Both</option>
+                                    </select>
+                                    <div class="invalid-feedback">Example invalid custom select feedback</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="part3" style="display: none;">
+                            <div class="col-xl-12 col-lg-6 col-md-6 mb-30" style="margin-bottom: 0rem !important;">
+                                <div class="card card-statistics h-100">
+                                    <div class="card-body">
+                                        <div class="clearfix">
+                                            <div class="float-left icon-box bg-danger rounded-circle">
+                                                <span class="text-white">
+                                                    <i class="fa fa-bar-chart-o highlight-icon" aria-hidden="true"></i>
+                                                </span>
+                                            </div>
+                                            <div class="float-right text-right">
+                                                <p class="card-text text-dark">No Of Media</p>
+                                                <h4 id="totalnoofimagesTxt">65,650</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 mb-30" style="margin-top: 1rem !important;">
+                                <h6>No Of Days</h6>
+                                <div class="form-group">
+                                    <input onblur="calculateBulkPost();" id="totalNoOfDays" name="totalNoOfDays" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="No Of Days">
+                                    <small id="emailHelp" class="form-text text-muted">Type no of days to run the campaign</small>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 mb-30" style="margin-top: 1rem !important;">
+                                <h6>Post Per Day</h6>
+                                <div class="form-group">
+                                    <select id="totalNoOfPost" onchange="calculateBulkPost();" name="totalNoOfPost" class="custom-select" required="">
+                                        <option value="">No Of Post</option>
+                                        <?php for ($i = 1; $i < 51; $i++): ?>
+                                            <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+                                        <?php endfor; ?>
+                                    </select>
+                                    <div class="invalid-feedback">Example invalid custom select feedback</div>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 col-lg-6 col-md-6 mb-30" style="margin-top: 1rem !important;">
+                                <h6>Select / Add Comment</h6>
+                                <!-- ------------ Start Code ---------------->
+                                <table style="width: 100%;">
+                                    <tr>
+                                        <td style="width: 90%; text-align: center; vertical-align: top;">
+                                            <textarea id="commenttxt" name="commenttxt" rows="3" style="width: 100%; height: 90px;" placeholder="Add a comment"></textarea>
+                                        </td>
+                                        <td style="width: 10%; vertical-align: top; text-align: right;">
+                                            <div style="width: 100%;">
+                                                <p style="margin-bottom: 2px;">
+                                                    <!--<a href="javascript:launchEmojiModel();" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Get Expressions">-->
+                                                    <a data-html="true" data-container="body" data-toggle="popover" data-placement="left" data-content="<a class='captionemoji' href='javascript:setEmojiInCaption(129488)'>🧐</a><a class='captionemoji' href='javascript:setEmojiInCaption(129327)'>🤯</a><a class='captionemoji' href='javascript:setEmojiInCaption(129326)'>🤮</a>" data-original-title="Emojis" title="" aria-describedby="popover403501" href="javascript:void(0);" class="btn btn-outline-success btn-sm">
+                                                        <i class="fa fa-adjust" style="font-size:14px"></i>
+                                                    </a>
+                                                </p>
+                                                <p style="margin-bottom: 2px;">
+                                                    <a href="#" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Get Caption">
+                                                        <i class="fa fa-hdd-o" style="font-size:14px"></i>
+                                                    </a>
+                                                </p>
+                                                <p>
+                                                    <a href="#" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Save Caption">
+                                                        <i class="fa fa-floppy-o" style="font-size:14px"></i>
+                                                    </a>
+                                                </p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <!-- ------------ End Code ------------------>
+                                <!--<table style="width: 100%;">
+                                    <tr>
+                                        <td style="width: 100%; text-align: center;">
+                                            <textarea rows="2" style="width: 100%; padding: 5px;" placeholder="Add a Caption"></textarea>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-top: 5px;">
+                                            <a href="#" class="btn btn-outline-success btn-sm">
+                                                <i class="fa fa-adjust" style="font-size:16px"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-outline-success btn-sm">
+                                                <i class="fa fa-hdd-o" style="font-size:16px"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-outline-success btn-sm">
+                                                <i class="fa fa-floppy-o" style="font-size:16px"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </table>-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button onclick="cancelProcess()" id="cancelBtn" style="display: none;" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <!--<a id="save" class="button x-small" href="javascript:document.getElementById('frmSubmitBtn').click();">Next >> </a>-->
+                        <a style="display: none;" id="back" class="button x-small" href="javascript:goNextPart1('part1', 'part2', 'part3')"><< Back </a>
+                        <a id="save" class="button x-small" href="javascript:goNextPart2('part1', 'part2', 'part3')">Next >> </a>
+                    </div>
+                </div>
+            </div>
+            <input type="submit" id="frmSubmitBtn" style="display: none;">
+        </form>
+
+    </div>
+    <div class="page-title">
+        <div class="row">
+            <div class="col-sm-12">
+                <h6 class="mb-0"> 
+                    Bulk Posting
+                </h6>
+            </div>
+        </div>
+    </div>
+    <div class="row" id="bulk_schedule_content">
+        <div class="col-xl-8 mb-30">
+            <div class="card card-statistics h-100" style="padding: 1rem;">
+                <div class="tab nav-border" style="position: relative;">
+                    <div class="d-block d-md-flex justify-content-between">
+                        <div class="d-block w-100">
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active show" id="months-tab" data-toggle="tab" href="#months" role="tab" aria-controls="months" aria-selected="true"> Table View</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="year-tab" data-toggle="tab" href="#year" role="tab" aria-controls="year" aria-selected="false">Calender View </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="d-block d-md-flex nav-tabs-custom">
+                            <div>
+                                <a href="#" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#exampleModalCenter">Create New</a>
+                                <a href="#" class="btn btn-outline-warning btn-sm">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade active show" id="months" role="tabpanel" aria-labelledby="months-tab">
+                            <!-- --------------------------->
+                            <?php foreach ($modelBulkpostingCollection as $modelBulkposting): ?>
+                                <?php $influencersIds = $modelBulkposting->getInfluencerUserIds(); ?>
+                                <div class="row mb-30" style="border-top: solid 1px #ccc; padding-top: 10px;">
+                                    <div class="col-md-1 col-sm-6" style="padding-right: 0px;">
+                                        <input type="checkbox" id="<?php echo $modelBulkposting->getId(); ?>">
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <h6 style="font-size: .92rem;" class="text-secondary mb-0">
+                                            <b>
+                                                <a href="javascript:showUser('<?php echo $modelBulkposting->getInfluencerUserIds(); ?>'); ">
+                                                    <?php echo str_replace("_", " ", uc_words($modelBulkposting->getPostType())); ?>
+                                                </a>
+                                            </b>
+                                        </h6>
+
+                                        <?php
+                                        $influencerUserIds = $modelBulkposting->getInfluencerUserIds();
+                                        $influencerUserIdsArr = explode(",", $influencerUserIds);
+                                        ?>
+                                        <div class="sm-mb-5 d-block">
+                                            <div class="btn-group mb-1">
+                                                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Selected Users</button>
+                                                <div class="dropdown-menu">
+                                                    <?php foreach ($influencerUserIdsArr as $influencerUserId): ?>
+                                                        <?php $influencerUsers = Mage::getModel('influencerusers/influencerusers')->load($influencerUserId); ?>
+                                                        <a class="dropdown-item" href="#">
+                                                            <span>
+                                                                <img src="<?php echo $influencerUsers->getProfilePicture(); ?>" width="25" style="border: solid 1px #ccc; padding: 1px; border-radius: 50%; margin-right: 3px;">
+                                                            </span>
+                                                            <?php echo $influencerUsers->getUsername(); ?>
+                                                        </a>
+                                                        <div class="dropdown-divider"></div>
+                                                    <?php endforeach; ?>
+                                                </div>
+                                                <span class="mb-0" style="float: right;border: solid 2px #ccc; padding: 5px; border-radius: 5px; width: 50px; text-align: center;margin-left: 10px;"><?php echo count($influencerUserIdsArr); ?></span>
+                                            </div>
+
+                                        </div> 
+
+                                    </div>
+                                    <div class="col-md-1 col-sm-6 col-6 sm-mt-20" style="text-align: center; padding-left: 0px; padding-right: 0px;">
+                                        <h5 style="font-size: .92rem;" class="text-secondary mb-0"><b><?php echo ($modelBulkposting->getSocicosCategoryId() >= 1 ? count(scandir($modelBulkposting->getFolderName())) : count(scandir($modelBulkposting->getFolderName())) - 4); ?></b></h5>
+                                        <span style="font-size: 10px; font-family: arial; font-weight: 600; color: #777;">Media</span>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 col-6 sm-mt-20" style="text-align: center">
+                                        <h5 style="font-size: .92rem;" class="text-secondary mb-0">
+                                            <b>
+                                                <?php
+                                                $min = (($modelBulkposting->getNoOfDays()) * 24 / (count(scandir($modelBulkposting->getFolderName())) - 4)) * 60;
+                                                /* if ($min >= 60) {
+                                                  $hours = $min / 60;
+                                                  $min = $min % 60;
+                                                  echo $hours . " : " . $min . " : " . " 00 ";
+                                                  } else {
+                                                  echo "00 : " . $min . " : " . " 00 ";
+                                                  } */
+                                                echo convertToHoursMins($min, '%02d Hr %02d Min');
+                                                //echo $min . ' Minutes';
+                                                ?>
+                                            </b>
+                                        </h5>
+                                        <span style="font-size: 10px; font-family: arial; font-weight: 600; color: #777;">Duration Per Post</span>
+                                    </div>
+                                    <div class="col-md-1 col-sm-6 col-6 sm-mt-20" style="text-align: center;padding-left: 0px;padding-right: 0px;">
+                                        <h5 style="font-size: .92rem;" class="text-secondary mb-0">
+                                            <b>
+                                                <?php
+                                                echo round((24 * $modelBulkposting->getNoOfDays()) / (count(scandir($modelBulkposting->getFolderName())) - 4)) . ' Post';
+                                                ?>
+                                            </b>
+                                        </h5>
+                                        <span style="font-size: 10px; font-family: arial; font-weight: 600; color: #777;">Per Day</span>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 col-6 sm-mt-20" style="text-align: center">
+                                        <h5 style="font-size: .92rem;" class="text-secondary mb-0"><b><?php echo $modelBulkposting->getNoOfDays(); ?> Days</b></h5>
+                                        <span style="font-size: 10px; font-family: arial; font-weight: 600; color: #777;">Valid for</span>
+                                    </div>
+                                    <div class="col-md-1 col-sm-6 col-6 sm-mt-20" style="text-align: center">
+                                        <span><a href="#" class="btn btn-outline-success btn-sm" style=" border: none;"><i class="fa fa-edit" style="font-size:18px;"></i></a></span>
+                                        <span><a href="javascript:deleteBulkPost('<?php echo $modelBulkposting->getId(); ?>');" class="btn btn-outline-warning btn-sm" style=" border: none;"><i class="fa fa-trash-o" style="font-size:18px;"></i></a></span>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                            <!-- --------------------------->
+
+                        </div>
+                        <div class="tab-pane fade" id="year" role="tabpanel" aria-labelledby="year-tab">
+                            <div id="calendar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 mb-30" id="detailsViewCustom">
+            <div class="card card-statistics h-100">
+                <div class="p-4 text-center bg-success">
+                    <h5 class="mb-70 text-white" id="userName"><?php echo $name; ?> </h5>
+                    <div class="btn-group info-drop">
+                        <button type="button" class="dropdown-toggle-split text-white" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ti-more"></i></button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#"><i class="text-primary ti-files"></i> Add task</a>
+                            <a class="dropdown-item" href="#"><i class="text-dark ti-pencil-alt"></i> Edit Profile</a>
+                            <a class="dropdown-item" href="#"><i class="text-success ti-user"></i> View Profile</a>
+                            <a class="dropdown-item" href="#"><i class="text-secondary ti-info"></i> Contact Info</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body text-center">
+                    <div class="avatar-top">
+                        <img style="border: solid 1px #fff; padding: 1px;" id="userImage" class="img-fluid w-25 rounded-circle " src="<?php echo $profileImage; ?>" alt="">
+                    </div>
+                    <p class="mt-30" id="userNameLogin"><?php echo $username; ?></p>
+                    <div class="social-icons color-icon mt-20">
+                        <ul>
+                            <li class="social-rss"><a href="#"><i class="fa fa-rss"></i></a></li>
+                            <li class="social-facebook"><a href="#"><i class="fa fa-facebook"></i></a></li>
+                            <li class="social-twitter"><a href="#"><i class="fa fa-twitter"></i></a></li>
+                            <li class="social-github"><a href="#"><i class="fa fa-github"></i></a></li>
+                            <li class="social-youtube"><a href="#"><i class="fa fa-youtube"></i></a></li>
+                            <li class="social-instagram"><a href="#"><i class="fa fa-instagram"></i></a></li>
+                        </ul>
+                    </div>
+                    <div class="divider mt-10"></div>
+                    <div class="row">
+                        <div class="col-6 col-sm-4 xs-mb-10 mt-20">
+                            <b>Post</b>
+                            <h4 class="text-success mt-10" id="post"><?php echo $post; ?></h4>
+                        </div>
+                        <div class="col-6 col-sm-4 xs-mb-10 mt-20">
+                            <b>Followers </b>
+                            <h4 class="text-danger mt-10" id="followers"><?php echo $followers; ?></h4>
+                        </div>
+                        <div class="col-12 col-sm-4 xs-mt-10 mt-20">
+                            <b>Following</b>
+                            <h4 class="text-warning mt-10" id="following"><?php echo $following; ?></h4>
+                        </div>
+                    </div>
+                    <!-- ----------------------------------------->
+                    <hr>
+                    <h5 class="card-title">Best Selling Items</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-20">
+                            <div class="media">
+                                <div class="position-relative">
+                                    <img class="img-fluid mr-15 avatar-small" src="images/item/01.png" alt="">
+                                </div> 
+                                <div class="media-body" style="text-align: left;">
+                                    <h6 class="mt-0 mb-0">Car dealer <span class="float-right text-danger"> 8,561</span>  </h6>
+                                    <p>Automotive WordPress Theme </p>
+                                </div>
+                            </div>
+                            <div class="divider dotted mt-20"></div>
+                        </li>
+                    </ul>
+                    <!-- ----------------------------------------->
+                </div>
+            </div>
+        </div>
+        <!-- ------------------- Need to Discomment-->
+    </div>
+<?php else: ?>
+    <?php
+    $url = Mage::getUrl('customer/account/login');
+    Mage::app()->getFrontController()->getResponse()->setRedirect($url);
+    ?>
+<?php endif; ?>
+
+<script>
+
+    var totalNoOfImage = 0;
+    var totalNoOfDays = 0;
+    var bulk_post_id = 0;
+    var totalNoOfPost = 0;
+
+    var bulkpostid = '';
+    
+    showUser('<?php echo $influencersIds; ?>');
+
+    function getInstagramLocation(event, e) {
+        var place = e.value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true); ?>lib/ssm/instagram/examples/getLocation.php?place=" + place;
+        if (jQuery('#locationList').length > 0) {
+            jQuery("#locationList").show();
+        }
+        if (place.length >= 3 && event.keyCode != 8) {
+            jQuery("#locationLbl").html('<i class="fa fa-spinner fa-spin" style="font-size:18px; margin-right:5px;"></i> Searching location...');
+
+            //jQuery("searchingProcess").html('<i style="font-size: 20px;" class="fa fa-spinner fa-spin" aria-hidden="true"></i>');
+
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                dataType: "text",
+                data: "",
+                success: function (data)
+                {
+                    //var objData = jQuery.parseJSON(data);
+                    //alert(objData.html);
+                    //jQuery("searchingProcess").html('<i style="font-size: 20px;" class="fa fa-map-marker" aria-hidden="true"></i>');
+                    jQuery("#locationLbl").html('');
+                    document.getElementById("locationListFrmGroup").innerHTML = data;
+                    document.getElementById("afterLocationDiv").setAttribute("style", "margin-top:200px; height:110px; width:100%;");
+                }
+            });
+        }
+    }
+
+    function setLocation(count) {
+        var locationName = document.getElementById("customRadioLbl" + count).innerHTML;
+        document.getElementById("locationtxtcustom").value = locationName.replace(/<\/?[^>]+(>|$)/g, " ");
+        //document.getElementById("locationList").setAttribute("style", "display:none;");
+
+        var latLong = document.getElementById("customRadio" + count).value;
+        //alert(latLong);background-color: #f6f7f8;
+        document.getElementById("locationLatLong").value = latLong;
+
+        var allListArr = document.getElementsByClassName("locationListOptions");
+        for (var i = 0; i < allListArr.length; i++) {
+            allListArr[i].setAttribute("style", "background-color: #fff;");
+        }
+        document.getElementById("locationListOptions" + count).setAttribute("style", "background-color: #f6f7f8;");
+    }
+
+    function deleteParticularSchedule(schedulePostId, userIds) {
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        var url = "<?php echo Mage::getBaseUrl() . 'bulkposting/index/deleteschedulepost'; ?>";
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: {schedulePostId: schedulePostId, userIds: userIds},
+            success: function (data)
+            {
+                //var $result = jQuery(data).find('#schedule_content').html();
+                //jQuery("#schedule_content").html($result);
+                jQuery("#detailsViewCustom").html(data);
+                jQuery("#pre-loader").hide();
+            }
+        });
+    }
+
+    function showHidePanel(panel1, panel2) {
+        jQuery("#" + panel1).show();
+        jQuery("#" + panel2).hide();
+    }
+
+    function getPostInfo() {
+        var posttype = document.getElementById("posttype").value;
+        if (posttype == "simple_post") {
+            jQuery("#postinfo").html("You should able to post one image per post");
+            document.getElementById("postinfo").setAttribute("style", "color: #28a745; font-weight: 600;");
+            jQuery("#location").show();
+        } else if (posttype == "story") {
+            jQuery("#postinfo").html("You should able to post one image per story");
+            document.getElementById("postinfo").setAttribute("style", "color: #28a745; font-weight: 600;");
+            jQuery("#location").hide();
+        } else if (posttype == "carrousal") {
+            jQuery("#postinfo").html("You should able to post multiple image (up to 10) per carrousal");
+            document.getElementById("postinfo").setAttribute("style", "color: #28a745; font-weight: 600;");
+            jQuery("#location").show();
+        } else {
+            jQuery("#postinfo").html("Please select Post Type");
+            document.getElementById("postinfo").setAttribute("style", "color: #dc3545; font-weight: 600;");
+            jQuery("#location").hide();
+        }
+
+        jQuery("#postinfo").show();
+
+    }
+
+    function calculateBulkPost() {
+        totalNoOfPost = document.getElementById("totalNoOfPost").value;
+        totalNoOfDays = document.getElementById("totalNoOfDays").value;
+        if (totalNoOfPost > totalNoOfImage) {
+            //swal("Sorry!", "No of Post can not greater then no of Images Content in the folder (" + totalNoOfImage + ").", "error");
+            jQuery("#exceptionLessImage").show();
+        } else {
+            var oneDayNoOfPost = parseInt(totalNoOfPost) / parseInt(totalNoOfDays);
+        }
+    }
+
+    function cancelProcess() {
+        deleteBulkPost(bulk_post_id);
+        setTimeout(function () {
+            location.reload();
+        }, 3000);
+        //location.reload();
+    }
+
+    function deleteBulkPost(bulkPostId) {
+        var url = "<?php echo Mage::getBaseUrl() . 'bulkposting/index/deletebulkpost'; ?>";
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: {bulkPostId: bulkPostId},
+            success: function (data)
+            {
+                var objData = jQuery.parseJSON(data);
+                if (parseInt(objData.status) == 1) {
+                    jQuery.ajax({
+                        type: "POST",
+                        url: "<?php echo Mage::getBaseUrl(); ?>bulk-posting/",
+                        data: "",
+                        success: function (data)
+                        {
+                            var $result = jQuery(data).find('#bulk_schedule_content').html();
+                            jQuery("#bulk_schedule_content").html($result);
+                            jQuery("#pre-loader").hide();
+                        }
+                    });
+                } else {
+                    swal("Sorry!", objData.msg, "error");
+                }
+            }
+        });
+    }
+
+    document.body.addEventListener('click', function (evt) {
+        if (evt.target.className === 'fc-day-number') {
+            var date = evt.target.parentNode.getAttribute('data-date');
+            //alert(date);
+            var url = '<?php echo Mage::getBaseUrl(); ?>bulkposting/index/getbulkscheduledetails?date=' + date;
+            jQuery("#pre-loader").css("opacity", '0.8');
+            jQuery("#pre-loader").show();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: {date: date},
+                success: function (data)
+                {
+                    //var $result = jQuery(data).find('#schedule_content').html();
+                    //jQuery("#schedule_content").html($result);
+                    jQuery("#detailsViewCustom").html(data);
+                    jQuery("#pre-loader").hide();
+                }
+            });
+        }
+    }, false);
+
+    var innerFileCountInZip = 0;
+
+    //--------------------------------------------------
+    jQuery(document).ready(function () {
+
+        jQuery("#frmSubmitBtn").click(function (event) {
+
+            event.preventDefault();
+
+            var ids = [];
+            jQuery.each($("input[name='ig_user']:checked"), function () {
+                ids.push(jQuery(this).val());
+            });
+
+            var userIds = ids.join(",");
+
+            // Get form
+            var form = jQuery('#uploadBulkpostPostForm')[0];
+
+            // Create an FormData object 
+            var data = new FormData(form);
+
+            // If you want to add an extra field for the FormData
+            data.append("userIds", userIds);
+
+            // disabled the submit button
+            jQuery("#frmSubmitBtn").prop("disabled", true);
+
+            jQuery("#pre-loader").css("opacity", '0.8');
+            jQuery("#pre-loader").show();
+
+            jQuery.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: "<?php echo Mage::getBaseUrl() . 'bulkposting/index/savebulkpost'; ?>",
+                data: data,
+                processData: false,
+                contentType: false,
+                cache: false,
+                timeout: 600000,
+                success: function (data) {
+
+                    var objData = JSON.parse(data);
+                    bulk_post_id = objData.bulk_post_id;
+                    //alert(bulk_post_id);
+                    //------------------ 2nd Form Starts --------------
+                    jQuery("#part1").hide("fast");
+                    jQuery("#part2").show("fast");
+                    document.getElementById("totalnoofimagesTxt").innerHTML = "File contain inside zip folder: " + objData.filecount;
+                    document.getElementById("totalnoofimagesLoader").setAttribute("data-percent", objData.filecount);
+                    document.getElementById("totalnoofimagesLoader").click();
+                    //data-percent="84" data-size="80"
+
+                    totalNoOfImage = objData.filecount;
+                    jQuery("#save").html("Save & Create Bulk Post");
+                    document.getElementById("save").setAttribute("href", "javascript:save('" + bulk_post_id + "', '" + objData.filecount + "');");
+                    jQuery("#cancelBtn").show();
+                    //------------------ 2nd Form Ends ----------------
+                    jQuery("#pre-loader").hide();
+                    jQuery("#frmSubmitBtn").prop("disabled", false);
+
+                },
+                error: function (e) {
+
+                    jQuery("#result").text(e.responseText);
+                    console.log("ERROR : ", e);
+                    jQuery("#frmSubmitBtn").prop("disabled", false);
+
+                }
+            });
+
+        });
+
+    });
+
+    //--------------------------------------------------
+
+    var loadFile = function (event, sourceId) {
+        var allowedExtension = ["zip"];
+        var filename = document.getElementById(sourceId).value;
+        var fileExtension = filename.substr((filename.lastIndexOf('.') + 1));
+
+        if (allowedExtension.indexOf(fileExtension) >= 0) {
+            jQuery("#selectedFileName").html(filename);
+            //jQuery("#totalnoofimages").html('<i class="fa fa-spinner fa-spin" style="font-size:24px; margin-right:10px;"></i>Calculating total no of images . . .');
+            jQuery("selectedFileName").html("Extension Accepted.");
+            document.getElementById("selectedFileName").setAttribute("style", "color: #28a745; font-weight: 600;");
+            //innerFileCountInZip = 10;       //Need to make dynamic
+            //jQuery("#totalnoofimages").html("File Contain: " + innerFileCountInZip);
+        } else {
+            jQuery("selectedFileName").html("Extension not allowed, Please use ZIP etc.");
+            document.getElementById("selectedFileName").setAttribute("style", "color: #dc3545; font-weight: 600;");
+            swal("Sorry!", "Extension not allowed, Please use ZIP, GZ etc.", "error");
+        }
+        jQuery("#selectedFileName").show();
+    };
+
+    function save(bulk_post_id, noOfImagesInFolder) {
+        var totalNoOfDays = document.getElementById("totalNoOfDays").value;
+        var url = "<?php echo Mage::getBaseUrl() . 'bulkposting/index/saveandcreatebulkpost'; ?>";
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        var commenttxt = document.getElementById("commenttxt").value;
+        var totalNoOfPost = document.getElementById("totalNoOfPost").value;
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: {bulk_post_id: bulk_post_id, noOfImagesInFolder: noOfImagesInFolder, totalNoOfDays: totalNoOfDays, totalNoOfPost: totalNoOfPost, commenttxt: commenttxt},
+            success: function (data)
+            {
+                //var objData = jQuery.parseJSON(data);
+                jQuery("#pre-loader").hide();
+                location.reload();
+            }
+        });
+    }
+
+    function goNextPart1(part1, part2, part3) {
+        jQuery("#formheading").html("Page - 1");
+        jQuery("#" + part2).hide();
+        jQuery("#" + part3).hide();
+        jQuery("#" + part1).show();
+        jQuery("#back").hide();
+        document.getElementById("save").setAttribute("href", "javascript:goNextPart2('part1', 'part2', 'part3')");
+        document.getElementById("save").innerHTML = "Next >>";
+    }
+
+    function goNextPart3(part1, part2, part3) {
+        var fileuploadmedium = jQuery("input[name='fileuploadmedium']:checked").val();
+        var socicoscategoryid = document.getElementById("socicosdirectory").value;
+        var form = jQuery('#uploadBulkpostPostForm')[0];
+        var data = new FormData(form);
+        var url = '<?php echo Mage::getBaseUrl() . 'bulkposting/index/saveparttwo'; ?>?fileuploadmedium=' + fileuploadmedium + '&socicoscategoryid=' + socicoscategoryid + '&bulkpostid=' + bulkpostid;
+        //----------------------------------
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            enctype: 'multipart/form-data',
+            url: url,
+            data: data,
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000,
+            success: function (data)
+            {
+                var obj = JSON.parse(data);
+                jQuery("#pre-loader").hide();
+                if (parseInt(obj.status) == 1) {
+                    jQuery("#totalnoofimagesTxt").html(obj.nooffiles);
+                    jQuery("#formheading").html("Page - 3");
+
+                    jQuery("#" + part1).hide();
+                    jQuery("#" + part2).hide();
+                    jQuery("#" + part3).show();
+                    jQuery("#back").show();
+                    document.getElementById("back").setAttribute("href", "javascript:goNextPart2('part1', 'part2', 'part3')");
+                    document.getElementById("save").setAttribute("href", "javascript:save('" + bulkpostid + "', '" + obj.nooffiles + "');");
+                    document.getElementById("save").innerHTML = "Create";
+                } else {
+                    swal("Sorry!", obj.msg, "error");
+                }
+
+            }
+        });
+        //---------------------------------
+
+
+    }
+
+    function nextPart2Design(part1, part2, part3) {
+        jQuery("#formheading").html("Page - 2");
+        jQuery("#" + part1).hide();
+        jQuery("#" + part3).hide();
+        jQuery("#" + part2).show();
+        jQuery("#back").show();
+        document.getElementById("back").setAttribute("href", "javascript:goNextPart1('part1', 'part2', 'part3')");
+        document.getElementById("save").setAttribute("href", "javascript:goNextPart3('part1', 'part2', 'part3')");
+        document.getElementById("save").innerHTML = "Next >>";
+    }
+
+    function goNextPart2(part1, part2, part3) {
+        var url = "<?php echo Mage::getBaseUrl() . 'bulkposting/index/savepartone'; ?>";
+
+        var ids = [];
+        jQuery.each($("input[name='ig_user']:checked"), function () {
+            ids.push(jQuery(this).val());
+        });
+
+        var addtoinfluencer = jQuery("input[name='addtoinfluencer']:checked").val();
+        var userIds = ids.join(",");
+        var livestreaming = jQuery("input[name='livestreaming']:checked").val();
+        var posttype = document.getElementById("posttype").value;
+        var bulkpostlocation = document.getElementById("locationLatLong").value;
+
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        if (parseInt(bulkpostid) >= 1) {
+            nextPart2Design(part1, part2, part3);
+            ;
+        } else {
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: {userIds: userIds, posttype: posttype, bulkpostlocation: bulkpostlocation, addtoinfluencer: addtoinfluencer, livestreaming: livestreaming},
+                success: function (data)
+                {
+                    var obj = JSON.parse(data);
+                    jQuery("#pre-loader").hide();
+                    if (parseInt(obj.status) == 1) {
+                        bulkpostid = obj.bulkpostid;
+                        nextPart2Design(part1, part2, part3);
+                    } else {
+                        swal("Sorry!", obj.msg, "error");
+                    }
+
+                }
+            });
+        }
+
+    }
+
+    function goBack(part1, part2) {
+        //jQuery("#" + part2).hide();
+        //jQuery("#" + part1).show();
+        //jQuery("#nextPreviousBtn").html("Next");
+        //jQuery("#nextPreviousBtn").attr("onclick", "saveBulkPostingPartOne('part1', 'part2')")
+        //jQuery("#save").hide();
+    }
+
+    function showUser(userId) {
+        var url = "<?php echo Mage::getBaseUrl() . 'bulkposting/index/getuser'; ?>";
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: {userId: userId},
+            success: function (data)
+            {
+                jQuery("#detailsViewCustom").html(data);
+                jQuery("#pre-loader").hide();
+            }
+        });
+    }
+</script>
+
+<style>
+    .locationList {
+        list-style-type: none;
+        background: #fff;
+        width: 100%;
+        position: absolute;
+        z-index: 9;
+        border-top: solid 1px #ccc;
+        border-left: solid 1px #ccc;
+        border-right: solid 1px #ccc;
+    }
+
+    #afterLocationDiv{
+        padding: 15px;
+    }
+</style>

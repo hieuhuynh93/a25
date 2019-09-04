@@ -1,0 +1,601 @@
+<?php
+
+ini_set('display_errors', 1);
+set_time_limit(0);
+umask(0);
+error_reporting(E_ALL);
+require('/var/www/html/app/Mage.php');
+
+require __DIR__ . '/../vendor/autoload.php';
+
+Mage::app();
+Mage::getSingleton("core/session", array("name" => "frontend"));
+$session = Mage::getSingleton("customer/session");
+date_default_timezone_set('UTC');
+$url = Mage::getBaseUrl() . 'smm-post-instagram';
+
+$arrVideoTypes = array("avi", "mp4");
+$arrImage = array("jpeg", "jpg", "png", "gif");
+
+$helper = Mage::helper('websiteaudit/data');
+
+$locationLatLong = $_REQUEST['locationLatLong'];
+$locationLatLongArr = explode(",", $locationLatLong);
+//echo "<pre>"; print_r($locationLatLongArr); die();
+$latitide = '';
+$longitude = '';
+
+$commentText = $_REQUEST['commentText'];
+
+$sliderPollTopic = $_REQUEST['sliderPollTopic'];
+//echo "<pre>"; print_r($sliderPollTopic);
+
+$abPollTopic = $_REQUEST['abtopic'];
+$abPollYes = $_REQUEST['abyes'];
+$abPollNo = $_REQUEST['abno'];
+
+$questionPoll = $_REQUEST['questionPoll'];
+
+$countdown = $_REQUEST['countdowndate'];
+$countdowntopic = $_REQUEST['countdowntopics'];
+
+$captionText = $_REQUEST['captiontxt'];
+$section = $_REQUEST['section'];
+$userId = $_REQUEST['userid'];
+
+$link = $_REQUEST['link'];
+
+echo $scheduledate = $_REQUEST['scheduledate'];
+echo $scheduletime = $_REQUEST['scheduletime'];
+
+$date = new DateTime("now", new DateTimeZone('Asia/Calcutta') );
+echo "<br>" . $date->format('Y-m-d H:i:s'); die();
+
+if ($session->isLoggedIn()) {
+    $customerData = $session->getCustomer();
+    $customerId = $customerData->getId();
+
+    $modelUser = Mage::getModel('influencerusers/influencerusers')->load($userId);
+
+
+    $username = $modelUser->getUsername();
+    $password = $modelUser->getPassword();
+    //$debug = true;
+    $debug = false;
+    $truncatedDebug = false;
+    $ig = new \InstagramAPI\Instagram($debug, $truncatedDebug);
+    try {
+        $ig->login($username, $password);
+    } catch (\Exception $e) {
+        echo 'Something went wrong: ' . $e->getMessage() . "\n";
+        exit(0);
+    }
+
+    $profilePicUrl = $ig->account->getCurrentUser()->getUser()->getProfilePicUrl();
+
+    $location = '';
+    if (!empty($locationLatLongArr) && count($locationLatLongArr) == 2) {
+        try {
+            $location = $ig->location->search($locationLatLongArr[0], $locationLatLongArr[1])->getVenues()[0];
+        } catch (\Exception $e) {
+            echo 'Something went wrong: ' . $e->getMessage() . "\n";
+        }
+    }
+
+    //echo "<pre>"; print_r($location); die();
+
+    if ($section == 'simple_post') {
+        if (isset($_FILES['localfile']['name']) && strlen($_FILES['localfile']['name']) >= 5) {
+            $image = $_FILES['localfile']['name'];
+            $category = "0" . DS . $customerId;
+
+            $path = Mage::getBaseDir('media') . DS . "media_library" . DS . $category . DS;
+            $uploader = new Mage_Core_Model_File_Uploader(
+                    array(
+                'name' => $_FILES['localfile']['name'],
+                'type' => $_FILES['localfile']['type'],
+                'tmp_name' => $_FILES['localfile']['tmp_name'],
+                'error' => $_FILES['localfile']['error'],
+                'size' => $_FILES['localfile']['size']
+                    )
+            );
+            //echo "<br>Size: " . $_FILES['localfile']['size'];
+
+            $uploader->setAllowRenameFiles(true);
+            $uploader->setFilesDispersion(false);
+
+            $ext = pathinfo($image, PATHINFO_EXTENSION); //getting image extension
+            $filename = rand(99999, 9999999999) . "." . $ext;
+            $uploader->save($path, $filename);
+
+            $file = '/var/www/html/media/media_library/' . $category . '/' . $filename;
+
+            $ext = pathinfo($file, PATHINFO_EXTENSION);
+            $arrImages = array("jpg", "png");
+            $arrVideos = array("mp4", "avi");
+
+            //----------- Need to Remove Starts -------------
+
+
+            $metadata = [
+                // (optional) Captions can always be used, like this:
+                'caption' => $captionText, //'Test', //'#test This is a great API!', //$captionText,
+                // (optional) To add a hashtag, do this:
+                'hashtags' => [
+                    // Note that you can add more than one hashtag in this array.
+                    [
+                        'tag_name' => 'wallpaper.directory', // Hashtag WITHOUT the '#'! NOTE: This hashtag MUST appear in the caption.
+                        'x' => 0.7, // Range: 0.0 - 1.0. Note that x = 0.5 and y = 0.5 is center of screen.
+                        'y' => 0.5, // Also note that X/Y is setting the position of the CENTER of the clickable area.
+                        'width' => 0.24305555, // Clickable area size, as percentage of image size: 0.0 - 1.0
+                        'height' => 0.07347973, // ...
+                        'rotation' => 0.6,
+                        'is_sticker' => false, // Don't change this value.
+                        'use_custom_title' => false, // Don't change this value.
+                    ],
+                // ...
+                ],
+                // (optional) To add a location, do BOTH of these:
+                'location_sticker' => [
+                    'width' => 0.89333333333333331,
+                    'height' => 0.071281859070464776,
+                    'x' => 0.5,
+                    'y' => 0.2,
+                    'rotation' => 0.0,
+                    'is_sticker' => true,
+                    'location_id' => (!empty($locationLatLongArr) && count($locationLatLongArr) == 2 ? $location->getExternalId() : ''), //(isset($location) ? $location->getExternalId() : ''),
+                ],
+                'location' => $location,
+                    // (optional) You can use story links ONLY if you have a business account with >= 10k followers.
+                    // 'link' => 'https://github.com/mgp25/Instagram-API',
+            ];
+
+            //----------- Need to Remove Ends -------------
+
+            if (in_array($ext, $arrImages)) {
+                try {
+                    $photoFilename = $file;
+                    $photo = new \InstagramAPI\Media\Photo\InstagramPhoto($photoFilename);
+                    $result = $ig->timeline->uploadPhoto($photo->getFile(), $metadata);
+                    $result = json_decode($result, true);
+                    if (strlen($commentText) >= 1 && !empty($result['media']['caption']['media_id'])) {
+                        $ig->media->comment($result['media']['caption']['media_id'], $commentText);
+                    }
+                    //echo "<pre>";
+                    //print_r($result);
+                } catch (\Exception $e) {
+                    echo 'Something went wrong: ' . $e->getMessage() . "\n";
+                }
+            } elseif (in_array($ext, $arrVideos)) {
+                try {
+                    $videoFilename = $file;
+                    $video = new \InstagramAPI\Media\Video\InstagramVideo($videoFilename);
+                    //$result = $ig->timeline->uploadVideo($video->getFile(), ['caption' => $captionText]);
+                    $result = $ig->timeline->uploadVideo($video->getFile(), $metadata);
+                    if (strlen($commentText) >= 1 && !empty($result['media']['caption']['media_id'])) {
+                        $ig->media->comment($result['media']['caption']['media_id'], $commentText);
+                    }
+                    $result = json_decode($result, true);
+                    //echo "<pre>";
+                    //print_r($result);
+                } catch (Exception $ex) {
+                    echo 'Something went wrong: ' . $e->getMessage() . "\n";
+                }
+            }
+        }
+    } elseif ($section == 'story') {
+        if (!empty($_FILES['localfile']['name'])) {
+            $fileArr = array();
+            for ($i = 0; $i < count($_FILES['localfile']['name']); $i++) {
+                $image = $_FILES['localfile']['name'][$i];
+                $category = "0" . DS . $customerId;
+
+                $path = Mage::getBaseDir('media') . DS . "media_library" . DS . $category . DS;
+                $uploader = new Mage_Core_Model_File_Uploader(
+                        array(
+                    'name' => $_FILES['localfile']['name'][$i],
+                    'type' => $_FILES['localfile']['type'][$i],
+                    'tmp_name' => $_FILES['localfile']['tmp_name'][$i],
+                    'error' => $_FILES['localfile']['error'][$i],
+                    'size' => $_FILES['localfile']['size'][$i]
+                        )
+                );
+                $uploader->setAllowRenameFiles(true);
+                $uploader->setFilesDispersion(false);
+
+                $ext = pathinfo($image, PATHINFO_EXTENSION); //getting image extension
+                $filename = rand(99999, 9999999999) . "." . $ext;
+                $uploader->save($path, $filename);
+
+                $file = '/var/www/html/media/media_library/' . $category . '/' . $filename;
+                array_push($fileArr, $file);
+            }
+            if (count($fileArr) >= 1) {
+                $storyFileCount = 0;
+                foreach ($sliderPollTopic as $sliderPoll) {
+                    if (strlen($sliderPollTopic[$storyFileCount]) >= 3) {
+                        
+                    } else {
+                        
+                    }
+                    $storyFileCount++;
+                }
+                $fileCount = 0;
+                foreach ($fileArr as $fileCustom) {
+                    //------------------- Slider Poll Starts -------------------
+                    if (strlen($sliderPollTopic[$fileCount]) >= 3) {
+                        $metadata = [
+                            'story_sliders' => [
+                                // Note that you can only do one story poll in this array.
+                                [
+                                    'question' => $sliderPollTopic[$fileCount], //'Is this API great?', // Story poll question. You need to manually to draw it on top of your image.
+                                    'viewer_vote' => 0, // Don't change this value.
+                                    'viewer_can_vote' => false, // Don't change this value.
+                                    'slider_vote_count' => 0, // Don't change this value.
+                                    'slider_vote_average' => 0, // Don't change this value.
+                                    'background_color' => '#ffffff',
+                                    'text_color' => '#000000',
+                                    'emoji' => '😍',
+                                    'x' => 0.5, // Range: 0.0 - 1.0. Note that x = 0.5 and y = 0.5 is center of screen.
+                                    'y' => 0.8, // Also note that X/Y is setting the position of the CENTER of the clickable area
+                                    'width' => 0.7777778, // Clickable area size, as percentage of image size: 0.0 - 1.0
+                                    'height' => 0.22212838, // ...
+                                    'rotation' => 0.0,
+                                    'is_sticker' => true, // Don't change this value.
+                                ],
+                            ],
+                        ];
+                    } elseif (strlen($countdown[$fileCount]) >= 3 && strlen($countdowntopic[$fileCount]) >= 3) {
+                        $today = date("d-m-Y");
+                        $userDate = str_replace("/", "-", $countdown[$fileCount]);
+                        $diff = strtotime($userDate) - strtotime($today);
+                        $noOfDay = abs(round($diff / 86400));
+
+
+                        $metadata = [
+                            'story_countdowns' => [
+                                [
+                                    'x' => 0.5, // Range: 0.0 - 1.0. Note that x = 0.5 and y = 0.5 is center of screen.
+                                    'y' => 0.5, // Also note that X/Y is setting the position of the CENTER of the clickable area.
+                                    'z' => 0, // Don't change this value.
+                                    'width' => 0.6564815, // Clickable area size, as percentage of image size: 0.0 - 1.0
+                                    'height' => 0.22630993, // ...
+                                    'rotation' => 0.0,
+                                    'text' => $countdowntopic[$fileCount], // Name of the countdown. Make sure it's in all caps!
+                                    'text_color' => '#ffffff',
+                                    'start_background_color' => '#ca2ee1',
+                                    'end_background_color' => '#5eb1ff',
+                                    'digit_color' => '#7e0091',
+                                    'digit_card_color' => '#ffffff',
+                                    'end_ts' => time() + strtotime($noOfDay . ' day', 0), // UNIX Epoch of when the countdown expires.
+                                    'following_enabled' => true, // If true, viewers can subscribe to a notification when the countdown expires.
+                                    'is_sticker' => true, // Don't change this value.
+                                ],
+                            ],
+                        ];
+                    } elseif (strlen($questionPoll[$fileCount]) >= 3) {
+                        $metadata = [
+                            'story_questions' => [
+                                // Note that you can only do one story question in this array.
+                                [
+                                    'x' => 0.5, // Range: 0.0 - 1.0. Note that x = 0.5 and y = 0.5 is center of screen.
+                                    'y' => 0.5004223, // Also note that X/Y is setting the position of the CENTER of the clickable area.
+                                    'z' => 0, // Don't change this value.
+                                    'width' => 0.63118356, // Clickable area size, as percentage of image size: 0.0 - 1.0
+                                    'height' => 0.22212838, // ...
+                                    'rotation' => 0.0,
+                                    'viewer_can_interact' => false, // Don't change this value.
+                                    'background_color' => '#ffffff',
+                                    'profile_pic_url' => $profilePicUrl, // Must be the profile pic url of the account you are posting from!
+                                    'question_type' => 'text', // Don't change this value.
+                                    'question' => $questionPoll[$fileCount], // Story question.
+                                    'text_color' => '#000000',
+                                    'is_sticker' => true, // Don't change this value.
+                                ],
+                            ],
+                        ];
+                    } elseif (!empty($abPollTopic[$fileCount])) {
+                        $aByBPoll = $abPollTopic[$fileCount];
+                        $ans1 = $abPollYes[$fileCount];
+                        $ans2 = $abPollNo[$fileCount];
+
+                        $metadata = [
+                            'story_polls' => [
+                                // Note that you can only do one story poll in this array.
+                                [
+                                    'question' => 'Test Question - 1', //$abPollTopic[$fileCount], // Story poll question. You need to manually to draw it on top of your image.
+                                    'viewer_vote' => 0, // Don't change this value.
+                                    'viewer_can_vote' => true, // Don't change this value.
+                                    'tallies' => [
+                                        [
+                                            'text' => $ans1, // Answer 1.
+                                            'count' => 0, // Don't change this value.
+                                            'font_size' => 35.0, // Range: 17.5 - 35.0.
+                                        ],
+                                        [
+                                            'text' => $ans2, // Answer 2.
+                                            'count' => 0, // Don't change this value.
+                                            'font_size' => 27.5, // Range: 17.5 - 35.0.
+                                        ],
+                                    ],
+                                    'x' => 0.5, // Range: 0.0 - 1.0. Note that x = 0.5 and y = 0.5 is center of screen.
+                                    'y' => 0.1, // Also note that X/Y is setting the position of the CENTER of the clickable area.
+                                    'width' => 0.5661107, // Clickable area size, as percentage of image size: 0.0 - 1.0
+                                    'height' => 0.10647108, // ...
+                                    'rotation' => 0.0,
+                                    'is_sticker' => true, // Don't change this value.
+                                ],
+                            ],
+                        ];
+                    } elseif (strlen($link) >= 3) {
+                        $metadata = [
+                            // (optional) Captions can always be used, like this:
+                            'caption' => '#test This is a great API!',
+                            // (optional) To add a hashtag, do this:
+                            'hashtags' => [
+                                // Note that you can add more than one hashtag in this array.
+                                [
+                                    'tag_name' => 'test', // Hashtag WITHOUT the '#'! NOTE: This hashtag MUST appear in the caption.
+                                    'x' => 0.5, // Range: 0.0 - 1.0. Note that x = 0.5 and y = 0.5 is center of screen.
+                                    'y' => 0.5, // Also note that X/Y is setting the position of the CENTER of the clickable area.
+                                    'width' => 0.24305555, // Clickable area size, as percentage of image size: 0.0 - 1.0
+                                    'height' => 0.07347973, // ...
+                                    'rotation' => 0.0,
+                                    'is_sticker' => false, // Don't change this value.
+                                    'use_custom_title' => false, // Don't change this value.
+                                ],
+                            // ...
+                            ],
+                            // (optional) To add a location, do BOTH of these:
+                            'location_sticker' => [
+                                'width' => 0.89333333333333331,
+                                'height' => 0.071281859070464776,
+                                'x' => 0.5,
+                                'y' => 0.2,
+                                'rotation' => 0.0,
+                                'is_sticker' => true,
+                                'location_id' => (!empty($locationLatLongArr) && count($locationLatLongArr) == 2 ? $location->getExternalId() : ''),
+                            ],
+                            'location' => $location,
+                            // (optional) You can use story links ONLY if you have a business account with >= 10k followers.
+                            'link' => $link[$fileCount],
+                        ];
+                        /* $metadata = [
+                          // (optional) You can use story links ONLY if you have a business account with >= 10k followers.
+                          'link' => $link[$fileCount],
+                          ]; */
+                    } else {
+                        $metadata = [];
+                    }
+                    //------------------ AB Poll Ends ---------------------------
+
+
+                    try {
+                        $photoFilename = $fileCustom;
+                        $photo = new \InstagramAPI\Media\Photo\InstagramPhoto($photoFilename, ['targetFeed' => \InstagramAPI\Constants::FEED_STORY]);
+                        $result = $ig->story->uploadPhoto($photo->getFile(), $metadata);
+                        /* if (strlen($commentText) >= 1 && !empty($result['media']['caption']['media_id'])) {
+                          $ig->media->comment($result['media']['caption']['media_id'], $commentText);
+                          } */
+                        $result = json_decode($result, true);
+                        //echo "<pre>";
+                        //print_r($result);
+                    } catch (Exception $ex) {
+                        echo 'Something went wrong: ' . $ex->getMessage() . "\n";
+                    }
+                    $fileCount++;
+                }
+            } /* else {
+              $metadata = [
+              // (optional) Captions can always be used, like this:
+              'caption' => '', //'#test This is a great API!', //$captionText,
+              // (optional) To add a hashtag, do this:
+              'hashtags' => [
+              // Note that you can add more than one hashtag in this array.
+              [
+              'tag_name' => 'test', // Hashtag WITHOUT the '#'! NOTE: This hashtag MUST appear in the caption.
+              'x' => 0.5, // Range: 0.0 - 1.0. Note that x = 0.5 and y = 0.5 is center of screen.
+              'y' => 0.5, // Also note that X/Y is setting the position of the CENTER of the clickable area.
+              'width' => 0.24305555, // Clickable area size, as percentage of image size: 0.0 - 1.0
+              'height' => 0.07347973, // ...
+              'rotation' => 0.0,
+              'is_sticker' => false, // Don't change this value.
+              'use_custom_title' => false, // Don't change this value.
+              ],
+              // ...
+              ],
+              // (optional) To add a location, do BOTH of these:
+              'location_sticker' => [
+              'width' => 0.89333333333333331,
+              'height' => 0.071281859070464776,
+              'x' => 0.5,
+              'y' => 0.2,
+              'rotation' => 0.0,
+              'is_sticker' => true,
+              'location_id' => (!empty($locationLatLongArr) && count($locationLatLongArr) == 2 ? $location->getExternalId() : ''), //(isset($location) ? $location->getExternalId() : ''),
+              ],
+              'location' => $location,
+              // (optional) You can use story links ONLY if you have a business account with >= 10k followers.
+              // 'link' => 'https://github.com/mgp25/Instagram-API',
+              ];
+              try {
+              echo $photoFilename = $fileArr[0];
+              //
+              // Also note that it has lots of options, so read its class documentation!
+              $photo = new \InstagramAPI\Media\Photo\InstagramPhoto($photoFilename, ['targetFeed' => \InstagramAPI\Constants::FEED_STORY]);
+              $result = $ig->story->uploadPhoto($photo->getFile(), $metadata);
+              if (strlen($commentText) >= 1 && !empty($result['media']['caption']['media_id'])) {
+              $ig->media->comment($result['media']['caption']['media_id'], $commentText);
+              }
+              $result = json_decode($result, true);
+              //echo "<pre>";
+              //print_r($result);
+              // NOTE: Providing metadata for story uploads is OPTIONAL. If you just want
+              // to upload it without any tags/location/caption, simply do the following:
+              // $ig->story->uploadPhoto($photo->getFile());
+              } catch (\Exception $e) {
+              echo 'Something went wrong: ' . $e->getMessage() . "\n";
+              }
+              } */
+        }
+    } elseif ($section == 'carrousal') {
+        //--------------------------------------
+        if (!empty($_FILES['localfile']['name'])) {
+            $fileArr = array();
+            for ($i = 0; $i < count($_FILES['localfile']['name']); $i++) {
+                $image = $_FILES['localfile']['name'][$i];
+                $category = "0" . DS . $customerId;
+
+                $path = Mage::getBaseDir('media') . DS . "media_library" . DS . $category . DS;
+                $uploader = new Mage_Core_Model_File_Uploader(
+                        array(
+                    'name' => $_FILES['localfile']['name'][$i],
+                    'type' => $_FILES['localfile']['type'][$i],
+                    'tmp_name' => $_FILES['localfile']['tmp_name'][$i],
+                    'error' => $_FILES['localfile']['error'][$i],
+                    'size' => $_FILES['localfile']['size'][$i]
+                        )
+                );
+                $uploader->setAllowRenameFiles(true);
+                $uploader->setFilesDispersion(false);
+
+                $ext = pathinfo($image, PATHINFO_EXTENSION); //getting image extension
+                $filename = rand(99999, 9999999999) . "." . $ext;
+                $uploader->save($path, $filename);
+
+                $file = '/var/www/html/media/media_library/' . $category . '/' . $filename;
+                array_push($fileArr, $file);
+            }
+        }
+        //$arrVideoTypes = array("avi", "mp4");
+        //$arrImage = array("jpeg", "jpg", "png", "gif");
+        $count = 0;
+        $media = array();
+
+        foreach ($fileArr as $fileForCarousal) {
+            if ($count <= 9) {
+                $fileType = "";
+                $ext = pathinfo($fileForCarousal, PATHINFO_EXTENSION);
+                if (in_array($ext, $arrImage)) {
+                    $fileType = "photo";
+                } elseif (in_array($ext, $arrVideoTypes)) {
+                    $fileType = "video";
+                }
+                $tempArr = array("type" => $fileType, "file" => $fileForCarousal);
+                $media[$count] = $tempArr;
+            }
+            $count++;
+        }
+        //echo "<pre>"; print_r($media); die();
+        //--------------------------------------
+        //$captionText = 'Taj Carousal'; // Caption to use for the album.
+//////////////////////
+
+        /* $ig = new \InstagramAPI\Instagram($debug, $truncatedDebug);
+
+          try {
+          $ig->login($username, $password);
+          } catch (\Exception $e) {
+          echo 'Something went wrong: ' . $e->getMessage() . "\n";
+          exit(0);
+          } */
+
+////// NORMALIZE MEDIA //////
+// All album files must have the same aspect ratio.
+// We copy the app's behavior by using the first file
+// as template for all subsequent ones.
+        $mediaOptions = [
+            'targetFeed' => \InstagramAPI\Constants::FEED_TIMELINE_ALBUM,
+                // Uncomment to expand media instead of cropping it.
+                //'operation' => \InstagramAPI\Media\InstagramMedia::EXPAND,
+        ];
+        foreach ($media as &$item) {
+            /** @var \InstagramAPI\Media\InstagramMedia|null $validMedia */
+            $validMedia = null;
+            switch ($item['type']) {
+                case 'photo':
+                    $validMedia = new \InstagramAPI\Media\Photo\InstagramPhoto($item['file'], $mediaOptions);
+                    break;
+                case 'video':
+                    $validMedia = new \InstagramAPI\Media\Video\InstagramVideo($item['file'], $mediaOptions);
+                    break;
+                default:
+                // Ignore unknown media type.
+            }
+            if ($validMedia === null) {
+                continue;
+            }
+
+            try {
+                $item['file'] = $validMedia->getFile();
+                // We must prevent the InstagramMedia object from destructing too early,
+                // because the media class auto-deletes the processed file during their
+                // destructor's cleanup (so we wouldn't be able to upload those files).
+                $item['__media'] = $validMedia; // Save object in an unused array key.
+            } catch (\Exception $e) {
+                continue;
+            }
+            if (!isset($mediaOptions['forceAspectRatio'])) {
+                // Use the first media file's aspect ratio for all subsequent files.
+                /** @var \InstagramAPI\Media\MediaDetails $mediaDetails */
+                $mediaDetails = $validMedia instanceof \InstagramAPI\Media\Photo\InstagramPhoto ? new \InstagramAPI\Media\Photo\PhotoDetails($item['file']) : new \InstagramAPI\Media\Video\VideoDetails($item['file']);
+                $mediaOptions['forceAspectRatio'] = $mediaDetails->getAspectRatio();
+            }
+        }
+        unset($item);
+
+        //-------------------------------------------------
+        $metadata = [
+            // (optional) Captions can always be used, like this:
+            'caption' => $captionText, //'#test This is a great API!', //$captionText,
+            // (optional) To add a hashtag, do this:
+            'hashtags' => [
+                // Note that you can add more than one hashtag in this array.
+                [
+                    'tag_name' => 'test', // Hashtag WITHOUT the '#'! NOTE: This hashtag MUST appear in the caption.
+                    'x' => 0.5, // Range: 0.0 - 1.0. Note that x = 0.5 and y = 0.5 is center of screen.
+                    'y' => 0.5, // Also note that X/Y is setting the position of the CENTER of the clickable area.
+                    'width' => 0.24305555, // Clickable area size, as percentage of image size: 0.0 - 1.0
+                    'height' => 0.07347973, // ...
+                    'rotation' => 0.0,
+                    'is_sticker' => false, // Don't change this value.
+                    'use_custom_title' => false, // Don't change this value.
+                ],
+            // ...
+            ],
+            // (optional) To add a location, do BOTH of these:
+            'location_sticker' => [
+                'width' => 0.89333333333333331,
+                'height' => 0.071281859070464776,
+                'x' => 0.5,
+                'y' => 0.2,
+                'rotation' => 0.0,
+                'is_sticker' => true,
+                'location_id' => (!empty($locationLatLongArr) && count($locationLatLongArr) == 2 ? $location->getExternalId() : ''), //(isset($location) ? $location->getExternalId() : ''),
+            ],
+            'location' => $location,
+                // (optional) You can use story links ONLY if you have a business account with >= 10k followers.
+                // 'link' => 'https://github.com/mgp25/Instagram-API',
+        ];
+        //-------------------------------------------------
+
+        try {
+            //$result = $ig->timeline->uploadAlbum($media, ['caption' => $captionText]);
+            $result = $ig->timeline->uploadAlbum($media, $metadata);
+            if (strlen($commentText) >= 1 && !empty($result['media']['caption']['media_id'])) {
+                $ig->media->comment($result['media']['caption']['media_id'], $commentText);
+            }
+            $result = json_decode($result, true);
+            //echo "<pre>";
+            //print_r($result);
+        } catch (\Exception $e) {
+            echo 'Something went wrong: ' . $e->getMessage() . "\n";
+        }
+    }
+} else {
+    
+}
+echo json_encode(array('status' => $result['status']));
+
+
+

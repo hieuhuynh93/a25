@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Masterajib_Ajaxpages>
+            <version>0.1.0</version>
+        </Masterajib_Ajaxpages>
+    </modules>
+    <frontend>
+        <routers>
+            <ajaxpages>
+                <use>standard</use>
+                <args>
+                    <module>Masterajib_Ajaxpages</module>
+                    <frontName>ajaxpages</frontName>
+                </args>
+            </ajaxpages>
+        </routers>
+    </frontend>
+</config>

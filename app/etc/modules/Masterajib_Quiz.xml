@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Masterajib_Quiz>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Masterajib_Quiz>
+    </modules>
+</config> 

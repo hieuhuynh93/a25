@@ -1,0 +1,45 @@
+<?php
+$userType = $_REQUEST['userType'];
+?>
+<div class="card-body">
+    <div class="tab tab-border nav-left">
+        <?php if ($userType == 'facebook'): ?>
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active show" id="home-06-tab" data-toggle="tab" href="#home-06" role="tab" aria-controls="home-06" aria-selected="true"> <i class="fa fa-home"></i> Facebook Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-06-tab" data-toggle="tab" href="#profile-06" role="tab" aria-controls="profile-06" aria-selected="false"><i class="fa fa-user"></i> Facebook For iPhone / Android </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div style="text-align: center; padding-top: 50px;" class="tab-pane fade active show" id="home-06" role="tabpanel" aria-labelledby="home-06-tab">
+                    <a class="button big-button mb-20" href="<?php echo Mage::getBaseUrl(); ?>influencerusers/index/getFacebookLogin"> Facebook Login <span> Login with facebook.</span> </a>
+                </div>
+                <div class="tab-pane fade" id="profile-06" role="tabpanel" aria-labelledby="profile-06-tab">
+                    <p>We all carry a lot of baggage, thanks to our upbringing. The majority of people carry with them, an entire series of self-limiting beliefs that will absolutely stop, and hold them back from, success. Things like “I’m not good enough”, “I’m not smart enough”, “I’m not lucky enough”, and the worst, “I’m not worthy” are but a few of the self-limiting beliefs I have encountered. We carry them with us like rocks in a knapsack, and then use them to sabotage our success. So, how twisted is that? </p>
+                </div>
+            </div>
+        <?php elseif ($userType == 'instagram'): ?>
+            <iframe src="http://www.socicos.com/scripts/" style="width: 100%; height: 200px;"></iframe>
+            <!--<ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active show" id="home-06-tab" data-toggle="tab" href="#home-06" role="tab" aria-controls="home-06" aria-selected="true"> <i class="fa fa-home"></i> Instagram Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-06-tab" data-toggle="tab" href="#profile-06" role="tab" aria-controls="profile-06" aria-selected="false"><i class="fa fa-user"></i> Instagram For iPhone / Android </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade active show" id="home-06" role="tabpanel" aria-labelledby="home-06-tab">
+                    <p>The best way is to develop and follow a plan. Start with your goals in mind and then work backwards to develop the plan. What steps are required to get you to the goals? Make the plan as detailed as possible. Try to visualize and then plan for, every possible setback. Commit the plan to paper and then keep it with you at all times. Review it regularly and ensure that every step takes you closer to your Vision and Goals. If the plan doesn’t support the vision then change it!</p>
+                </div>
+                <div class="tab-pane fade" id="profile-06" role="tabpanel" aria-labelledby="profile-06-tab">
+                    <p>We all carry a lot of baggage, thanks to our upbringing. The majority of people carry with them, an entire series of self-limiting beliefs that will absolutely stop, and hold them back from, success. Things like “I’m not good enough”, “I’m not smart enough”, “I’m not lucky enough”, and the worst, “I’m not worthy” are but a few of the self-limiting beliefs I have encountered. We carry them with us like rocks in a knapsack, and then use them to sabotage our success. So, how twisted is that? </p>
+                </div>
+            </div>-->
+        <?php elseif ($userType == 'twitter'): ?>
+
+        <?php endif; ?>
+    </div>
+</div>

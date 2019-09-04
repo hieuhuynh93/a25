@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <codebazzar_adminhtml_codebazzar_index>
+        <reference name="content">
+            <block type="codebazzar/adminhtml_codebazzar" name="codebazzar" />
+        </reference>
+    </codebazzar_adminhtml_codebazzar_index>
+</layout>

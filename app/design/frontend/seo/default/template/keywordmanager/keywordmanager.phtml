@@ -1,0 +1,208 @@
+<?php
+$helper = Mage::helper('keywordmanager/data');
+$customerId = $helper->getCurrentCustomer();
+
+$keywordManagerModel = Mage::getModel('keywordmanager/keywordmanager');
+$keywordManagerCollection = $keywordManagerModel
+        ->getCollection()
+        ->addFieldToFilter('customer_id', $customerId)
+        ->addFieldToFilter('status', '1');
+?>
+<div class="page-title">
+    <div class="row">
+        <div class="col-sm-6">
+            <h4 class="mb-0"> Welcome to Keyword Manager</h4>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                <li class="breadcrumb-item"><a href="<?php echo Mage::getBaseUrl(); ?>" class="default-color">Home</a></li>
+                <li class="breadcrumb-item active">Keyword Manager</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<div class="row" style="margin-bottom: -30px;">
+    <div class="col-xl-12 mb-30" id="msg">
+
+    </div>
+</div>
+
+<div class="row" style="margin-bottom: -50px;">
+    <div class="col-xl-12 mb-30">
+        <div class="card card-statistics mb-30">
+            <div class="card-body">
+                <h5 class="card-title">Add Your Keyword</h5>
+                <form id="addKeywordFrm">
+                    <div class="row">
+                        <div class="col-xl-9 mb-30" style="margin-bottom: .5rem !important;">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="keyword" aria-describedby="keyword" placeholder="Enter Single Keyword" required="required">
+                                <small id="keyword" class="form-text text-muted">Please enter a keyword.</small>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 mb-30" style="margin-bottom: .5rem !important;">
+                            <div class="form-group">
+                                <input type="submit" id="btnSubmit" style="display: none;">
+                                <button onclick="addKeyword();" type="button" class="btn btn-primary" style="width: 100%; border:  solid 2px #ccc; height: 45px;">Add Keyword</button>
+                                <small id="emailHelp" class="form-text text-muted">&nbsp;</small>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" id="keywordContainer">   
+    <div class="col-xl-12 mb-30">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <div class="d-block d-md-flex justify-content-between">
+                    <div class="d-block">
+                        <h5 class="card-title pb-0 border-0" style="margin-bottom: 0;padding: 15px;">Manage Your Keyword</h5>
+                    </div>
+                    <div class="d-block d-md-flex clearfix sm-mt-20">
+                        <div class="clearfix">
+                            <div class="box">
+                                <select class="fancyselect sm-mb-20 mr-20" style="display: none;">
+                                    <option value="10">10</option>
+                                    <option value="20">20</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                                <div class="nice-select fancyselect sm-mb-20 mr-20" tabindex="0">
+                                    <ul class="list">
+                                        <li data-value="10" class="option selected">10</li>
+                                        <li data-value="20" class="option">20</li>
+                                        <li data-value="50" class="option">50</li>
+                                        <li data-value="100" class="option">100</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="widget-search ml-0 clearfix">
+                            <i class="fa fa-search"></i>
+                            <input type="search" class="form-control" placeholder="Search....">
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive mt-15">
+                    <table class="table center-aligned-table mb-0 table-bordered">
+                        <thead>
+                            <tr class="text-dark">
+                                <th style="text-align: center;">#</th>
+                                <th>SL No</th>
+                                <th>Keyword</th>
+                                <th>Associated URLs</th>
+                                <th>Strength</th>
+                                <th>Action</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if ($keywordManagerCollection->getSize() > 0): ?>
+                                <?php $count = 1; ?>
+                                <?php foreach ($keywordManagerCollection as $keywordManager): ?>
+                                    <tr>
+                                        <td style="text-align: center;">
+                                            <input style="margin-top: -9px;" value="<?php echo $keywordManager->getId(); ?>" type="checkbox" class="form-check-input">
+                                        </td>
+                                        <td><?php echo $count; ?></td>
+                                        <td><?php echo $keywordManager->getKeyword(); ?></td>
+                                        <td><?php echo $keywordManager->getAssociatedUrls(); ?></td>
+                                        <td><label class="badge badge-success"><?php echo $keywordManager->getKeywordHealth(); ?></label></td>
+                                        <td><a href="<?php echo $this->getUrl('km-view') . '?kid=' . $keywordManager->getId(); ?>" class="btn btn-outline-success btn-sm">View</a></td>
+                                        <td>
+                                            <a href="javascript:deleteKeyword('<?php echo $keywordManager->getId(); ?>');" class="btn btn-outline-success btn-sm">
+                                                <i class="fa fa-trash-o" style="font-size:15px;"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <?php $count++; ?>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="7">
+                                        Sorry! No Keyword Found In Your Account.
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>
+
+<script>
+    function addKeyword() {
+        var keyword = document.getElementById('keyword').value;
+        var param = "keyword=" + keyword;
+        if (keyword.length >= 3) {
+            var url = "<?php echo Mage::getBaseUrl() . 'keywordmanager/index/saveKeyword?'; ?>" + param;
+            jQuery("#pre-loader").css("opacity", '0.8');
+            jQuery("#pre-loader").show();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: '',
+                success: function (data)
+                {
+                    var objData = jQuery.parseJSON(data);
+                    document.getElementById("msg").innerHTML = objData.msg;
+                    if (parseInt(objData.status) >= 2) {
+                        jQuery("#pre-loader").hide();
+                        document.location.href = objData.url;
+                    } else {
+                        updatePage();
+                    }
+                }
+            });
+        } else {
+            document.getElementById("btnSubmit").click();
+        }
+    }
+
+    function updatePage() {
+        var url = "<?php echo Mage::getBaseUrl() . 'keywordmanager/'; ?>";
+        //jQuery("#pre-loader").css("opacity", '0.8');
+        //jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: '',
+            success: function (data)
+            {
+                var $result = jQuery(data).find('#keywordContainer').html();
+                jQuery("#keywordContainer").html($result);
+                jQuery("#pre-loader").hide();
+            }
+        });
+    }
+
+    function deleteKeyword(keywordId) {
+        var param = "kid=" + keywordId;
+        var url = "<?php echo Mage::getBaseUrl() . 'keywordmanager/index/deleteKeyword?'; ?>" + param;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: '',
+            success: function (data)
+            {
+                var objData = jQuery.parseJSON(data);
+                document.getElementById("msg").innerHTML = objData.msg;
+                if (parseInt(objData.status) >= 2) {
+                    jQuery("#pre-loader").hide();
+                    document.location.href = objData.url;
+                } else {
+                    updatePage();
+                }
+            }
+        });
+    }
+</script>

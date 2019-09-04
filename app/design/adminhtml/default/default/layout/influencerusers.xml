@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <influencerusers_adminhtml_influencerusers_index>
+        <reference name="content">
+            <block type="influencerusers/adminhtml_influencerusers" name="influencerusers" />
+        </reference>
+    </influencerusers_adminhtml_influencerusers_index>
+</layout>

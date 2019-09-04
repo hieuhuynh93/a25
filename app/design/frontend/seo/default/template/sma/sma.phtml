@@ -1,0 +1,205 @@
+<?php
+$model = Mage::getModel('sma/sma');
+$instagramProfiles = $model->getCollection()->addFieldToFilter('source', 'Instagram')->getSize();
+$twitterProfiles = $model->getCollection()->addFieldToFilter('source', 'Twitter')->getSize();
+$youtubeProfiles = $model->getCollection()->addFieldToFilter('source', 'Youtube')->getSize();
+$twitchProfiles = $model->getCollection()->addFieldToFilter('source', 'Twitch')->getSize();
+$tumblrProfiles = $model->getCollection()->addFieldToFilter('source', 'Tumblr')->getSize();
+
+$totalProfiles = $instagramProfiles + $twitterProfiles + $youtubeProfiles + $twitchProfiles + $tumblrProfiles;
+$instagramPercentage = ($instagramProfiles * 100) / $totalProfiles;
+$twitterPercentage = ($twitterProfiles * 100) / $totalProfiles;
+$youtubePercentage = ($youtubeProfiles * 100) / $totalProfiles;
+$twitchPercentage = ($twitchProfiles * 100) / $totalProfiles;
+$tumblrPercentage = ($tumblrProfiles * 100) / $totalProfiles;
+?>
+<div class="page-title">
+    <div class="row">
+        <div class="col-sm-6">
+            <h4 class="mb-0"> Welcome to Social Media Audit</h4>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                <li class="breadcrumb-item"><a href="<?php echo Mage::getBaseUrl(); ?>" class="default-color">Home</a></li>
+                <li class="breadcrumb-item active">Social Media Audit</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<?php //echo $this->getLayout()->createBlock('cms/block')->setBlockId('sma_topmenu')->toHtml(); ?>
+<div class="row">
+    <div class="col-12 mb-30">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 mb-30">
+                        <?php if (isset($_REQUEST['err']) && $_REQUEST['err'] == 0): ?>
+                            <div class="alert alert-danger" role="alert" id="msgError" style="display: block;">
+                                Sorry! Profile not found.
+                            </div>
+                        <?php else: ?>
+                            <div class="alert alert-danger" role="alert" id="msgError" style="display: none;">
+
+                            </div>
+                        <?php endif; ?>
+
+                    </div>
+                    <div class="col-2 mb-30" style="padding-right: 0px;">
+                        <div class="btn-group mb-1" style="width: 100%;">
+                            <button id="btnSource" style="width: 100%;line-height: 2;margin-top: 3px;" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Source</button>
+                            <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 33px, 0px); top: 0px; left: 0px; will-change: transform; width: 99%;">
+                                <a class="dropdown-item" href="javascript:setSource('Instagram');"><i class="fa fa-instagram" style="font-size:14px; margin-right: 8px;"></i>Instagram</a>
+                                <a class="dropdown-item" href="javascript:setSource('Twitter');"><i class="fa fa-twitter" style="font-size:14px; margin-right: 8px;"></i>Twitter</a>
+                                <a class="dropdown-item" href="javascript:setSource('Twitch');"><i class="fa fa-twitch" style="font-size:14px; margin-right: 8px;"></i>Twitch</a>
+                                <a class="dropdown-item" href="javascript:setSource('Youtube');"><i class="fa fa-youtube" style="font-size:14px; margin-right: 8px;"></i>Youtube</a>
+                                <a class="dropdown-item" href="javascript:setSource('Tumblr');"><i class="fa fa-tumblr" style="font-size:14px; margin-right: 8px;"></i>Tumblr</a>
+                                <div class="dropdown-divider"></div>
+                                <!--<a class="dropdown-item" href="#">Separated link</a>-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-8 mb-30">
+                        <form onsubmit="return validate();" method="post" action="<?php echo Mage::getBaseUrl() . 'sma/index/saveAndContinue'; ?>">
+                            <input type="hidden" id="sourceTxt" name="sourceTxt" required="required">
+                            <input name="username" required="required" type="text" id="disabledTextInput" class="form-control" placeholder="Select Source Place">
+                            <input type="submit" id="btnSubmit" style="display: none;">
+                        </form>
+                    </div>
+                    <div class="col-2 mb-30">
+                        <button onclick="getProfile();" style="width: 100%;line-height: 2;margin-top: 3px;" type="button" class="btn btn-primary">Get Result</button>
+                    </div>
+                </div>
+                <script>
+                    function validate() {
+                        var sourceTxt = document.getElementById("sourceTxt").value;
+                        var username = document.getElementById("disabledTextInput").value;
+                        if (sourceTxt == '' || sourceTxt == null) {
+                            jQuery("#msgError").html("Please select Source!");
+                            jQuery("#msgError").show();
+                            return false;
+                        } else if (username == '' || username == null) {
+                            jQuery("#msgError").html("Please Enter User Name!");
+                            jQuery("#msgError").show();
+                            return false;
+                        } else {
+                            jQuery("#msgError").hide();
+                            jQuery("#msgError").html("");
+                            return true;
+                        }
+                    }
+
+                    function setSource(source) {
+                        /*if(source == 'Youtube'){
+                         document.getElementById("disabledTextInput").placeholder = 'Enter Channel Id..'; 
+                         }elseif(source == 'Instagram'){
+                         document.getElementById("disabledTextInput").placeholder = 'Enter Username..'; 
+                         }elseif(source == 'Twitter'){
+                         document.getElementById("disabledTextInput").placeholder = 'Enter Username..'; 
+                         }elseif(source == 'Twitch'){
+                         document.getElementById("disabledTextInput").placeholder = 'Enter Username..'; 
+                         }elseif(source == 'Tumblr'){
+                         document.getElementById("disabledTextInput").placeholder = 'Enter Username..'; 
+                         }else{
+                         document.getElementById("disabledTextInput").placeholder = 'Select Source Place'; 
+                         }*/
+
+                        document.getElementById("sourceTxt").value = source;
+                        document.getElementById("btnSource").innerHTML = source;
+                    }
+                    function getProfile() {
+                        document.getElementById("btnSubmit").click();
+                    }
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 mb-30">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-xl-8">
+                        <div class="chart-wrapper" style="width: 100%; margin: 0 auto; ">
+                            <div id="piechart"></div>
+                        </div>
+                        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+                        <script type="text/javascript">
+                            google.charts.load('current', {'packages': ['corechart']});
+                            google.charts.setOnLoadCallback(drawChart);
+
+                            function drawChart() {
+                                var data = google.visualization.arrayToDataTable([
+                                    ['Profiles', 'No'],
+                                    ['Instagram', <?php echo $instagramProfiles; ?>],
+                                    ['Tumblr', <?php echo $tumblrProfiles; ?>],
+                                    ['Twitch', <?php echo $twitchProfiles; ?>],
+                                    ['Twitter', <?php echo $twitterProfiles; ?>],
+                                    ['Youtube', <?php echo $youtubeProfiles; ?>]
+                                ]);
+
+                                // Optional; add a title and set the width and height of the chart
+                                var options = {'title': 'No of Profiles', 'width': 550, 'height': 400};
+
+                                // Display the chart inside the <div> element with id="piechart"
+                                var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+                                chart.draw(data, options);
+                            }
+                        </script>
+                    </div>
+                    <div class="col-xl-4 mt-3 mt-xl-0">
+                        <h5 class="card-title">Social Media Audit Profiles</h5>
+                        <div class="mt-20">
+                            <div class="clearfix">
+                                <p class="mb-10 float-left">Instagram Profiles</p>
+                                <p class="mb-10 text-info float-right"><?php echo $instagramProfiles; ?></p>
+                            </div>
+                            <div class="progress progress-small">
+                                <div class="skill2-bar bg-info" role="progressbar" style="width: <?php echo $instagramPercentage; ?>%" aria-valuenow="<?php echo $instagramPercentage; ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="mt-20">
+                            <div class="clearfix">
+                                <p class="mb-10 float-left">Twitter Profiles</p>
+                                <p class="mb-10 text-success float-right"><?php echo $twitterProfiles; ?></p>
+                            </div>
+                            <div class="progress progress-small">
+                                <div class="skill2-bar bg-success" role="progressbar" style="width: <?php echo $twitterPercentage; ?>%" aria-valuenow="<?php echo $twitterPercentage; ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="mt-20 mb-20">
+                            <div class="clearfix">
+                                <p class="mb-10 float-left">Youtube Profiles</p>
+                                <p class="mb-10 text-secondary float-right"><?php echo $youtubeProfiles; ?></p>
+                            </div>
+                            <div class="progress progress-small">
+                                <div class="skill2-bar bg-secondary" role="progressbar" style="width: <?php echo $youtubePercentage; ?>%" aria-valuenow="<?php echo $youtubePercentage; ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="mt-20">
+                            <div class="clearfix">
+                                <p class="mb-10 float-left">Twitch Profiles</p>
+                                <p class="mb-10 text-warning float-right"><?php echo $twitchProfiles; ?></p>
+                            </div>
+                            <div class="progress progress-small">
+                                <div class="skill2-bar bg-warning" role="progressbar" style="width: <?php echo $twitchPercentage; ?>%" aria-valuenow="<?php echo $twitchPercentage; ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="mt-20 mb-20">
+                            <div class="clearfix">
+                                <p class="mb-10 float-left">Tumblr Profiles</p>
+                                <p class="mb-10 text-danger float-right"><?php echo $tumblrProfiles; ?></p>
+                            </div>
+                            <div class="progress progress-small">
+                                <div class="skill2-bar bg-danger" role="progressbar" style="width: <?php echo $tumblrPercentage; ?>%" aria-valuenow="<?php echo $tumblrPercentage; ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        </div> 
+    </div> 
+</div>

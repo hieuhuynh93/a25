@@ -1,0 +1,62 @@
+<?php
+
+$chanelId = 'UCt3icFXZXR2SaUX6kV16u2g';
+
+include('cache.inc.php');
+
+/*
+	Retrieve Total YouTube Channel Views, Subscribers, and Video Count (with PHP or WordPress Shortcode)
+	http://www.beliefmedia.com/youtube-channel-data
+*/
+
+
+function beliefmedia_youtube_channel_data($channel = 'UCt3icFXZXR2SaUX6kV16u2g', $type = 'views', $cache = '14400') {
+
+ /* API Key */
+ $apikey = 'AIzaSyByvI8Tb3nTv6J07n1gLnli2oxHhj12ZBU';
+
+ /* Get transient data */
+ $transient = 'youtube_channel_data_' . md5(serialize(func_get_args()));
+ $response = beliefmedia_get_transient($transient, $cache);
+
+ if ($response !== false)  {
+
+   return number_format($response["$type"]);
+
+    } else {
+
+     $json_string = @file_get_contents('https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,contentDetails&id=' . $channel . '&key=' . $apikey);
+     if ($json_string !== false) $json = json_decode($json_string, true);
+
+      if (count($json) != 0) {
+
+        $temp = array();
+        $temp['views'] = $json['items']['0']['statistics']['viewCount'];
+        $temp['subscribers'] = $json['items']['0']['statistics']['subscriberCount'];
+        $temp['count'] = $json['items']['0']['statistics']['videoCount'];
+        
+        echo "<pre>"; print_r($json);
+
+        /* Cache the array */
+        beliefmedia_set_transient($transient, $temp);
+
+        /* Return number format result */
+        return number_format($temp["$type"]);
+
+         } else {
+
+        /* We'll keep the old data until the API behaves */
+        $result = beliefmedia_get_transient_data($transient);
+        return (count($result) != '0') ? number_format($result["$type"]) : 'Unavailable';
+
+      }
+   }
+}
+
+echo beliefmedia_youtube_channel_data($chanelId);
+ 
+/* Get subscriber count */
+//echo beliefmedia_youtube_channel_data($chanelId, $type = 'subscribers');
+ 
+/* Get uploaded video count */
+//echo beliefmedia_youtube_channel_data($chanelId, $type = 'count');

@@ -1,0 +1,460 @@
+[17-Aug-2019 12:34:42 UTC] PHP Fatal error:  Uncaught TypeError: Argument 1 passed to Mage_Core_Block_Abstract::setMessagesBlock() must be an instance of Mage_Core_Block_Messages, boolean given, called in /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php on line 479 and defined in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php:1077
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php(479): Mage_Core_Block_Abstract->setMessagesBlock(false)
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1358): BL_CustomGrid_Model_Observer->beforeBlockToHtml(Object(Varien_Event_Observer))
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1337): Mage_Core_Model_App->_callObserverMethod(Object(BL_CustomGrid_Model_Observer), 'beforeBlockToHt...', Object(Varien_Event_Observer))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/Mage.php(451): Mage_Core_Model_App->dispatchEvent('co in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php on line 1077
+[17-Aug-2019 17:22:37 UTC] PHP Fatal error:  Uncaught TypeError: Argument 1 passed to Mage_Core_Block_Abstract::setMessagesBlock() must be an instance of Mage_Core_Block_Messages, boolean given, called in /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php on line 479 and defined in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php:1077
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php(479): Mage_Core_Block_Abstract->setMessagesBlock(false)
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1358): BL_CustomGrid_Model_Observer->beforeBlockToHtml(Object(Varien_Event_Observer))
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1337): Mage_Core_Model_App->_callObserverMethod(Object(BL_CustomGrid_Model_Observer), 'beforeBlockToHt...', Object(Varien_Event_Observer))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/Mage.php(451): Mage_Core_Model_App->dispatchEvent('co in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php on line 1077
+[17-Aug-2019 17:22:50 UTC] PHP Fatal error:  Uncaught TypeError: Argument 1 passed to Mage_Core_Block_Abstract::setMessagesBlock() must be an instance of Mage_Core_Block_Messages, boolean given, called in /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php on line 479 and defined in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php:1077
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php(479): Mage_Core_Block_Abstract->setMessagesBlock(false)
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1358): BL_CustomGrid_Model_Observer->beforeBlockToHtml(Object(Varien_Event_Observer))
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1337): Mage_Core_Model_App->_callObserverMethod(Object(BL_CustomGrid_Model_Observer), 'beforeBlockToHt...', Object(Varien_Event_Observer))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/Mage.php(451): Mage_Core_Model_App->dispatchEvent('co in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php on line 1077
+[17-Aug-2019 19:06:06 UTC] PHP Fatal error:  Uncaught Error: [] operator not supported for strings in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php:472
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/controllers/IndexController.php(337): Masterajib_Linkanalysis_Helper_Data->search_rank_api('Marketing ', 'yahoo', 'https://www.soc...')
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Linkanalysis_IndexController->getlinkpositionAction()
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getlinkposition')
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#4 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(365): Mage_Co in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php on line 472
+[17-Aug-2019 19:07:39 UTC] PHP Fatal error:  Uncaught Error: [] operator not supported for strings in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php:472
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Keywordmanager/controllers/IndexController.php(81): Masterajib_Linkanalysis_Helper_Data->search_rank_api('News', 'yahoo', 'https://www.soc...')
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Keywordmanager_IndexController->getKeywordPositionOnWebpagesAction()
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getKeywordPosit...')
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#4 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php( in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php on line 472
+[18-Aug-2019 15:05:57 UTC] PHP Fatal error:  Uncaught Error: [] operator not supported for strings in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php:472
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/controllers/IndexController.php(337): Masterajib_Linkanalysis_Helper_Data->search_rank_api('Marketing ', 'yahoo', 'https://www.soc...')
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Linkanalysis_IndexController->getlinkpositionAction()
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getlinkposition')
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#4 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(365): Mage_Co in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php on line 472
+[18-Aug-2019 18:33:15 UTC] PHP Fatal error:  Uncaught Error: [] operator not supported for strings in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php:472
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/controllers/IndexController.php(337): Masterajib_Linkanalysis_Helper_Data->search_rank_api('Marketing ', 'yahoo', 'https://www.soc...')
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Linkanalysis_IndexController->getlinkpositionAction()
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getlinkposition')
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#4 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(365): Mage_Co in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php on line 472
+[18-Aug-2019 18:35:25 UTC] PHP Fatal error:  Uncaught Error: [] operator not supported for strings in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php:472
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/controllers/IndexController.php(337): Masterajib_Linkanalysis_Helper_Data->search_rank_api('Marketing ', 'yahoo', 'https://www.soc...')
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Linkanalysis_IndexController->getlinkpositionAction()
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getlinkposition')
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#4 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(365): Mage_Co in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php on line 472
+[18-Aug-2019 18:45:25 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getSimilarWebRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1362
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getSimilarWebRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getSimilarWebRa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Mod in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1362
+[18-Aug-2019 18:45:36 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getTrafficRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1008
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getTrafficRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getTrafficRawDa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1008
+[18-Aug-2019 18:45:39 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getRefferalAndDestinationAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:672
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getRefferalAndDestinationAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getRefferalAndD...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 672
+[19-Aug-2019 06:06:32 UTC] PHP Fatal error:  Uncaught Error: [] operator not supported for strings in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php:472
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/controllers/IndexController.php(337): Masterajib_Linkanalysis_Helper_Data->search_rank_api('Marketing ', 'yahoo', 'https://www.soc...')
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Linkanalysis_IndexController->getlinkpositionAction()
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getlinkposition')
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#4 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(365): Mage_Co in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php on line 472
+[19-Aug-2019 07:12:46 UTC] PHP Fatal error:  Uncaught Error: [] operator not supported for strings in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php:472
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/controllers/IndexController.php(337): Masterajib_Linkanalysis_Helper_Data->search_rank_api('Marketing ', 'yahoo', 'https://www.soc...')
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Linkanalysis_IndexController->getlinkpositionAction()
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getlinkposition')
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#4 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(365): Mage_Co in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php on line 472
+[19-Aug-2019 09:32:18 UTC] PHP Fatal error:  Uncaught Error: [] operator not supported for strings in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php:472
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/controllers/IndexController.php(337): Masterajib_Linkanalysis_Helper_Data->search_rank_api('Marketing ', 'yahoo', 'https://www.soc...')
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Linkanalysis_IndexController->getlinkpositionAction()
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getlinkposition')
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#4 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(365): Mage_Co in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php on line 472
+[19-Aug-2019 09:33:55 UTC] PHP Fatal error:  Uncaught Error: [] operator not supported for strings in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php:472
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/controllers/IndexController.php(337): Masterajib_Linkanalysis_Helper_Data->search_rank_api('Marketing ', 'yahoo', 'https://www.soc...')
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Linkanalysis_IndexController->getlinkpositionAction()
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getlinkposition')
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#4 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(365): Mage_Co in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php on line 472
+[19-Aug-2019 09:34:30 UTC] PHP Fatal error:  Uncaught Error: [] operator not supported for strings in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php:472
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/controllers/IndexController.php(337): Masterajib_Linkanalysis_Helper_Data->search_rank_api('Marketing ', 'yahoo', 'https://www.soc...')
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Linkanalysis_IndexController->getlinkpositionAction()
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getlinkposition')
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#4 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(365): Mage_Co in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php on line 472
+[19-Aug-2019 09:42:34 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getSimilarWebRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1362
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getSimilarWebRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getSimilarWebRa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Mod in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1362
+[19-Aug-2019 09:42:34 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getRefferalAndDestinationAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:672
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getRefferalAndDestinationAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getRefferalAndD...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 672
+[19-Aug-2019 09:42:36 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getTrafficRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1008
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getTrafficRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getTrafficRawDa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1008
+[19-Aug-2019 15:12:56 UTC] PHP Fatal error:  Uncaught Error: [] operator not supported for strings in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php:472
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/controllers/IndexController.php(337): Masterajib_Linkanalysis_Helper_Data->search_rank_api('News', 'yahoo', 'https://www.soc...')
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Linkanalysis_IndexController->getlinkpositionAction()
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getlinkposition')
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#4 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(365): Mage_Core_Con in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php on line 472
+[19-Aug-2019 15:16:35 UTC] PHP Fatal error:  Uncaught Error: [] operator not supported for strings in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php:473
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/controllers/IndexController.php(337): Masterajib_Linkanalysis_Helper_Data->search_rank_api('News', 'yahoo', 'https://www.soc...')
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Linkanalysis_IndexController->getlinkpositionAction()
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getlinkposition')
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#4 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(365): Mage_Core_Con in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/Helper/Data.php on line 473
+[20-Aug-2019 08:25:05 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getSimilarWebRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1362
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getSimilarWebRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getSimilarWebRa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Mod in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1362
+[20-Aug-2019 08:25:22 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getTrafficRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1008
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getTrafficRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getTrafficRawDa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1008
+[20-Aug-2019 08:25:24 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getRefferalAndDestinationAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:672
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getRefferalAndDestinationAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getRefferalAndD...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 672
+[22-Aug-2019 09:41:29 UTC] PHP Fatal error:  Uncaught TypeError: Argument 1 passed to Mage_Core_Block_Abstract::setMessagesBlock() must be an instance of Mage_Core_Block_Messages, boolean given, called in /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php on line 479 and defined in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php:1077
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php(479): Mage_Core_Block_Abstract->setMessagesBlock(false)
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1358): BL_CustomGrid_Model_Observer->beforeBlockToHtml(Object(Varien_Event_Observer))
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1337): Mage_Core_Model_App->_callObserverMethod(Object(BL_CustomGrid_Model_Observer), 'beforeBlockToHt...', Object(Varien_Event_Observer))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/Mage.php(451): Mage_Core_Model_App->dispatchEvent('co in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php on line 1077
+[22-Aug-2019 09:50:08 UTC] PHP Fatal error:  Uncaught TypeError: Argument 1 passed to Mage_Core_Block_Abstract::setMessagesBlock() must be an instance of Mage_Core_Block_Messages, boolean given, called in /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php on line 479 and defined in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php:1077
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php(479): Mage_Core_Block_Abstract->setMessagesBlock(false)
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1358): BL_CustomGrid_Model_Observer->beforeBlockToHtml(Object(Varien_Event_Observer))
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1337): Mage_Core_Model_App->_callObserverMethod(Object(BL_CustomGrid_Model_Observer), 'beforeBlockToHt...', Object(Varien_Event_Observer))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/Mage.php(451): Mage_Core_Model_App->dispatchEvent('co in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php on line 1077
+[22-Aug-2019 10:55:21 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getSimilarWebRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1362
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getSimilarWebRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getSimilarWebRa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Mod in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1362
+[22-Aug-2019 10:55:59 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getTrafficRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1008
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getTrafficRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getTrafficRawDa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1008
+[22-Aug-2019 10:56:00 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getRefferalAndDestinationAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:672
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getRefferalAndDestinationAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getRefferalAndD...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 672
+[22-Aug-2019 12:04:22 UTC] PHP Fatal error:  Uncaught TypeError: Argument 1 passed to Mage_Core_Block_Abstract::setMessagesBlock() must be an instance of Mage_Core_Block_Messages, boolean given, called in /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php on line 479 and defined in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php:1077
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php(479): Mage_Core_Block_Abstract->setMessagesBlock(false)
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1358): BL_CustomGrid_Model_Observer->beforeBlockToHtml(Object(Varien_Event_Observer))
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1337): Mage_Core_Model_App->_callObserverMethod(Object(BL_CustomGrid_Model_Observer), 'beforeBlockToHt...', Object(Varien_Event_Observer))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/Mage.php(451): Mage_Core_Model_App->dispatchEvent('co in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php on line 1077
+[23-Aug-2019 07:17:42 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getSimilarWebRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1362
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getSimilarWebRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getSimilarWebRa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Mod in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1362
+[23-Aug-2019 07:18:12 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getSimilarWebRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1362
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getSimilarWebRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getSimilarWebRa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Mod in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1362
+[23-Aug-2019 07:20:29 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getTrafficRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1008
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getTrafficRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getTrafficRawDa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1008
+[23-Aug-2019 15:35:37 UTC] PHP Parse error:  syntax error, unexpected '$helper' (T_VARIABLE) in /home3/a25sarsj/public_html/mag_seo/html/app/design/frontend/seo/default/template/websiteaudit/websiteaudit.phtml on line 12
+[23-Aug-2019 15:45:50 UTC] PHP Parse error:  syntax error, unexpected '$helper' (T_VARIABLE) in /home3/a25sarsj/public_html/mag_seo/html/app/design/frontend/seo/default/template/websiteaudit/websiteaudit.phtml on line 12
+[24-Aug-2019 07:03:53 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getSimilarWebRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1362
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getSimilarWebRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getSimilarWebRa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Mod in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1362
+[24-Aug-2019 07:03:57 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getTrafficRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1008
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getTrafficRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getTrafficRawDa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1008
+[25-Aug-2019 17:35:06 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getRefferalAndDestinationAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:676
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getRefferalAndDestinationAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getRefferalAndD...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 676
+[25-Aug-2019 17:35:07 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getTrafficRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1012
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getTrafficRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getTrafficRawDa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1012
+[25-Aug-2019 17:35:09 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getSimilarWebRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1366
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getSimilarWebRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getSimilarWebRa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Mod in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1366
+[27-Aug-2019 13:22:51 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getSimilarWebRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1368
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getSimilarWebRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getSimilarWebRa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Mod in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1368
+[27-Aug-2019 13:23:06 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getTrafficRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1014
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getTrafficRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getTrafficRawDa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1014
+[27-Aug-2019 13:23:09 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getRefferalAndDestinationAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:678
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getRefferalAndDestinationAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getRefferalAndD...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 678
+[27-Aug-2019 14:50:58 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getSimilarWebRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1368
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getSimilarWebRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getSimilarWebRa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Mod in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1368
+[27-Aug-2019 18:28:36 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getTrafficRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1017
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getTrafficRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getTrafficRawDa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1017
+[27-Aug-2019 18:31:46 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getSimilarWebRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1371
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getSimilarWebRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getSimilarWebRa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Mod in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1371
+[28-Aug-2019 08:06:48 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getSimilarWebRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1371
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getSimilarWebRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getSimilarWebRa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Mod in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1371
+[28-Aug-2019 08:06:59 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getRefferalAndDestinationAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:681
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getRefferalAndDestinationAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getRefferalAndD...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 681
+[28-Aug-2019 08:07:00 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getTrafficRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1017
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getTrafficRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getTrafficRawDa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1017
+[28-Aug-2019 17:51:27 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method Masterajib_Linkanalysis_IndexController::getSkinUrl() in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/controllers/IndexController.php:528
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Linkanalysis_IndexController->getindexcountAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getindexcount')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(365): Mage_Core_Controller_Varien_Front->dispatch()
+#4 /home3/a25sarsj/public_html/mag_seo/html/app/Mage.php(686): Mage_Core_Model_App->run(Array)
+#5 /home3/a25sarsj/public_html/m in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/controllers/IndexController.php on line 528
+[28-Aug-2019 18:04:14 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method Masterajib_Linkanalysis_IndexController::getSkinUrl() in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/controllers/IndexController.php:525
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Linkanalysis_IndexController->getindexcountAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getindexcount')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(365): Mage_Core_Controller_Varien_Front->dispatch()
+#4 /home3/a25sarsj/public_html/mag_seo/html/app/Mage.php(686): Mage_Core_Model_App->run(Array)
+#5 /home3/a25sarsj/public_html/m in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Linkanalysis/controllers/IndexController.php on line 525
+[30-Aug-2019 16:52:35 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getSimilarWebRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1381
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getSimilarWebRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getSimilarWebRa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Mod in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1381
+[30-Aug-2019 16:53:47 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getTrafficRawDataAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:1027
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getTrafficRawDataAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getTrafficRawDa...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1027
+[30-Aug-2019 17:18:55 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getUrl() on null in /home3/a25sarsj/public_html/mag_seo/html/app/design/frontend/seo/default/template/websiteaudit/websiteaudit_result.phtml:6
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Template.php(241): include()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Template.php(272): Mage_Core_Block_Template->fetchView('frontend/seo/de...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Template.php(286): Mage_Core_Block_Template->renderView()
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php(923): Mage_Core_Block_Template->_toHtml()
+#4 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/Email/Template/Filter.php(208): Mage_Core_Block_Abstract->toHtml()
+#5 /home3/a25sarsj/public_html/mag_seo/html/lib/Varien/Filter/Template.php(163): Mage_Core_Model_Email_Template_Filter->blockDirective(Array)
+#6 /home3/a25sarsj/public_ht in /home3/a25sarsj/public_html/mag_seo/html/app/design/frontend/seo/default/template/websiteaudit/websiteaudit_result.phtml on line 6
+[30-Aug-2019 17:20:26 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getUrl() on null in /home3/a25sarsj/public_html/mag_seo/html/app/design/frontend/seo/default/template/websiteaudit/websiteaudit_result.phtml:6
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Template.php(241): include()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Template.php(272): Mage_Core_Block_Template->fetchView('frontend/seo/de...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Template.php(286): Mage_Core_Block_Template->renderView()
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php(923): Mage_Core_Block_Template->_toHtml()
+#4 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/Email/Template/Filter.php(208): Mage_Core_Block_Abstract->toHtml()
+#5 /home3/a25sarsj/public_html/mag_seo/html/lib/Varien/Filter/Template.php(163): Mage_Core_Model_Email_Template_Filter->blockDirective(Array)
+#6 /home3/a25sarsj/public_ht in /home3/a25sarsj/public_html/mag_seo/html/app/design/frontend/seo/default/template/websiteaudit/websiteaudit_result.phtml on line 6
+[30-Aug-2019 17:23:11 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getUrl() on null in /home3/a25sarsj/public_html/mag_seo/html/app/design/frontend/seo/default/template/websiteaudit/websiteaudit_result.phtml:6
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Template.php(241): include()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Template.php(272): Mage_Core_Block_Template->fetchView('frontend/seo/de...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Template.php(286): Mage_Core_Block_Template->renderView()
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php(923): Mage_Core_Block_Template->_toHtml()
+#4 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/Email/Template/Filter.php(208): Mage_Core_Block_Abstract->toHtml()
+#5 /home3/a25sarsj/public_html/mag_seo/html/lib/Varien/Filter/Template.php(163): Mage_Core_Model_Email_Template_Filter->blockDirective(Array)
+#6 /home3/a25sarsj/public_ht in /home3/a25sarsj/public_html/mag_seo/html/app/design/frontend/seo/default/template/websiteaudit/websiteaudit_result.phtml on line 6
+[30-Aug-2019 17:31:59 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getUrl() on null in /home3/a25sarsj/public_html/mag_seo/html/app/design/frontend/seo/default/template/websiteaudit/websiteaudit_result.phtml:6
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Template.php(241): include()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Template.php(272): Mage_Core_Block_Template->fetchView('frontend/seo/de...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Template.php(286): Mage_Core_Block_Template->renderView()
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php(923): Mage_Core_Block_Template->_toHtml()
+#4 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/Email/Template/Filter.php(208): Mage_Core_Block_Abstract->toHtml()
+#5 /home3/a25sarsj/public_html/mag_seo/html/lib/Varien/Filter/Template.php(163): Mage_Core_Model_Email_Template_Filter->blockDirective(Array)
+#6 /home3/a25sarsj/public_ht in /home3/a25sarsj/public_html/mag_seo/html/app/design/frontend/seo/default/template/websiteaudit/websiteaudit_result.phtml on line 6
+[30-Aug-2019 17:33:16 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getUrl() on null in /home3/a25sarsj/public_html/mag_seo/html/app/design/frontend/seo/default/template/websiteaudit/websiteaudit_result.phtml:6
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Template.php(241): include()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Template.php(272): Mage_Core_Block_Template->fetchView('frontend/seo/de...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Template.php(286): Mage_Core_Block_Template->renderView()
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php(923): Mage_Core_Block_Template->_toHtml()
+#4 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/Email/Template/Filter.php(208): Mage_Core_Block_Abstract->toHtml()
+#5 /home3/a25sarsj/public_html/mag_seo/html/lib/Varien/Filter/Template.php(163): Mage_Core_Model_Email_Template_Filter->blockDirective(Array)
+#6 /home3/a25sarsj/public_ht in /home3/a25sarsj/public_html/mag_seo/html/app/design/frontend/seo/default/template/websiteaudit/websiteaudit_result.phtml on line 6
+[30-Aug-2019 17:33:29 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getUrl() on null in /home3/a25sarsj/public_html/mag_seo/html/app/design/frontend/seo/default/template/websiteaudit/websiteaudit_result.phtml:6
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Template.php(241): include()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Template.php(272): Mage_Core_Block_Template->fetchView('frontend/seo/de...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Template.php(286): Mage_Core_Block_Template->renderView()
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php(923): Mage_Core_Block_Template->_toHtml()
+#4 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/Email/Template/Filter.php(208): Mage_Core_Block_Abstract->toHtml()
+#5 /home3/a25sarsj/public_html/mag_seo/html/lib/Varien/Filter/Template.php(163): Mage_Core_Model_Email_Template_Filter->blockDirective(Array)
+#6 /home3/a25sarsj/public_ht in /home3/a25sarsj/public_html/mag_seo/html/app/design/frontend/seo/default/template/websiteaudit/websiteaudit_result.phtml on line 6
+[31-Aug-2019 12:15:25 UTC] PHP Parse error:  syntax error, unexpected '<' in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 1408
+[01-Sep-2019 12:21:59 UTC] PHP Fatal error:  Uncaught TypeError: Argument 1 passed to Mage_Core_Block_Abstract::setMessagesBlock() must be an instance of Mage_Core_Block_Messages, boolean given, called in /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php on line 479 and defined in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php:1077
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php(479): Mage_Core_Block_Abstract->setMessagesBlock(false)
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1358): BL_CustomGrid_Model_Observer->beforeBlockToHtml(Object(Varien_Event_Observer))
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1337): Mage_Core_Model_App->_callObserverMethod(Object(BL_CustomGrid_Model_Observer), 'beforeBlockToHt...', Object(Varien_Event_Observer))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/Mage.php(451): Mage_Core_Model_App->dispatchEvent('co in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php on line 1077
+[01-Sep-2019 12:22:24 UTC] PHP Fatal error:  Uncaught TypeError: Argument 1 passed to Mage_Core_Block_Abstract::setMessagesBlock() must be an instance of Mage_Core_Block_Messages, boolean given, called in /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php on line 479 and defined in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php:1077
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php(479): Mage_Core_Block_Abstract->setMessagesBlock(false)
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1358): BL_CustomGrid_Model_Observer->beforeBlockToHtml(Object(Varien_Event_Observer))
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1337): Mage_Core_Model_App->_callObserverMethod(Object(BL_CustomGrid_Model_Observer), 'beforeBlockToHt...', Object(Varien_Event_Observer))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/Mage.php(451): Mage_Core_Model_App->dispatchEvent('co in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php on line 1077
+[01-Sep-2019 12:22:38 UTC] PHP Fatal error:  Uncaught TypeError: Argument 1 passed to Mage_Core_Block_Abstract::setMessagesBlock() must be an instance of Mage_Core_Block_Messages, boolean given, called in /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php on line 479 and defined in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php:1077
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php(479): Mage_Core_Block_Abstract->setMessagesBlock(false)
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1358): BL_CustomGrid_Model_Observer->beforeBlockToHtml(Object(Varien_Event_Observer))
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1337): Mage_Core_Model_App->_callObserverMethod(Object(BL_CustomGrid_Model_Observer), 'beforeBlockToHt...', Object(Varien_Event_Observer))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/Mage.php(451): Mage_Core_Model_App->dispatchEvent('co in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php on line 1077
+[01-Sep-2019 12:22:47 UTC] PHP Fatal error:  Uncaught TypeError: Argument 1 passed to Mage_Core_Block_Abstract::setMessagesBlock() must be an instance of Mage_Core_Block_Messages, boolean given, called in /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php on line 479 and defined in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php:1077
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php(479): Mage_Core_Block_Abstract->setMessagesBlock(false)
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1358): BL_CustomGrid_Model_Observer->beforeBlockToHtml(Object(Varien_Event_Observer))
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1337): Mage_Core_Model_App->_callObserverMethod(Object(BL_CustomGrid_Model_Observer), 'beforeBlockToHt...', Object(Varien_Event_Observer))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/Mage.php(451): Mage_Core_Model_App->dispatchEvent('co in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php on line 1077
+[02-Sep-2019 06:16:09 UTC] PHP Fatal error:  Uncaught TypeError: Argument 1 passed to Mage_Core_Block_Abstract::setMessagesBlock() must be an instance of Mage_Core_Block_Messages, boolean given, called in /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php on line 479 and defined in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php:1077
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php(479): Mage_Core_Block_Abstract->setMessagesBlock(false)
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1358): BL_CustomGrid_Model_Observer->beforeBlockToHtml(Object(Varien_Event_Observer))
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1337): Mage_Core_Model_App->_callObserverMethod(Object(BL_CustomGrid_Model_Observer), 'beforeBlockToHt...', Object(Varien_Event_Observer))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/Mage.php(451): Mage_Core_Model_App->dispatchEvent('co in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php on line 1077
+[02-Sep-2019 06:39:18 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function Masterajib_Websiteaudit_IndexController::getRefferalAndDestinationAction(), 0 passed in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php on line 418 and at least 1 expected in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php:691
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Action.php(418): Masterajib_Websiteaudit_IndexController->getRefferalAndDestinationAction()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Router/Standard.php(254): Mage_Core_Controller_Varien_Action->dispatch('getRefferalAndD...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Controller/Varien/Front.php(172): Mage_Core_Controller_Varien_Router_Standard->match(Object(Mage_Core_Controller_Request_Http))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage in /home3/a25sarsj/public_html/mag_seo/html/app/code/local/Masterajib/Websiteaudit/controllers/IndexController.php on line 691
+[02-Sep-2019 06:50:25 UTC] PHP Fatal error:  Uncaught TypeError: Argument 1 passed to Mage_Core_Block_Abstract::setMessagesBlock() must be an instance of Mage_Core_Block_Messages, boolean given, called in /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php on line 479 and defined in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php:1077
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php(479): Mage_Core_Block_Abstract->setMessagesBlock(false)
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1358): BL_CustomGrid_Model_Observer->beforeBlockToHtml(Object(Varien_Event_Observer))
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1337): Mage_Core_Model_App->_callObserverMethod(Object(BL_CustomGrid_Model_Observer), 'beforeBlockToHt...', Object(Varien_Event_Observer))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/Mage.php(451): Mage_Core_Model_App->dispatchEvent('co in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php on line 1077
+[02-Sep-2019 06:51:24 UTC] PHP Fatal error:  Uncaught TypeError: Argument 1 passed to Mage_Core_Block_Abstract::setMessagesBlock() must be an instance of Mage_Core_Block_Messages, boolean given, called in /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php on line 479 and defined in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php:1077
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php(479): Mage_Core_Block_Abstract->setMessagesBlock(false)
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1358): BL_CustomGrid_Model_Observer->beforeBlockToHtml(Object(Varien_Event_Observer))
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1337): Mage_Core_Model_App->_callObserverMethod(Object(BL_CustomGrid_Model_Observer), 'beforeBlockToHt...', Object(Varien_Event_Observer))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/Mage.php(451): Mage_Core_Model_App->dispatchEvent('co in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php on line 1077
+[02-Sep-2019 06:51:47 UTC] PHP Fatal error:  Uncaught TypeError: Argument 1 passed to Mage_Core_Block_Abstract::setMessagesBlock() must be an instance of Mage_Core_Block_Messages, boolean given, called in /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php on line 479 and defined in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php:1077
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php(479): Mage_Core_Block_Abstract->setMessagesBlock(false)
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1358): BL_CustomGrid_Model_Observer->beforeBlockToHtml(Object(Varien_Event_Observer))
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1337): Mage_Core_Model_App->_callObserverMethod(Object(BL_CustomGrid_Model_Observer), 'beforeBlockToHt...', Object(Varien_Event_Observer))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/Mage.php(451): Mage_Core_Model_App->dispatchEvent('co in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php on line 1077
+[02-Sep-2019 06:53:41 UTC] PHP Fatal error:  Uncaught TypeError: Argument 1 passed to Mage_Core_Block_Abstract::setMessagesBlock() must be an instance of Mage_Core_Block_Messages, boolean given, called in /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php on line 479 and defined in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php:1077
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php(479): Mage_Core_Block_Abstract->setMessagesBlock(false)
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1358): BL_CustomGrid_Model_Observer->beforeBlockToHtml(Object(Varien_Event_Observer))
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1337): Mage_Core_Model_App->_callObserverMethod(Object(BL_CustomGrid_Model_Observer), 'beforeBlockToHt...', Object(Varien_Event_Observer))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/Mage.php(451): Mage_Core_Model_App->dispatchEvent('co in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php on line 1077
+[03-Sep-2019 16:16:28 UTC] PHP Fatal error:  Uncaught TypeError: Argument 1 passed to Mage_Core_Block_Abstract::setMessagesBlock() must be an instance of Mage_Core_Block_Messages, boolean given, called in /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php on line 479 and defined in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php:1077
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php(479): Mage_Core_Block_Abstract->setMessagesBlock(false)
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1358): BL_CustomGrid_Model_Observer->beforeBlockToHtml(Object(Varien_Event_Observer))
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1337): Mage_Core_Model_App->_callObserverMethod(Object(BL_CustomGrid_Model_Observer), 'beforeBlockToHt...', Object(Varien_Event_Observer))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/Mage.php(451): Mage_Core_Model_App->dispatchEvent('co in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php on line 1077
+[03-Sep-2019 16:16:40 UTC] PHP Fatal error:  Uncaught TypeError: Argument 1 passed to Mage_Core_Block_Abstract::setMessagesBlock() must be an instance of Mage_Core_Block_Messages, boolean given, called in /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php on line 479 and defined in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php:1077
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/community/BL/CustomGrid/Model/Observer.php(479): Mage_Core_Block_Abstract->setMessagesBlock(false)
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1358): BL_CustomGrid_Model_Observer->beforeBlockToHtml(Object(Varien_Event_Observer))
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Model/App.php(1337): Mage_Core_Model_App->_callObserverMethod(Object(BL_CustomGrid_Model_Observer), 'beforeBlockToHt...', Object(Varien_Event_Observer))
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/Mage.php(451): Mage_Core_Model_App->dispatchEvent('co in /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php on line 1077
+[04-Sep-2019 01:19:55 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getTitle() on null in /home3/a25sarsj/public_html/mag_seo/html/app/design/frontend/seo/default/template/customer/account/dashboard.phtml:354
+Stack trace:
+#0 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Template.php(241): include()
+#1 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Template.php(272): Mage_Core_Block_Template->fetchView('frontend/seo/de...')
+#2 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Template.php(286): Mage_Core_Block_Template->renderView()
+#3 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php(923): Mage_Core_Block_Template->_toHtml()
+#4 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php(641): Mage_Core_Block_Abstract->toHtml()
+#5 /home3/a25sarsj/public_html/mag_seo/html/app/code/core/Mage/Core/Block/Abstract.php(581): Mage_Core_Block_Abstract->_getChildHtml('customer_accoun...', true)
+#6 /home3/a25sarsj/publi in /home3/a25sarsj/public_html/mag_seo/html/app/design/frontend/seo/default/template/customer/account/dashboard.phtml on line 354

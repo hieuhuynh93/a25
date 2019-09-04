@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <emailmarketing_adminhtml_emailmarketing_index>
+        <reference name="content">
+            <block type="emailmarketing/adminhtml_emailmarketing" name="emailmarketing" />
+        </reference>
+    </emailmarketing_adminhtml_emailmarketing_index>
+</layout>

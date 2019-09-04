@@ -1,0 +1,429 @@
+<?php $path = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'socicos/'; ?>
+<!DOCTYPE html>
+<html>
+    <?php echo $this->getLayout()->createBlock('core/template')->setTemplate('catalog/product/head.phtml')->toHtml(); ?>
+    <body>
+        <header class="main-header header-style-five">
+
+            <!-- Header Top -->
+            <?php echo $this->getLayout()->createBlock('core/template')->setTemplate('catalog/product/header_top.phtml')->toHtml(); ?>
+        </div>
+        <!-- Header Top End -->
+
+        <!-- Main Box -->
+        <div class="main-box">
+            <div class="auto-container">
+                <div class="outer-container clearfix">
+                    <!--Logo Box-->
+                    <?php echo $this->getLayout()->createBlock('core/template')->setTemplate('catalog/product/logo.phtml')->toHtml(); ?>
+                    <!--Nav Outer-->
+                    <div class="nav-outer clearfix">
+
+                        <!-- Main Menu -->
+                        <nav class="main-menu">
+                            <div class="navbar-header">
+                                <!-- Toggle Button -->
+                                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                            </div>
+
+                            <div class="navbar-collapse collapse clearfix">
+                                <?php echo $this->getLayout()->createBlock('core/template')->setTemplate('catalog/product/top_navigation1.phtml')->toHtml(); ?>
+                            </div>
+                        </nav>
+                        <!-- Main Menu End-->
+                    </div>
+                    <!--Nav Outer End-->
+
+                </div>
+            </div>
+        </div>
+
+        <!--Sticky Header-->
+        <div class="sticky-header">
+            <div class="auto-container">
+
+                <div class="outer-container clearfix">
+                    <!--Logo Box-->
+                    <div class="logo-box pull-left">
+                        <div class="logo"><a href="<?php echo Mage::getBaseUrl(); ?>"><img src="<?php echo $path; ?>images/logo-small.png" alt=""></a></div>
+                    </div>
+
+                    <!--Nav Outer-->
+                    <div class="nav-outer clearfix">
+                        <!-- Main Menu -->
+                        <nav class="main-menu">
+                            <div class="navbar-header">
+                                <!-- Toggle Button -->
+                                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                            </div>
+
+                            <div class="navbar-collapse collapse clearfix">
+                                <?php echo $this->getLayout()->createBlock('core/template')->setTemplate('catalog/product/top_navigation2.phtml')->toHtml(); ?>
+                            </div>
+                        </nav>
+                        <!-- Main Menu End-->
+
+                    </div>
+                    <!--Nav Outer End-->
+
+                </div>
+
+            </div>
+        </div>
+        <!--End Sticky Header-->
+
+    </header>
+    <!--End Main Header --><style>
+        ul.inline-flex {
+            display: inline-flex;
+        }
+        .toollist{
+            margin: 40px;
+        }
+        .content:hover {
+            -ms-transform: scale(1.0); /* IE 9 */
+            -webkit-transform: scale(1.0); /* Safari 3-8 */
+            transform: scale(1.3);
+        }
+    </style><section class="page-title" style="background-image:url(<?php echo $path; ?>images/background/pattern-4.png);">
+        <div class="auto-container">
+            <h1>TOOLS</h1>
+        </div>
+        <!--Page Info-->
+        <div class="page-info">
+            <div class="auto-container">
+                <div class="inner-container">
+                    <ul class="bread-crumb">
+                        <li><a href="<?php echo Mage::getBaseUrl(); ?>">Home</a></li>
+                        <li>TOOLS</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--End Page Info-->
+    </section>
+    <!--End Page Title-->
+    <div class="sidebar-page-container">
+        <div class="auto-container">
+            <div class="row clearfix">
+                <!--Content Side-->
+                <div class="content-side col-md-8 col-sm-12 col-xs-12" style="margin-top: -75px;">
+                    <!--Services Single-->
+                    <div class="comment-block">
+                        <div class="inner">
+                            <div class="row toollist">
+                                <div class="col-lg-12">
+                                    <div class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/a1.png" alt="" /></div>
+                                            <h3><a href="javascript:">Visitor Analytics</a></h3>
+                                        </div></div>
+                                    <div class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/website1.png" alt="" /></div>
+                                            <h3><a href="javascript:">Website Analysis</a></h3>
+                                        </div></div>
+                                </div>
+                            </div>
+                            <div class="row toollist">
+                                <div class="col-lg-12">
+                                    <div class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/list.png" alt="" /></div>
+                                            <h3><a href="javascript:">Website URL's List</a></h3>
+                                        </div>
+                                    </div>
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/shopping-list.png" alt="" /></div>
+                                            <h3><a href="javascript:">Website URL's Analyse </a></h3>
+                                        </div></div>
+                                </div>
+                            </div>
+                            <div class="row toollist">
+                                <div class="col-lg-12">
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/rank.png" alt="" /></div>
+                                            <h3><a href="javascript:">Rank & Index Analysis</a></h3>
+                                        </div></div>
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/world-wide-web.png" alt="" /></div>
+                                            <h3><a href="javascript:">Domain Analysis</a></h3>
+                                        </div></div>
+                                </div>
+                            </div>
+                            <div class="row toollist">
+                                <div class="col-lg-12">
+                                    <div class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/icon.png" alt="" /></div>
+                                            <h3><a href="javascript:">IP Analysis</a></h3>
+                                        </div></div>
+                                    <div class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/firewall.png" alt="" /></div>
+                                            <h3><a href="javascript:">Malware Scan</a></h3>
+                                        </div></div>
+                                </div>
+                            </div>
+                            <div class="row toollist">
+                                <div class="col-lg-12">
+                                    <div class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/registration.png" alt="" /></div>
+                                            <h3><a href="javascript:">Domain Age Checker</a></h3>
+                                        </div></div>
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/http.png" alt="" /></div>
+                                            <h3><a href="javascript:">Domain Worth Calculator </a></h3>
+                                        </div></div>
+                                </div>
+                            </div>
+                            <div class="row toollist">
+                                <div class="col-lg-12">
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/highest.png" alt="" /></div>
+                                            <h3><a href="javascript:">Alexa Rank Check</a></h3>
+                                        </div></div>
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/keyword.png" alt="" /></div>
+                                            <h3><a href="javascript:">Keyword Analysis</a></h3>
+                                        </div></div>
+                                </div>
+                            </div>
+                            <div class="row toollist">
+                                <div class="col-lg-12">
+                                    <div class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/link.png" alt="" /></div>
+                                            <h3><a href="javascript:">Website Ping</a></h3>
+                                        </div></div>
+                                    <div class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/network.png" alt="" /></div>
+                                            <h3><a href="javascript:">Link Analysis</a></h3>
+                                        </div></div>
+                                </div>
+                            </div>
+                            <div class="row toollist">
+                                <div class="col-lg-12">
+                                    <div class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/adwords.png" alt="" /></div>
+                                            <h3><a href="javascript:">Google Adwords Tool</a></h3>
+                                        </div></div>
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/google-plus.png" alt="" /></div>
+                                            <h3><a href="javascript:">Google URL Shortener</a></h3>
+                                        </div></div>
+                                </div>
+                            </div>
+                            <div class="row toollist">
+                                <div class="col-lg-12">
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/keyword1.png" alt="" /></div>
+                                            <h3><a href="javascript:">Keyword Suggestion</a></h3>
+                                        </div></div>
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/title.png" alt="" /></div>
+                                            <h3><a href="javascript:">Title Suggestion</a></h3>
+                                        </div></div>
+                                </div>
+                            </div>
+                            <div class="row toollist">
+                                <div class="col-lg-12">
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/planner.png" alt="" /></div>
+                                            <h3><a href="javascript:">Keyword Planner</a></h3>
+                                        </div></div>
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/tag.png" alt="" /></div>
+                                            <h3><a href="javascript:">Meta Tag Analyzer</a></h3>
+                                        </div></div>
+                                </div>
+                            </div>
+                            <div class="row toollist">
+                                <div class="col-lg-12">
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/map-location.png" alt="" /></div>
+                                            <h3><a href="javascript:">Keyword Position Checker</a></h3>
+                                        </div></div>
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/backlink.png" alt="" /></div>
+                                            <h3><a href="javascript:">Backlink Analyze</a></h3>
+                                        </div></div>
+                                </div>
+                            </div>
+                            <div class="row toollist">
+                                <div class="col-lg-12">
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/satellite.png" alt="" /></div>
+                                            <h3><a href="javascript:">Keyword Density Check</a></h3>
+                                        </div></div>
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/contract.png" alt="" /></div>
+                                            <h3><a href="javascript:">Page Authority Check</a></h3>
+                                        </div></div>
+                                </div>
+                            </div>
+                            <div class="row toollist">
+                                <div class="col-lg-12">
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/staff.png" alt="" /></div>
+                                            <h3><a href="javascript:">Domain Authority Check</a></h3>
+                                        </div></div>
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/facebook.png" alt="" /></div>
+                                            <h3><a href="javascript:">Social Network Analysis</a></h3>
+                                        </div></div>
+                                </div>
+                            </div>
+                            <div class="row toollist">
+                                <div class="col-lg-12">
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/html.png" alt="" /></div>
+                                            <h3><a href="javascript:">Code Minifier</a></h3>
+                                        </div></div>
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/letter.png" alt="" /></div>
+                                            <h3><a href="javascript:">Email Encoder/ Decoder</a></h3>
+                                        </div></div>
+                                </div>
+                            </div>
+                            <div class="row toollist">
+                                <div class="col-lg-12">
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/media-encoder.png" alt="" /></div>
+                                            <h3><a href="javascript:">URL Encoder/ Decoder</a></h3>
+                                        </div></div>
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/tag (1).png" alt="" /></div>
+                                            <h3><a href="javascript:">Meta Tag Generator</a></h3>
+                                        </div></div>
+                                </div>
+                            </div>
+                            <div class="row toollist">
+                                <div class="col-lg-12">
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/roboto-logo.png" alt="" /></div>
+                                            <h3><a href="javascript:">Robot Code Generator</a></h3>
+                                        </div></div>
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/success.png" alt="" /></div>
+                                            <h3><a href="javascript:">Plagiarism Check (unicode support)</a></h3>
+                                        </div></div>
+                                </div>
+                            </div>
+                            <div class="row toollist">
+                                <div class="col-lg-12">
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/gmail.png" alt="" /></div>
+                                            <h3><a href="javascript:">Valid Email Check</a></h3>
+                                        </div></div>
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/mail.png" alt="" /></div>
+                                            <h3><a href="javascript:">Duplicate Email Filter</a></h3>
+                                        </div></div>
+                                </div>
+                            </div>
+                            <div class="row toollist">
+                                <div class="col-lg-12">
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/website.png" alt="" /></div>
+                                            <h3><a href="javascript:">URL Canonical Check</a></h3>
+                                        </div></div>
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/gzip.png" alt="" /></div>
+                                            <h3><a href="javascript:">GZIP Check</a></h3>
+                                        </div></div>
+                                </div>
+                            </div>
+                            <div class="row toollist">
+                                <div class="col-lg-12">
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/safety-code.png" alt="" /></div>
+                                            <h3><a href="javascript:">Base64 Encoder/Decoder</a></h3>
+                                        </div></div>
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/article.png" alt="" /></div>
+                                            <h3><a href="javascript:">Article Rewriter</a></h3>
+                                        </div></div>
+                                </div>
+                            </div>
+                            <div class="row toollist">
+                                <div class="col-lg-12">
+                                    <div  class="col-lg-6"><div class="content">
+                                            <div class="image"><img src="<?php echo $path; ?>images/icon1/xml.png" alt="" /></div>
+                                            <h3><a href="javascript:">XML Site Generator</a></h3>
+                                        </div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Sidebar Side-->
+                <div class="sidebar-side col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                    <aside class="sidebar default-sidebar with-border">
+                        <!-- Search -->
+                        <!--Blog Category Widget-->
+                        <!--Recent Comments-->
+                        <div class="sidebar-widget recent-comments">
+                            <div class="sidebar-title" style="left: 37px;">
+                                <h2>Resources</h2>
+                            </div>
+                            <?php echo $this->getLayout()->createBlock('core/template')->setTemplate('catalog/product/tools_resources.phtml')->toHtml(); ?>
+                        </div>
+                    </aside>
+                </div>
+
+            </div>
+        </div>
+    </div></section>
+<!--End Partners Section-->
+
+<!--Main Footer-->
+<?php echo $this->getLayout()->createBlock('core/template')->setTemplate('catalog/product/footer.phtml')->toHtml(); ?>
+<!--Main Footer-->
+<!--Bottom Parallax-->
+
+</div>
+<!--End pagewrapper-->
+
+<!--Scroll to top-->
+<div class="scroll-to-top scroll-to-target" data-target="html"><span class="icon fa fa-angle-double-up"></span></div>
+
+<script src="<?php echo $path; ?>js/jquery.js"></script>
+<!--Revolution Slider-->
+<script src="<?php echo $path; ?>assets/revolution/js/jquery.themepunch.revolution.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/jquery.themepunch.tools.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.actions.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.carousel.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.kenburn.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.layeranimation.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.migration.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.navigation.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.parallax.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.slideanims.min.js"></script>
+<script src="<?php echo $path; ?>assets/revolution/js/extensions/revolution.extension.video.min.js"></script>
+<script src="<?php echo $path; ?>js/main-slider-script.js"></script>
+
+<script src="<?php echo $path; ?>js/jquery.js"></script>
+<script src="<?php echo $path; ?>js/bootstrap.min.js"></script>
+<script src="<?php echo $path; ?>js/jquery.fancybox.pack.js"></script>
+<script src="<?php echo $path; ?>js/jquery.fancybox-media.js"></script>
+<script src="<?php echo $path; ?>js/owl.js"></script>
+<script src="<?php echo $path; ?>js/wow.js"></script>
+<script src="<?php echo $path; ?>js/validate.js"></script>
+<script src="<?php echo $path; ?>js/jquery-ui.js"></script>
+<script src="<?php echo $path; ?>js/knob.js"></script>
+<script src="<?php echo $path; ?>js/slick.js"></script>
+<script src="<?php echo $path; ?>js/appear.js"></script>
+<script src="<?php echo $path; ?>js/script.js"></script>
+<!--<script src="<?php echo $path; ?>js/validate.js"></script>-->
+<script src="http://maps.google.com/maps/api/js?key=AIzaSyBKS14AnP3HCIVlUpPKtGp7CbYuMtcXE2o"></script>
+<script src="<?php echo $path; ?>js/map-script.js"></script>
+
+<!--Scroll to top-->
+<div class="scroll-to-top scroll-to-target" data-target="html"><span class="icon fa fa-angle-double-up"></span></div>
+
+
+</body>
+</html>

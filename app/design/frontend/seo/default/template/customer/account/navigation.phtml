@@ -1,0 +1,179 @@
+<?php
+$pageId = Mage::getSingleton('cms/page')->getId();
+
+$arrLinkAnalysisPages = array('7', '8', '9');
+$arrWebsiteAuditPages = array();
+$arrLinkSmallSeoTools = array();
+
+$$arrEmailmarketing = array();
+$arrFeedback = array();
+$arrKeywordManager = array('58');
+$arrQuiz = array();
+$arrCodebazzar = array();
+$arrInfluencer = array();
+$arrServicemanagement = array();
+
+$pageBuilder = array('10', '11', '20');
+$videoCreator = array('21');
+$directory = array('22');
+$ssm = array('23');
+$bloggers = array('24');
+
+$activeClass = '';
+
+$moduleName = Mage::app()->getRequest()->getModuleName();   //smallseotools
+?>
+<style>
+    a.btn {
+    font-size: 12px;
+    margin: 12px !important;
+    padding: 15px;
+}
+
+.mybtn {
+    width: 96% !important;
+}
+
+.btn-default {
+    background-color: #fff !important;
+}
+
+.colbtn {
+    width: 12% !important;
+}
+
+.active_option {
+    color: #fff !important;
+    border: none !important;
+    font-size: 14px;
+    text-align: center;
+    cursor: text;
+    font-weight: 200;
+}
+
+.dropbtn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+    display: flex;
+}
+</style>
+<div class="row">
+  
+  <div class="colbtn">          
+    <a class="<?php echo(in_array($pageId, $arrLinkAnalysisPages) || $moduleName == 'linkanalysis' ? 'active_left_menu' : ''); ?> btn btn-default mybtn" style="border:1px solid #05b3f2;color:#05b3f2;border-bottom:3px solid #05b3f2;" href="javascript:document.location.href='<?php echo Mage::getBaseUrl(); ?>linkanalysis'">
+      <i class="fa fa-plus-square-o" style="color:#05b3f2;font-size:20px;"></i>
+      <br/>
+      <span class="right-nav-text">Link Analysis</span>
+    </a>        
+  </div>
+
+<!-- ----------------- Website Audit ------------------->
+  <div class="colbtn">
+    <a class="<?php echo(in_array($pageId, $arrWebsiteAuditPages) || $moduleName == 'websiteaudit' ? 'active_left_menu' : ''); ?> btn btn-default mybtn" style="border:1px solid #b3203d;color:#b3203d;border-bottom:3px solid #b3203d;" href="javascript:document.location.href='<?php echo Mage::getBaseUrl(); ?>websiteaudit'">
+      <i class="fa fa-windows" style="color:#b3203d;font-size:20px;"></i>
+      <br/>
+      <span class="right-nav-text">Website Audit</span>
+    </a>
+  </div>
+<!-- ----------------- Website Audit ------------------->
+
+  <div class="colbtn">
+    <a class="<?php echo(in_array($pageId, $videoCreator) || $moduleName == 'pagebuilder' ? 'active_left_menu' : ''); ?> btn btn-default mybtn" href="<?php echo $this->getUrl('video-creator'); ?>" style="border:1px solid #d9c921;color:#d9c921;border-bottom:3px solid #d9c921;">
+      <i class="fa fa-tint" style="color:#d9c921;font-size:20px;"></i>
+      <br/>
+      <span class="right-nav-text">Video Creator</span>
+    </a>
+  </div>
+
+  <div class="colbtn">
+    <a href="<?php echo $this->getUrl('smallseotools'); ?>" class="<?php echo(in_array($pageId, $arrLinkSmallSeoTools) || $moduleName == 'smallseotools' ? 'active_left_menu' : ''); ?> btn btn-default mybtn" style="border:1px solid #796fad;color:#796fad;border-bottom:3px solid #796fad;">
+      <i class="fa fa-credit-card" style="color:#796fad;font-size:20px;"></i>
+      <br/>
+      <span class="right-nav-text">Small SEO Tools</span>
+    </a>
+  </div>
+
+  <div class="colbtn">            
+    <a href="<?php echo $this->getUrl('emailmarketing'); ?>" class="<?php echo(in_array($pageId, $arrEmailmarketing) || $moduleName == 'emailmarketing' ? 'active_left_menu' : ''); ?> btn btn-default mybtn" style="border:1px solid #73ad6f;color:#73ad6f;border-bottom:3px solid #73ad6f;">
+      <i class="fa fa-envelope-o" style="color:#73ad6f;font-size:20px;"></i>
+      <br/>
+      <span class="right-nav-text">Email Marketing</span>
+    </a>
+  </div>
+
+  <div class="colbtn dropdown">           
+    <a href="javascript:void(0);" data-toggle="collapse" data-target="#elementsSMM" class="btn btn-default mybtn" style="border:1px solid #05b3f2;color:#05b3f2;border-bottom:3px solid #05b3f2;">
+      <div class="pull-left">
+        <i class="fa fa-clone" style="color:#05b3f2;font-size:20px;"></i>
+        <br/>
+        <span class="right-nav-text">Social Media Mngmt</span>
+      </div>
+    </a>           
+    <div class="dropdown-content" style="width: 100%;left: 30px;position: fixed;">              
+      <a href="<?php echo $this->getUrl('influencer'); ?>"><i class="fa fa-cubes" style="font-size:14px; margin-right: 5px;"></i>Dashboard</a>              
+      <a href="<?php echo $this->getUrl('account_manager'); ?>"><i class="fa fa-user-o" style="font-size:14px; margin-right: 5px;"></i>Account Manager</a>                
+      <a href="<?php echo $this->getUrl('smm-post-instagram'); ?>"><i class="fa fa-edit" style="font-size:14px; margin-right: 5px;"></i>Post</a>              
+      <a href="<?php echo $this->getUrl('schedule'); ?>"><i class="fa fa-hourglass-half" style="font-size:14px; margin-right: 5px;"></i>Schedules</a>             
+      <a href="<?php echo $this->getUrl('bulk-posting'); ?>"><i class="fa fa-hourglass-half" style="font-size:14px; margin-right: 5px;"></i>Bulk Posting</a>              
+      <a href="<?php echo $this->getUrl('captions'); ?>"><i class="fa fa-share-square-o" style="font-size:14px; margin-right: 5px;"></i>Captions</a>              
+      <a href="<?php echo $this->getUrl('file_manager'); ?>"><i class="fa fa-folder-o active_option" style="font-size:14px; margin-right: 5px;"></i>File Manager</a>              
+      <a href="<?php echo $this->getUrl('smm_tools'); ?>"><i class="fa fa-wrench" style="font-size:14px; margin-right: 5px;"></i>Tools</a>              
+      <a href="<?php echo $this->getUrl('publish_all'); ?>"><i class="fa fa-laptop" style="font-size:14px; margin-right: 5px;"></i>Publish All</a>  
+    </div>          
+  </div>
+
+  <div class="colbtn dropdown">           
+    <a href="javascript:void(0);" data-toggle="collapse" data-target="#elements" class="<?php echo(in_array($pageId, $ssm) || $moduleName == 'sma' ? 'active_left_menu' : ''); ?> btn btn-default mybtn" style="border:1px solid #b3203d;color:#b3203d;border-bottom:3px solid #b3203d;">             
+      <div class="pull-left">
+        <i class="fa fa-columns" style="color:#b3203d;font-size:20px;"></i><br/><span class="right-nav-text">Social Media Audit</span>
+      </div>
+    </a>            
+    <div class="dropdown-content" style="width: 100%;left: 30px;position: fixed;">
+        <a href="<?php echo $this->getUrl('sma'); ?>">Dashboard</a>             
+        <a href="javascript:document.location.href='<?php echo Mage::getBaseUrl(); ?>top-instagram'" class="<?php echo ($pageId == 52 ? 'active_left_menu' : ''); ?>">Top Instagram</a>             
+        <a href="javascript:document.location.href='<?php echo Mage::getBaseUrl(); ?>top-twitter'" class="<?php echo ($pageId == 53 ? 'active_left_menu' : ''); ?>">Top Twitter</a>             
+        <a href="javascript:document.location.href='<?php echo Mage::getBaseUrl(); ?>top-twitch'" class="<?php echo ($pageId == 54 ? 'active_left_menu' : ''); ?>">Top Twitch</a>             
+        <a href="javascript:document.location.href='<?php echo Mage::getBaseUrl(); ?>top-youtube'" class="<?php echo ($pageId == 55 ? 'active_left_menu' : ''); ?>">Top Youtube</a>             
+        <a href="javascript:document.location.href='<?php echo Mage::getBaseUrl(); ?>top-tubblr'" class="<?php echo ($pageId == 55 ? 'active_left_menu' : ''); ?>">Top Tumblr</a>           
+    </div>          
+  </div>
+
+  <div class="colbtn">            
+    <a class="<?php echo(in_array($pageId, $arrKeywordManager) || $moduleName == 'keywordmanager' ? 'active_left_menu' : ''); ?> btn btn-default mybtn" href="<?php echo $this->getUrl('keywordmanager'); ?>" style="border:1px solid #d9c921;color:#d9c921;border-bottom:3px solid #d9c921;">              
+      <i class="fa fa-file-text" style="color:#d9c921;font-size:20px;"></i>
+      <br/>              
+      <span class="right-nav-text">Keyword Manager</span>             
+    </a>          
+  </div>  
+</div>

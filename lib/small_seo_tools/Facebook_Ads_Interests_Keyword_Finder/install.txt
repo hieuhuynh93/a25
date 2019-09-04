@@ -1,0 +1,18 @@
+INSTALLATION
+------------
+
+1. Download script files and unzip.
+2. Get your facebook access token and set it validity 2 months and put access token in functions.php file
+	2.1 Go to https://developers.facebook.com/tools/explorer
+	2.2 Select your Application from "Graph API Explorer" drop down.
+	2.3 Click on "Get Token" Button
+	2.4 Select "Get User Access Token" from drop down
+	2.5 When pop-up window open, just click on "Get Access Token" Button
+	2.6 To increase the validity of access token go to https://developers.facebook.com/tools/debug/accesstoken
+	2.7 Click on Extend Access Token.
+3. Upload files on your server.
+
+MORE INFORMATION
+----------------
+
+If you have any problems installing, contact us.

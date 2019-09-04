@@ -1,0 +1,960 @@
+<?php
+$toolsCollection = Mage::getModel('smallseotools/smallseotools')
+        ->getCollection()
+        ->addFieldToFilter('status', 1)
+        ->setOrder('positionIndex', 'ASC');
+?>
+<style>
+    .boxActive{
+        text-shadow: 0px 1px 0px #666;
+        border: solid 2px #ccc;
+        border-radius: 20px;
+    }
+    .boxActive:hover{
+        text-shadow: 0px 1px 0px #666;
+        border: solid 2px #ccc;
+        border-radius: 20px;
+        box-shadow: 2px 3px 5px #aaaaaa;
+    }
+    .pb-3, .py-3 {
+        padding-bottom: 0.1rem !important;
+    }
+    .pt-3, .py-3 {
+        padding-top: 0.1rem !important;
+    }
+
+    .modal-header{
+        padding-bottom: 0px;
+        padding-top: 10px;
+    }
+</style>
+<!-- ----------------------- Modal Starts ------------------------->
+<button style="display:none;" id="modalButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Launch demo modal</button>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="max-width: 80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="exampleModalLabel">
+                    <div class="mb-30" style="margin-bottom: 0rem !important;">
+                        <h6 id="modalTitle">EXPERTISE</h6>
+                    </div>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="modalBody">
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ----------------------- Model Ends --------------------------->
+<div class="page-title">
+    <div class="row">
+        <div class="col-sm-6">
+            <h4 class="mb-0"> Small SEO Tools</h4>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                <li class="breadcrumb-item"><a href="index.html" class="default-color">Home</a></li>
+                <li class="breadcrumb-item">Dashboard</li>
+                <li class="breadcrumb-item active">Small SEO Tools</li>
+            </ol>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-12 mb-30">
+        <div class="card card-statistics weather-box h-100">
+            <div class="card-body">
+                <h6 class="card-title" style="margin-bottom: 5px;padding-bottom: 0.9rem;">Your Tools Here</h6>
+                <div class="row pt-4 pb-4" style="padding-top: 0px !important; padding-bottom: 4px !important;">
+                    <ul class="list-group" style="padding:20px;width:100%;display: inline-block;">
+                    <?php foreach ($toolsCollection as $tools): ?>
+                        <!--<div class="col-xl-3 col-md-4 col-6 text-center boxActive" style="max-width: 23%; margin: 5px;">
+                            <a href="javascript:showForm('<?php echo $tools->getTitle(); ?>', '<?php echo $tools->getAjaxFunction(); ?>');">
+                                <div class="weather-icon py-3 text-warning">
+                                    <i class=" <?php echo $tools->getContent(); ?>" style="font-size:35px"></i>
+                                </div>
+                                <h6 class="mt-15" style="margin-top: 0.1rem !important; font-size: 0.99rem; color: #32beec;"> <?php echo $tools->getTitle(); ?> </h6>
+                            </a>
+                        </div>-->
+                        <li class="list-group-item" style="display: inline-block;width:33%;">								
+                            <a href="javascript:showForm('<?php echo $tools->getTitle(); ?>', '<?php echo $tools->getAjaxFunction(); ?>');">									
+                                <h6 class="mt-15" style="margin-top: 0.1rem !important; font-size: 1.0rem; color: #4e71a8;">
+                                    <i class=" <?php echo $tools->getContent(); ?>" style="font-size:1.0rem;color:#d62b2b;"></i> &nbsp;
+                                    <span style="text-decoration: underline;"><?php echo $tools->getTitle(); ?></span>
+                                </h6>								
+                            </a>							
+                        </li>
+                    <?php endforeach; ?>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showForm(title, section) {
+        var url = "<?php echo Mage::getBaseUrl(); ?>small_seo_tools_form?section=" + section;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                document.getElementById("modalTitle").innerHTML = title;
+                document.getElementById("modalBody").innerHTML = data;
+                jQuery("#pre-loader").hide();
+                document.getElementById("modalButton").click();
+            }
+        });
+    }
+
+    function calculateWordAndCharacter(e, wordCount, charCount) {
+        var s = e.value;
+        //var length = string.split(/[^\s]+/).length - 1;
+        //document.getElementById('wordCountSource').innerHTML = length;
+        s = s.replace(/(^\s*)|(\s*$)/gi, "");
+        s = s.replace(/[ ]{2,}/gi, " ");
+        s = s.replace(/\n /, "\n");
+        document.getElementById(wordCount).innerHTML = s.split(' ').length;
+        document.getElementById(charCount).innerHTML = s.length;
+    }
+
+    function clearAll(textArea1, textArea2, wordCount, charCount) {
+        document.getElementById(textArea1).value = '';
+        document.getElementById(textArea2).value = '';
+
+        document.getElementById(wordCount).innerHTML = 0;
+        document.getElementById(charCount).innerHTML = 0;
+    }
+</script>
+
+<!-- ------------------ Ajax Javascript ------------------->
+<script>
+    function seoUserActivity(activity, smallseotools_id){
+        //Add activity to seotoolsActivity
+        var activityUrl = "<?php echo Mage::getBaseUrl(); ?>smallseotools/index/addSEOUserActivity";
+        jQuery.ajax({
+            type: "POST",
+            url: activityUrl,
+            data: {
+                'activity': activity,
+                'smallseotools_id': smallseotools_id
+            }
+        });
+    }
+
+    function generateArtical() {
+        var objDataRaw = document.getElementById("dataRaw");
+        var dataRaw = objDataRaw.value;
+        var url = "<?php echo Mage::getBaseUrl(); ?>smallseotools/index/createArtical?dataRaw=" + dataRaw;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                document.getElementById("dataFinal").innerHTML = data;
+                jQuery("#pre-loader").hide();
+                calculateWordAndCharacter(document.getElementById("dataFinal"), 'wordCountDestination', 'charCountDestination');
+            }
+        });
+        
+        seoUserActivity("Article Rewriter & Word Counter", 1);
+    }
+
+    function createBacklink() {
+        var param = document.getElementById("url").value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/backlink_maker.php'; ?>?url=" + param;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                document.getElementById("tableRowData").innerHTML = data;
+                jQuery("#pre-loader").hide();
+            }
+        });
+        
+        //Add activity to seotoolsActivity
+        seoUserActivity("Backlink Maker", 4);
+    }
+
+    function builtWith() {
+        var param = document.getElementById("url").value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/builtwith.php'; ?>?url=" + param;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                var objData = jQuery.parseJSON(data);
+                document.getElementById("tableRowData").innerHTML = objData.html;
+                document.getElementById("screenshot").src = objData.screenDesktop;
+                jQuery("#pre-loader").hide();
+            }
+        });
+        
+        //Add activity to seotoolsActivity
+        seoUserActivity("BuiltWith Technologies", 5);
+    }
+
+    function showKeywordDensity() {
+        var param = document.getElementById("urlKeyWordDensity").value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/keyword_density_checker.php'; ?>?url=" + param;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                var objData = jQuery.parseJSON(data);
+                document.getElementById("tableRowDataKeyWordDensity").innerHTML = objData.html;
+                var modalTitle = document.getElementById("modalTitle").innerHTML;
+                document.getElementById("modalTitle").innerHTML = modalTitle + "(Found: " + objData.totalKeyword + ")";
+                jQuery("#pre-loader").hide();
+            }
+        });
+        seoUserActivity(" Keyword Density Checker ","6");
+    }
+
+    function showGoogleMalwareChecker() {
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        var urlGoogleMalwareUrl = document.getElementById("urlGoogleMalware").value;
+        if (urlGoogleMalwareUrl == null || urlGoogleMalwareUrl == "") {
+            sweetAlert(oopsStr, msgDomain, "error");
+        } else {
+            if (urlGoogleMalwareUrl.indexOf("http://") == 0) {
+            } else if (urlGoogleMalwareUrl.indexOf("https://") == 0) {
+            } else {
+                urlGoogleMalwareUrl = "http://" + urlGoogleMalwareUrl;
+            }
+            var getHost = document.createElement('a');
+            getHost.href = urlGoogleMalwareUrl;
+            var myHost = getHost.hostname;
+
+            google_url = "https://www.google.com/safebrowsing/diagnostic?site=" + myHost + "&amp;output=embed";
+            window.open(google_url, '', 'width=auto,height=auto,scrollbars=yes, menubar=no,resizable=no,directories=no,location=0');
+            //var iframe = document.getElementById("googleMalwareResult");
+            //iframe.src = google_url;
+            //iframe.height = iframe.contentWindow.document.body.scrollHeight + "px";
+            jQuery("#pre-loader").hide();
+            document.getElementById("close").click();
+            
+            seoUserActivity("Google Malware Checker","7");
+        }
+    }
+
+    function showBlacklistLookup() {
+        var param = document.getElementById("urlBlacklistLookup").value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/blacklist_lookup.php'; ?>?url=" + param;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                var objData = jQuery.parseJSON(data);
+                document.getElementById("blacklistLookup").innerHTML = objData.htmlTabData;
+                document.getElementById("host").innerHTML = objData.host;
+                document.getElementById("ip").innerHTML = objData.ip;
+                document.getElementById("overall").innerHTML = objData.overall;
+                jQuery("#pre-loader").hide();
+            }
+        });
+        seoUserActivity("Blacklist Lookup Tool","8");
+    }
+
+    function showSuspiciousDomain() {
+        var param = document.getElementById("urlSuspiciousDomainChecker").value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/suspicious_domain_checker.php'; ?>?url=" + param;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                //var objData = jQuery.parseJSON(data);
+                document.getElementById("tableSuspiciousDomain").innerHTML = data;
+                jQuery("#pre-loader").hide();
+            }
+        });
+        seoUserActivity("Suspicious Domain Checker","9");
+    }
+
+    function showLinkPriceCalculator() {
+        var form = jQuery("#showLinkPriceCalculator");
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/link_price_calculator.php'; ?>";
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: form.serialize(),
+            success: function (data)
+            {
+                //var objData = jQuery.parseJSON(data);
+                document.getElementById("linkPriceCalculator").innerHTML = data;
+                jQuery("#pre-loader").hide();
+            }
+        });
+        seoUserActivity("Link Price Calculator","10");
+    }
+
+    function showWebsiteLinksCount() {
+        var txtUrlWebsiteLinkChecker = document.getElementById("urlWebsiteLinkChecker").value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/links_counter.php'; ?>?url=" + txtUrlWebsiteLinkChecker;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                //var objData = jQuery.parseJSON(data);
+                document.getElementById("tableWebsiteLinksCount").innerHTML = data;
+                jQuery("#pre-loader").hide();
+            }
+        });
+        seoUserActivity("Website Links Count Checker","11");
+    }
+
+    function showGetSourceCodeOfWebpage() {
+        var urlSourceCode = document.getElementById("urlSourceCode").value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/get_source_code.php'; ?>?url=" + urlSourceCode;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                //var objData = jQuery.parseJSON(data);
+                document.getElementById("textAreaSourceCode").value = data;
+                jQuery("#pre-loader").hide();
+            }
+        });
+        seoUserActivity("Get Source Code Of Webpage","12");
+    }
+
+    function showBrokenLinksFinder() {
+        var urlBrokenLink = document.getElementById("urlBrokenLink").value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/broken_links_finder.php'; ?>?url=" + urlBrokenLink;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                //var objData = jQuery.parseJSON(data);
+                document.getElementById("tableBrokenLink").innerHTML = data;
+                jQuery("#pre-loader").hide();
+            }
+        });
+        seoUserActivity("Broken Links Finder","13");
+    }
+
+    function showMetaTagsAnalyzer() {
+        var urlMetaDetails = document.getElementById("urlMetaDetails").value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/meta_tag_analyzer.php'; ?>?url=" + urlMetaDetails;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                var objData = jQuery.parseJSON(data);
+                document.getElementById("tableMeta").innerHTML = objData.htmlTableMeta;
+                jQuery("#pre-loader").hide();
+            }
+        });
+        seoUserActivity("Meta Tags Analyzer","15");
+    }
+
+    function showClassCIPChecker() {
+        var urlClassCIp = document.getElementById("urlClassCIp").value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/class_c_ip.php'; ?>?url=" + urlClassCIp;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                var objData = jQuery.parseJSON(data);
+                document.getElementById("tableClassCIP").innerHTML = objData.htmlClassCIP;
+                jQuery("#pre-loader").hide();
+            }
+        });
+        seoUserActivity("Class C IP Checker","16");
+    }
+
+    function showAlexaInformationFetcher() {
+        var urlAlexaInfo = document.getElementById("urlAlexaInfo").value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/alexa_info.php'; ?>?url=" + urlAlexaInfo;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                //var objData = jQuery.parseJSON(data);
+                document.getElementById("htmlAlexaInfo").innerHTML = data;
+                jQuery("#pre-loader").hide();
+            }
+        });
+        seoUserActivity("Alexa Information Fetcher","17");
+    }
+
+    function showDomainIntoIPConverter() {
+        var utlDomainToIp = document.getElementById("utlDomainToIp").value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/domain_to_ip.php'; ?>?url=" + utlDomainToIp;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                //var objData = jQuery.parseJSON(data);
+                document.getElementById("tableDomainToIp").innerHTML = data;
+                jQuery("#pre-loader").hide();
+            }
+        });
+        seoUserActivity("Domain Into IP Converter","18");
+    }
+
+    function showKeywordAnalyzer() {
+        var utlKeywordAnalyser = document.getElementById("utlKeywordAnalyser").value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/keyword_analysis.php'; ?>?url=" + utlKeywordAnalyser;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                var objData = jQuery.parseJSON(data);
+                document.getElementById("tablePhraseKeywords").innerHTML = objData.htmlResult;
+                jQuery("#pre-loader").hide();
+            }
+        });
+        seoUserActivity("Keyword Analyzer ","19");
+    }
+
+    function showLinkAnalyzer() {
+        var urlLinkAnalyzer = document.getElementById("urlLinkAnalyzer").value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/link_analyzer.php'; ?>?url=" + urlLinkAnalyzer;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                //var objData = jQuery.parseJSON(data);
+                document.getElementById("tblLinkAnalyser").innerHTML = data;
+                jQuery("#pre-loader").hide();
+            }
+        });
+        seoUserActivity("Link Analyzer","20");
+    }
+
+    function showReverseIPDomainChecker() {
+        var urlReverseIPDomain = document.getElementById("urlReverseIPDomain").value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/reverse_ip.php'; ?>?url=" + urlReverseIPDomain;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                //var objData = jQuery.parseJSON(data);
+                document.getElementById("tblReverseDomainIP").innerHTML = data;
+                jQuery("#pre-loader").hide();
+            }
+        });
+        seoUserActivity("Reverse IP Domain Checker","21");
+    }
+
+    function showServerStatusChecker() {
+        var urlServerStatusChecker = document.getElementById("urlServerStatusChecker").value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/server_or_url_status.php'; ?>?url=" + urlServerStatusChecker;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                //var objData = jQuery.parseJSON(data);
+                document.getElementById("tblServerStatusChecker").innerHTML = data;
+                jQuery("#pre-loader").hide();
+            }
+        });
+        seoUserActivity("Server OR URL Status Checker","22");
+    }
+
+    function getCommonResultWithoutJSON(urlElement, targetFile, targetElement) {
+        var param = document.getElementById(urlElement).value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true); ?>lib/small_seo_tools/" + targetFile + ".php?url=" + param;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                //var objData = jQuery.parseJSON(data);
+                document.getElementById(targetElement).innerHTML = data;
+                jQuery("#pre-loader").hide();
+            }
+        });
+        commonSeoUserActivity(urlElement);
+    }
+    
+    function commonSeoUserActivity(urlElement){
+        if(urlElement == 'urlWebsiteRedirectChecker')
+            seoUserActivity("Website Redirect Checker","23");
+        
+        if(urlElement == 'urlEncoderDecoder')
+            seoUserActivity("URL Encoder / Decoder","24");
+        
+        if(urlElement == 'urlWebsiteDescriptionFetcher')
+            seoUserActivity("Website Description Fetcher","25");
+        
+        if(urlElement == 'urlWHOISChecker')
+            seoUserActivity("WHOIS Checker","27");
+        
+        if(urlElement == 'urlRewritingTool')
+            seoUserActivity("URL Rewriting Tool","28");
+        
+        if(urlElement == 'urlUltimateXMLSiteMapGenerator')
+            seoUserActivity("Ultimate XML SiteMap Generator -- ERROR","29");
+        
+        if(urlElement == 'urlAlexaRankChecker')
+            seoUserActivity("Alexa Rank Checker","30");
+        
+        if(urlElement == 'urlOnlineMD5Generator')
+            seoUserActivity("Online MD5 Generator","31");
+        
+        if(urlElement == 'urlCodetoTextRatioChecker')
+            seoUserActivity("Code to Text Ratio Checker","33");
+        
+        if(urlElement == 'urlFindDNSRecords')
+            seoUserActivity("Find DNS Records","34");
+        
+        if(urlElement == 'urlWhatIsMyBrowser')
+            seoUserActivity("What Is My Browser","35");
+        
+        if(urlElement == 'urlEmailPrivacy')
+            seoUserActivity("E-mail Privacy","36");
+        
+        if(urlElement == 'urlSearchEngineSpiderSimulator')
+            seoUserActivity("Search Engine Spider Simulator -- ERROR","37");
+        
+        if(urlElement == 'urlDomainAgeChecker')
+            seoUserActivity("Domain Age Checker","39");
+        
+        if(urlElement == 'urlMyIPAddress')
+            seoUserActivity("My IP Address","40");
+        
+        if(urlElement == 'urlDomainIPAddress')
+            seoUserActivity("Domain IP Address","41");
+        
+        if(urlElement == 'urlPageSizeChecker')
+            seoUserActivity("Page Size Checker","42");
+        
+        if(urlElement == 'urlDomainHostingChecker')
+            seoUserActivity("Domain Hosting Checker","43");
+        
+        if(urlElement == 'urlGoogleIndexChecker')
+            seoUserActivity("Google Index Checker","44");
+            
+        if(urlElement == 'urlGooglePageSpeedInsights')
+            seoUserActivity("Google PageSpeed Insights Checker","46");
+        
+        if(urlElement == 'urlWebsiteInformation')
+            seoUserActivity("Website Information","47");
+        
+        if(urlElement == 'urlKeywordPositionChecker')
+            seoUserActivity("Keyword Position Checker","48");
+        
+        if(urlElement == 'urlWebsiteScoreCalculator')
+            seoUserActivity("Website Score Calculator","49");
+        
+        if(urlElement == 'urlWebsiteTestResults')
+            seoUserActivity("Website Test Results","50");
+        
+        if(urlElement == 'urlEstimationTrafficEarnings')
+            seoUserActivity("Estimation Traffic & Earnings","51");
+        
+        if(urlElement == 'urlMozRankChecker')
+            seoUserActivity("MozRank Checker","52");
+        
+        if(urlElement == 'urlWebsiteScreenshotGenerator')
+            seoUserActivity("Website Screenshot Generator","53");
+            
+        if(urlElement == 'urlGoogleCacheChecker')
+            seoUserActivity("Google Cache Checker","54");
+        
+        if(urlElement == 'urlDomainAuthorityChecker')
+            seoUserActivity("Domain Authority Checker","55");
+        
+        if(urlElement == 'urlPageAuthorityChecker')
+            seoUserActivity("Page Authority Checker","56");
+        
+        if(urlElement == 'urlResponsefromHeaders')
+            seoUserActivity("Response from Headers","57");
+            
+        if(urlElement == 'urlResponsefromServer')
+            seoUserActivity("Response from Server","58");
+        
+        if(urlElement == 'urlDesktopMobileSuggestions')
+            seoUserActivity("Desktop & Mobile Suggestions","59");
+        
+        if(urlElement == 'urlSpeedOptimizationTips')
+            seoUserActivity("Speed & Optimization Tips","60");
+        
+        if(urlElement == 'urlIPv6CompatibilityChecker')
+            seoUserActivity("IPv6 Compatibility Checker","61");
+        
+        if(urlElement == 'urlIPCanonicalizationChecker')
+            seoUserActivity("IP Canonicalization Checker","62");
+        
+        if(urlElement == 'urlPageStatusChecker')
+            seoUserActivity("Page Status Checker","63");
+        
+        if(urlElement == 'urlVirusTotalScanner')
+            seoUserActivity("VirusTotal Scanner","64");
+        
+        if(urlElement == 'keywordCompetitionChecker')
+            seoUserActivity("Instant Search Suggestions","65");
+            
+        if(urlElement == 'androidKeywordResearch')
+            seoUserActivity("Android Keyword Research Tool","66");
+            
+        if(urlElement == 'twitterTopicsKeywordFinder')
+            seoUserActivity("Twitter Topics Keyword Finder","78");
+        
+        if(urlElement == 'imageAltTextSEOChecker')
+            seoUserActivity("Image alt Text SEO Checker","79");
+        
+        if(urlElement == 'socialMediaSentimentAnalysis')
+            seoUserActivity("Social Media Sentiment Analysis Tool","80");
+        
+        if(urlElement == 'twitterPeopleProfileSearch')
+            seoUserActivity("Twitter People and Profile Search Tool","82");
+        
+        if(urlElement == 'fbBusinessSearchTool')
+            seoUserActivity("Facebook Business Search Tool","84");
+        
+    }
+
+    function submitDataForMetaTag() {
+        var form = jQuery("#frmMeta");
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/meta_tag_generator.php'; ?>";
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: form.serialize(),
+            success: function (data)
+            {
+                //var objData = jQuery.parseJSON(data);
+                document.getElementById("metaResult").innerHTML = data;
+                jQuery("#pre-loader").hide();
+            }
+        });
+        seoUserActivity("Meta Tag Generator","26");
+    }
+
+    function getWebsiteTest(idElement, idDisplayContainer) {
+        var param = document.getElementById(idElement).value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/link_analysis/success_error_warning.php?domain='; ?>" + param;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: '',
+            success: function (data)
+            {
+                var objData = jQuery.parseJSON(data);
+                document.getElementById(idDisplayContainer).innerHTML = '<table class="table" style="text-align: center;"><tbody><tr><td colspan="3"><h1> Your Website Test Results are <br><br></h1></td></tr><tr><td><h2 style="text-align: center;" class="text-success"><b>Success -  </b>' + objData.success + '</h2></td><td><h2 style="text-align: center;" class="text-warning"><b>Warnings -  </b>' + objData.warning + '</h2></td><td><h2 style="text-align: center;" class="text-danger"><b>Errors -  </b>' + objData.errors + '</h2></td></tr></tbody></table>';
+                jQuery("#pre-loader").hide();
+            }
+        });
+    }
+
+    function getWebsiteScore(idElement, idDisplayContainer) {
+        var param = document.getElementById(idElement).value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/link_analysis/success_error_warning.php?domain='; ?>" + param;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: '',
+            success: function (data)
+            {
+                var objData = jQuery.parseJSON(data);
+                document.getElementById(idDisplayContainer).innerHTML = '<table class="table" style="text-align: center;"><tbody><tr><td><h1>Your Website Score is</h1></td></tr><tr><td><h1 style="text-align: center;font-size: 50px;" class="text-danger">' + objData.score + '</h1></td></tr></tbody></table>';
+                jQuery("#pre-loader").hide();
+            }
+        });
+    }
+
+    function getKeywordPosition(idUrl, idKeyword, displayElement) {
+        var param = document.getElementById(idUrl).value + "&keyword=" + document.getElementById(idKeyword).value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/keyword_position.php?url='; ?>" + param;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: '',
+            success: function (data)
+            {
+                //var objData = jQuery.parseJSON(data);
+                document.getElementById(displayElement).innerHTML = data;
+                jQuery("#pre-loader").hide();
+            }
+        });
+    }
+    
+    function getKeywordDifficultiesResults(){
+        var keyword = document.getElementById("keywordDifficultyTool").value;
+        var se = document.getElementById("selectKeywordDifficultyTool").value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/keyword_difficulties/ajax.php?keyword='; ?>" + keyword + "&se="+se;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: '',
+            success: function (data)
+            {
+                //var objData = jQuery.parseJSON(data);
+                document.getElementById("tblKeywordDifficultyTool").innerHTML = data;
+                jQuery("#pre-loader").hide();
+            }
+        });
+        seoUserActivity("Keyword Difficulty Tool","69");
+    }
+
+    function getPageSpeedChecker() {
+        var param = document.getElementById("urlPageSpeedChecker").value;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/pagespeed_check.php?url='; ?>" + param;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: '',
+            success: function (data)
+            {
+                //var objData = jQuery.parseJSON(data);
+                document.getElementById("tblPageSpeedChecker").innerHTML = data;
+                jQuery("#pre-loader").hide();
+            }
+        });
+        seoUserActivity("Page Speed Checker","32");
+    }
+</script>
+<script>
+
+    var msg1 = "<?php echo 'Create Robots.txt file ?'; ?>";
+    var msg2 = "# <?php echo 'robots.txt generated by Aakash \n'; ?>\n";
+
+    function genRobots(form, msg1, msg2, saveAs) {
+        if (saveAs === undefined) {
+            saveAs = false;
+        }
+        if (confirm(msg1)) {
+            var roboListData = form.robolist;
+            roboListData.value = msg2;
+            if (form.google.value != "") {
+                roboListData.value += "User-agent: Googlebot\nDisallow:" +
+                        form.google.value + "\n";
+            }
+            if (form.gimage.value != "") {
+                roboListData.value += "User-agent: googlebot-image\nDisallow:" +
+                        form.gimage.value + "\n";
+            }
+            if (form.gmobile.value != "") {
+                roboListData.value += "User-agent: googlebot-mobile\nDisallow:" +
+                        form.gmobile.value + "\n";
+            }
+            if (form.msn.value != "") {
+                roboListData.value += "User-agent: MSNBot\nDisallow:" +
+                        form.msn.value + "\n";
+            }
+            if (form.yahoo.value != "") {
+                roboListData.value += "User-agent: Slurp\nDisallow:" +
+                        form.yahoo.value + "\n";
+            }
+            if (form.teoma.value != "") {
+                roboListData.value += "User-agent: Teoma\nDisallow:" +
+                        form.teoma.value + "\n";
+            }
+            if (form.gigablast.value != "") {
+                roboListData.value += "User-agent: Gigabot\nDisallow:" +
+                        form.gigablast.value + "\n";
+            }
+            if (form.dmoz.value != "") {
+                roboListData.value += "User-agent: Robozilla\nDisallow:" +
+                        form.dmoz.value + "\n";
+            }
+            if (form.nutch.value != "") {
+                roboListData.value += "User-agent: Nutch\nDisallow:" +
+                        form.nutch.value + "\n";
+            }
+            if (form.alexa.value != "") {
+                roboListData.value += "User-agent: ia_archiver\nDisallow:" +
+                        form.alexa.value + "\n";
+            }
+            if (form.baidu.value != "") {
+                roboListData.value += "User-agent: baiduspider\nDisallow:" +
+                        form.baidu.value + "\n";
+            }
+            if (form.naver.value != "") {
+                roboListData.value += "User-agent: naverbot\nDisallow:" +
+                        form.naver.value + "\n";
+                roboListData.value += "User-agent: yeti\nDisallow:" +
+                        form.naver.value + "\n";
+            }
+            if (form.ymm.value != "") {
+                roboListData.value += "User-agent: yahoo-mmcrawler\nDisallow:" +
+                        form.ymm.value + "\n";
+            }
+            if (form.psbot.value != "") {
+                roboListData.value += "User-agent: psbot\nDisallow:" +
+                        form.psbot.value + "\n";
+            }
+            if (form.blogs.value != "") {
+                roboListData.value += "User-agent: yahoo-blogs/v3.9\nDisallow:" +
+                        form.blogs.value + "\n";
+            }
+            if (form.allow.value != "") {
+                roboListData.value += "User-agent: *\nDisallow:" +
+                        form.allow.value + "\n";
+            }
+            if (form.delay.value != "") {
+                roboListData.value += "Crawl-delay: " +
+                        form.delay.value + "\n";
+            }
+            if (form.dir1.value != "") {
+                roboListData.value += "Disallow: " +
+                        form.dir1.value + "\n";
+            }
+            if (form.dir2.value != "") {
+                roboListData.value += "Disallow: " +
+                        form.dir2.value + "\n";
+            }
+            if (form.dir3.value != "") {
+                roboListData.value += "Disallow: " +
+                        form.dir3.value + "\n";
+            }
+            if (form.dir4.value != "") {
+                roboListData.value += "Disallow: " +
+                        form.dir4.value + "\n";
+            }
+            if (form.dir5.value != "") {
+                roboListData.value += "Disallow: " +
+                        form.dir5.value + "";
+            }
+            if (form.dir6.value != "") {
+                roboListData.value += "Disallow: " +
+                        form.dir6.value + "\n";
+            }
+            if (form.sitemap.value != "") {
+                roboListData.value += "Sitemap: " +
+                        form.sitemap.value + "\n";
+            }
+            if (saveAs) {
+                var roStr = document.getElementById("robolist").value.replace(/\n/g, "\r\n");
+                saveAsFile(roStr);
+            }
+            seoUserActivity("Robots.txt Generator","38");
+        }
+    }
+
+    function saveAsFile(str) {
+        var textToWrite = str;
+        var textFileAsBlob = new Blob([textToWrite], {type: 'text/plain'});
+        var downloadLink = document.createElement("a");
+        downloadLink.download = 'robots.txt';
+        downloadLink.innerHTML = "My Link";
+        window.URL = window.URL || window.webkitURL;
+        downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+        downloadLink.onclick = destroyClickedElement;
+        downloadLink.style.display = "none";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+    }
+
+    function destroyClickedElement(event) {
+        document.body.removeChild(event.target);
+    }
+</script>
+
+<script>
+    function doscreen_simulator() {
+        var my_url = jQuery("#url").val();
+        var my_res = jQuery("input[type='radio'][name='resolution']:checked").val();
+        var res = my_res.split("x");
+        var width = res[0];
+        var height = res[1];
+        var ssValue = width + 'X' + height;
+        if (my_url == "") {
+            sweetAlert(oopsStr, msgDomain, "error");
+        } else {
+            if (my_url.indexOf("https://") == 0) {
+            } else if (my_url.indexOf("http://") == 0) {
+            } else {
+                my_url = "https://" + my_url;
+            }
+            window.open(my_url, ssValue, 'toolbar=no,status=yes,scrollbars=yes,location=yes,menubar=no,directories=yes,width=' + width + ',height=' + height);
+            seoUserActivity("Webpage Screen Resolution Simulator","45");
+        }
+    }
+</script>

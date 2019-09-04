@@ -1,0 +1,606 @@
+<?php
+$igUserCollection = Mage::getModel('influencerusers/influencerusers')
+        ->getCollection()
+        ->addFieldToFilter('platform', '2')
+        ->addFieldToFilter('status', '1');
+?>
+<?php echo $this->getChildHtml('global_messages'); ?>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<!-- --------------------- File Manager Model Starts ----------------------->
+<input type="button" data-toggle="modal" data-target=".bd-example-modal-lg" style="display: none;" id="btnModal">
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="mb-30" style="margin-bottom: 0rem !important;">
+                        <h6 id="modalTitle">File Manager</h6>
+                    </div>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btnClose">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <center>
+                    <img style="display: none;" id="modal_loading" src="<?php echo $this->getSkinUrl('images/pre-loader/loader-01.svg', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div style="width: 100%;" id="media_model_body">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="getFilesFromFileManager();" type="button" class="btn btn-secondary">
+                    <i class="fa fa-upload" style="font-size:16px; margin-right: 10px;"></i> UPLOAD
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- --------------------- File Manager Model Ends ------------------------->
+<!-- ---------------- Emoji Expressions Starts -------------------->
+
+<button id="emojiModalBtn" style="display: none;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#emojiModal">Launch demo modal</button>
+<div class="modal fade" id="emojiModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="exampleModalLabel">
+                    <div class="mb-30">
+                        <div style="height: 2.3rem;">
+                            <span class="emoji1" onclick="setEmoji('&#128556;');">&#128556;</span>
+                            <span class="emoji1" onclick="setEmoji('&#128577;');">&#128577;</span>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span class="dropcap square">Y</span>ou can use model anywhere in your website consectetur adipisicing elit. At vel sed corporis delectus quo ea molestias a ab ad officiis eaque natus animi reiciendis sint beatae, dolor inventore praesentium lorem qui.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ---------------- Emoji Expressions Ends -------------------->
+
+
+<div class="page-title">
+    <div class="row">
+        <div class="col-sm-6">
+            <h4 class="mb-0"> Social Media Management - Post</h4>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                <li class="breadcrumb-item"><a href="<?php echo Mage::getBaseUrl(); ?>" class="default-color">Home</a></li>
+                <li class="breadcrumb-item active">Post </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<?php echo file_get_contents(Mage::getBaseUrl() . "options?active_option=post"); ?>
+
+<div class="row">
+    <div class="col-xl-4 mb-30">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <div class="row" style="border-bottom: solid 2px #ccc; margin-bottom: 5px; margin-top: 5px;">
+                    <div class="col-xl-7 mb-30" style="margin-bottom: 1.143rem !important;">
+                        <input id="ig_users_all" onclick="checkUncheckAll('ig_users_all', 'ig_user');" type="checkbox" value="1" style="float: left; margin-top: 4px; margin-right: 5px;"> 
+                        <h6>Instagram Users </h6>
+                    </div>
+                    <div class="col-xl-5 mb-30" style="text-align: right;margin-bottom: 1.143rem !important; padding-left: 0px;">
+                        <a href="<?php echo Mage::getBaseUrl() . 'smm-post-fb'; ?>">
+                            <i class="fa fa-facebook-f innericon" style="font-size:14px;"></i>
+                        </a>
+                        <a href="<?php echo Mage::getBaseUrl() . 'smm-post-instagram'; ?>">
+                            <i class="fa fa-instagram innericon innericon-active" style="font-size:14px"></i>
+                        </a>
+                        <a href="<?php echo Mage::getBaseUrl() . 'smm-post-twitter'; ?>">
+                            <i class="fa fa-tumblr-square innericon" style="font-size:14px"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="scrollbar  max-h-350" style="overflow-y: hidden; outline: currentcolor none medium; margin-top: 5px;" tabindex="3">
+                    <ul class="list-unstyled">
+                        <?php if ($igUserCollection->getSize() > 0): ?>
+                            <?php foreach ($igUserCollection as $igUser): ?>
+                                <li class="mb-30">
+                                    <a href="javascript:selectUser('ig_user<?php echo $igUser->getId(); ?>', 'loader<?php echo $igUser->getId(); ?>');">
+                                        <div class="media">
+                                            <input onclick="selectUser('ig_user<?php echo $igUser->getId(); ?>', 'loader<?php echo $igUser->getId(); ?>')" id="ig_user<?php echo $igUser->getId(); ?>" name="ig_user" value="<?php echo $igUser->getId(); ?>" type="checkbox" style="margin-right: 5px;" <?php echo ($igUser->getPassword() == '' ? 'disabled' : ''); ?>>
+                                            <div class="position-relative">
+                                                <img style="border: solid #ccc 1px; padding: 1px;" class="img-fluid mr-15 avatar-small" src="<?php echo $igUser->getProfilePicture(); ?>" alt="">
+                                                <i class="avatar-online bg-success"></i>
+                                            </div>
+                                            <div class="media-body">
+
+                                                <h6 style="font-size: 1rem; color: #333; text-transform: uppercase; font-family: 'Poppins', sans-serif;" class="mt-0"> <?php echo (strlen($igUser->getName()) > 15 ? substr($igUser->getName(), 0, 16) . ' ...' : $igUser->getName()); ?>  <small class="float-right">6 days ago</small></h6>
+                                                <p>
+                                                    <?php
+                                                    if ($igUser->getPassword() == '' || strlen($igUser->getPassword()) <= 3) {
+                                                        echo '<div style="width:80%; float:left;" class="alert alert-warning" role="alert">
+                                                                    <i style="margin-right:5px;" class="fa fa-warning"></i>Update Password
+                                                                  </div><a style="float: right;padding-right: 10px;padding-top: 12px;" href="javascript:updatePassword(' . $igUser->getId() . '); "><i class="fa fa-edit" style="font-size:18px; color:#28a745;"></i></a>';
+                                                    } else {
+                                                        echo $igUser->getUsername();
+                                                        echo '<a style="float: right;padding-right: 10px;padding-top: 2px;" href="javascript:updatePassword(' . $igUser->getId() . '); "><i class="fa fa-edit" style="font-size:18px; color:#28a745;"></i></a>';
+                                                    }
+                                                    ?>
+                                                </p>
+                                                <p style="font-size: 12px; font-weight: 500; color: orchid; display: none;" id="postProcessing<?php echo $igUser->getId(); ?>">
+                                                    <i class="fa fa-spinner fa-spin" style="font-size: 16px; margin-right: 7px; float: left; margin-top: 1px;"></i>
+                                                    <label>Posting . . .</label>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <li class="mb-30">
+                                <div class="alert alert-danger" role="alert">
+                                    Soffy! No Instagram User Found.
+                                </div>
+                            </li>
+                        <?php endif; ?>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-6 mb-30">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <h5 class="card-title"> New Post</h5>
+                <center>
+                    <img style="display: none;" id="instabox-loader" src="<?php echo $this->getSkinUrl('images/pre-loader/loader-01.svg', array('_secure' => true)); ?>" alt="">
+                </center>
+                <div class="tab round" id="insta_box_container">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a onclick="setSection('simple_post')" class="nav-link active show" id="home-07-tab" data-toggle="tab" href="#home-07" role="tab" aria-controls="home-07" aria-selected="true"> <i class="fa fa-home"></i> <label id="postLable" style="margin-bottom: 0rem;">Post</label></a>
+                        </li>
+                        <li class="nav-item">
+                            <a onclick="setSection('story')" class="nav-link" id="profile-07-tab" data-toggle="tab" href="#profile-07" role="tab" aria-controls="profile-07" aria-selected="false"><i class="fa fa-user"></i> <label id="storyLable" style="margin-bottom: 0rem;">Story </label></a>
+                        </li>
+                        <li class="nav-item">
+                            <a onclick="setSection('carrousal')" class="nav-link" id="portfolio-07-tab" data-toggle="tab" href="#portfolio-07" role="tab" aria-controls="portfolio-07" aria-selected="false"><i class="fa fa-picture-o"></i> <label id="carrousalLable" style="margin-bottom: 0rem;">Carousel </label></a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade active show" id="home-07" role="tabpanel" aria-labelledby="home-07-tab">
+
+                        </div>
+                        <div class="tab-pane fade" id="profile-07" role="tabpanel" aria-labelledby="profile-07-tab">
+
+                        </div>
+                        <div class="tab-pane fade" id="portfolio-07" role="tabpanel" aria-labelledby="portfolio-07-tab">
+
+                        </div>
+                        <!-- --------------- Form Starts ---------------->
+                        <?php /* ?><form method="post" action="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true); ?>lib/ssm/instagram/examples/uploadPhoto.php" enctype="multipart/form-data"><?php */ ?>
+                        <form id="uploadPostForm" method="post" action="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true); ?>lib/ssm/instagram/examples/doPost.php" enctype="multipart/form-data">
+                            <input id="section" type="hidden" name="section" value="simple_post">
+                            <input type="hidden" name="files" id="filesCustom">
+                            <div class="add-image" style="border: solid 1px #ccc; width: 100%; min-height: 100px; padding: 3px;" id="fileManagerPreview">
+
+                            </div>
+                            <div style="margin-top: 5px;">
+                                <a data-toggle="modal" data-target=".bd-example-modal-lg" href="#" class="btn btn-outline-success btn-sm" style="margin-top: 7px;">File Manager</a>
+                                <input accept="image/*" onchange="loadFile(event, 'localfile')" type="file" name="localfile" id="localfile" style="display: none;">
+                                <a id="btnMedia" href="javascript:document.getElementById('localfile').click();" class="btn btn-outline-success btn-sm" style="margin-top: 7px;">Upload Media</a>
+                            </div>
+
+                            <div style="width: 100%; margin-top: 10px;">
+                                <table style="width: 100%;">
+                                    <tr>
+                                        <td style="width: 100%; text-align: center;">
+                                            <textarea id="captiontxt" name="captiontxt" rows="3" style="width: 100%;" placeholder="Add a caption" required="required"></textarea>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-top: 5px;">
+                                            <a href="javascript:launchEmojiModel();" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Get Expressions">
+                                                <i class="fa fa-adjust" style="font-size:16px"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Get Caption">
+                                                <i class="fa fa-hdd-o" style="font-size:16px"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Save Caption">
+                                                <i class="fa fa-floppy-o" style="font-size:16px"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-top: 20px;">
+                                            <input type="checkbox" style="margin-right: 5px;"> Schedule
+                                            <input checked="checked" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" type="checkbox" id="advanceoption" style="margin-right: 5px;margin-left: 25px;"> Advance Option
+                                            <!-- ------------------------->
+                                            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                                                <div class="input-group" style="margin-top: 5px;">
+                                                    <div class="input-group-prepend" style="width: 100%;">
+                                                        <div class="input-group-text">
+                                                            <i style="font-size: 20px;" class="fa fa-map-marker" aria-hidden="true"></i>
+                                                        </div>
+                                                        <input onkeyup="getInstagramLocation(this.value)" class="form-control" list="browsers" name="location" placeholder="Enter Location" type="text" style="height: 40px;" />
+                                                    </div>
+                                                    <small id="locationLbl" class="form-text text-muted">Enter Location</small>
+                                                    <!--<input class="form-control" id="inlineFormInputGroupUsername2" placeholder="Enter Location" type="text" style="height: 40px;">-->
+                                                    
+                                                    <datalist id="browsers">
+                                                        <option value="Chrome">dasdad</option>
+                                                    </datalist>
+                                                    <!-- --------------------------------->
+                                                </div>
+
+                                                <div class="input-group" style="margin-top: 35px; height: 110px;">
+                                                    <textarea rows="3" style="width: 100%;" placeholder="Add your first comment"></textarea>
+                                                    <div class="controls" style="padding-top: 5px;">
+                                                        <a href="javascript:launchEmojiModel();" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Get Expression">
+                                                            <i class="fa fa-adjust" style="font-size:16px"></i>
+                                                        </a>
+                                                        <a href="#" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Get Caption">
+                                                            <i class="fa fa-hdd-o" style="font-size:16px"></i>
+                                                        </a>
+                                                        <a href="#" class="btn btn-outline-success btn-sm" data-toggle="tooltip" data-placement="bottom" title="Save Caption">
+                                                            <i class="fa fa-floppy-o" style="font-size:16px"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- ------------------------->
+                                            <div id="show-hide-address">
+
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            <div class="form-group">
+                                                <div class="input-group date" id="datepicker-bottom-left">
+                                                    <input class="form-control" placeholder="Bottom left" type="text">
+                                                    <span style="" class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>
+                                                <div class="invalid-feedback" style="display: block; color: green;">Post Date</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right;">
+                                            <a data-toggle="modal" data-target=".bd-example-modal-lg" href="javascript:void(0);" class="button" style="height: 40px; padding-top: 7px;">
+                                                <span>Preview</span>
+                                            </a>
+                                            <a href="javascript:document.getElementById('frmSubmitBtn').click();" class="button" style="height: 40px; padding-top: 7px;">
+                                                <span>Post</span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <input type="submit" id="frmSubmitBtn" style="display: none;">
+                        </form>
+                        <!-- --------------- Form Ends ------------------>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 mb-30">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <h5 class="card-title"> Updates</h5>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function getInstagramLocation(place) {
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true); ?>lib/ssm/instagram/examples/getLocation.php?place=" + place;
+        if (place.length == 3) {
+            jQuery("#locationLbl").html('<i class="fa fa-spinner fa-spin" style="font-size:18px; margin-right:5px;"></i> Searching location...');
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: "",
+                success: function (data)
+                {
+                    //var objData = jQuery.parseJSON(data);
+                    jQuery("#locationLbl").html('');
+                    jQuery("#browsers").html(data);
+                }
+            });
+        }
+    }
+
+</script>
+
+<script>
+    function launchEmojiModel() {
+        document.getElementById("emojiModalBtn").click();
+    }
+
+    function setEmoji(emojiCode) {
+        var captiontxt = document.getElementById("captiontxt").value;
+        captiontxt = captiontxt + emojiCode;
+        document.getElementById("captiontxt").value = captiontxt;
+    }
+</script>
+<script>
+    function doPost(frmObj, arrUserIds, index) {
+        jQuery("#instabox-loader").css("opacity", '0.8');
+        jQuery("#instabox-loader").show();
+        jQuery("#insta_box_container").hide();
+
+        jQuery("#postProcessing" + arrUserIds[index]).show();
+
+        jQuery.ajax({
+            url: "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true); ?>lib/ssm/instagram/examples/doPost.php?userid=" + arrUserIds[index],
+            type: "POST",
+            data: new FormData(frmObj),
+            contentType: false,
+            cache: false,
+            processData: false,
+            success: function (data) {
+                //var obj = JSON.parse(data); 
+                jQuery("#postProcessing" + arrUserIds[index]).hide();
+                index++;
+                if (index == arrUserIds.length) {
+                    jQuery("#instabox-loader").hide();
+                    jQuery("#insta_box_container").show();
+                    swal("Congratulation!", "Successfully Posted!", "success");
+                } else {
+                    doPost(frmObj, arrUserIds, index);
+                }
+
+            },
+            error: function () {}
+        });
+    }
+
+    jQuery(document).ready(function (e) {
+        jQuery("#uploadPostForm").on('submit', (function (e) {
+            e.preventDefault();
+            var ids = [];
+            jQuery.each($("input[name='ig_user']:checked"), function () {
+                ids.push(jQuery(this).val());
+            });
+
+            var userIds = ids.join(",");
+
+            if (userIds == '' || userIds == null) {
+                jQuery("#instabox-loader").hide();
+                swal("Sorry!", "Please select user", "error");
+            } else {
+                jQuery("#instabox-loader").css("opacity", '0.8');
+                jQuery("#instabox-loader").show();
+                jQuery("#insta_box_container").hide();
+                var arrUserIds = userIds.split(",");
+                doPost(this, arrUserIds, 0);
+            }
+
+            /*var result = doPost(this);
+             if (parseInt(result) == 1) {
+             swal("Congratulation!", "Successfully Posted!", "success");
+             } else {
+             swal("Sorry!", data, "error");
+             }
+             jQuery("#pre-loader").hide();*/
+        }));
+    });
+
+    var loadFile = function (event, sourceId) {
+        var images = ["jpg", "jpeg", "png", "gif"];
+        var videos = ["mp4", "mpeg", "avi"];
+        var filename = document.getElementById(sourceId).value;
+        var fileExtension = filename.substr((filename.lastIndexOf('.') + 1));
+        var fileManagerPreview = document.getElementById("fileManagerPreview");
+        var previewImageArr = document.getElementsByClassName("preview-image");
+        var indexImage = images.indexOf(fileExtension);
+
+
+
+        if (indexImage >= 0) {
+            var img = '';
+            for (var i = 0; i < event.target.files.length; i++) {
+                img = img + '<img src="' + URL.createObjectURL(event.target.files[i]) + '" class="customImgPreview">';
+            }
+
+            fileManagerPreview.innerHTML = img;
+            /*previewImageArr[0].innerHTML = '<img width="100%" src="' + URL.createObjectURL(event.target.files[0]) + '">';*/
+        }
+        var indexVideo = videos.indexOf(fileExtension);
+        if (indexVideo >= 0) {
+            var img = '<video controls="" width="" height="60px"><source src="' + URL.createObjectURL(event.target.files[0]) + '" type="video/mp4"><div class="file-preview-other"><span class="file-icon-4x"><i class="glyphicon glyphicon-file"></i></span></div></video>';
+            fileManagerPreview.innerHTML = img;
+            previewImageArr[0].innerHTML = '<video controls="" width="100%" height="auto"><source src="' + URL.createObjectURL(event.target.files[0]) + '" type="video/mp4"><div class="file-preview-other"><span class="file-icon-4x"><i class="glyphicon glyphicon-file"></i></span></div></video>';
+        }
+
+    };
+
+</script>
+
+<script>
+    function setSection(sectionName) {
+        if (sectionName == 'simple_post') {
+            document.getElementById('section').value = 'simple_post';
+            document.getElementById("localfile").removeAttribute("multiple");
+            document.getElementById('localfile').setAttribute('name', 'localfile');
+            document.getElementById("btnMedia").innerHTML = "Upload Media";
+        } else if (sectionName == 'story') {
+            document.getElementById('section').value = 'story';
+            document.getElementById('localfile').setAttribute('multiple', 'multiple');
+            document.getElementById('localfile').setAttribute('name', 'localfile[]');
+            document.getElementById("btnMedia").innerHTML = "Upload Multiple Media";
+        } else if (sectionName == 'carrousal') {
+            document.getElementById('section').value = 'carrousal';
+            document.getElementById('localfile').setAttribute('multiple', 'multiple');
+            document.getElementById('localfile').setAttribute('name', 'localfile[]');
+            document.getElementById("btnMedia").innerHTML = "Upload Multiple Media";
+        } else {
+
+        }
+    }
+</script>
+
+<style>
+
+    .emoji1{
+        font-size:1.8rem; 
+        padding: 2px;
+        /*-webkit-transition: width 1s;*/
+        cursor: pointer;
+
+    }
+
+    .emoji1:hover{
+        /*font-size:2.0rem;*/
+    }
+
+    .customImgPreview{
+        width: 90px;
+        border: solid 1px #ccc; 
+        padding: 3px; 
+        border-radius: 5px; 
+        margin: 1px; 
+        vertical-align: middle;
+    }
+
+    .image-checkbox{
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 5px;
+        width: 150px;
+    }
+
+    .image-checkbox:hover{
+        box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+    }
+
+    .input-group{
+        height: 40px;
+    }
+    #show-hide-address{
+        display: none;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .add-image{
+        padding: 10px;
+        text-align: left;
+        color: #eaeaea;
+        text-transform: uppercase;
+        float: left;
+    }
+
+    .w50{
+        width: 50%;
+    }
+
+    .tab .nav.nav-tabs li a {
+        padding: 6px 17px;
+    }
+
+    .innericon-active{
+        color:#84BA3F !important;
+    }
+
+    .innericon:hover{
+        color:#84BA3F;
+    }
+    .innericon {
+        box-sizing: border-box;
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        border-radius: 100%;
+        background: #f7f7f7;
+        background-image: none;
+        background-origin: padding-box;
+        background-image: none;
+        background-origin: padding-box;
+        line-height: 24px;
+        color: #666;
+        font-size: 18px;
+        text-align: center;
+        border: 1px solid #ccc;
+        border-bottom-color: rgb(204, 204, 204);
+        border-bottom-color: rgb(204, 204, 204);
+        border-bottom-color: #bbb;
+        background-origin: border-box;
+        background-image: -webkit-linear-gradient(top,#fff,#eee);
+        background-image: linear-gradient(to bottom,#fff,#eee);
+        text-shadow: 0 1px 0 #fff;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+
+    .line-no-text{
+        margin-bottom: 3px;
+        height: 13px;
+        background: #f5f5f5;
+    }
+
+    .caption-info{
+        padding-top: 10px;
+    }
+
+    .preview-image{
+        height: 217px;
+        background-size: cover;
+        background-position: center center;
+        background-color: #f5f5f5;
+        overflow: hidden;
+        position: relative;
+        padding-top: 10px;
+    }
+
+    .post-info{
+        padding: 10px 20px;
+        word-break: break-all;
+    }
+
+    .pull-left {
+        float: left !important;
+    }
+
+    .pull-right {
+        float: right !important;
+    }
+
+    .preview-comment {
+        position: relative;
+        border-top: 1px solid #eee;
+        padding: 15px 50px;
+        color: #999;
+        background: url(<?php echo $this->getSkinUrl('images/heart-icon.png', array('_secure' => true)); ?>) no-repeat 20px;
+    }
+
+    .item{
+        float: left;
+        margin-right: 25px;
+        font-weight: 600;
+        font-size: 12px;
+    }
+
+    .nav-link{
+        margin-right: 4px;
+    }
+
+    .tab .nav.nav-tabs li a {
+        padding: 6px 14px !important;
+    }
+</style>

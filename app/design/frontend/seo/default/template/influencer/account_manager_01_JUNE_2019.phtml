@@ -1,0 +1,277 @@
+<?php
+if (Mage::getSingleton('customer/session')->isLoggedIn()) {
+    $customerData = Mage::getSingleton('customer/session')->getCustomer();
+    $customerId = $customerData->getId();
+} else {
+    
+}
+
+$fbUserCollection = Mage::getModel('influencerusers/influencerusers')
+        ->getCollection()
+        ->addFieldToFilter('status', '1')
+        ->addFieldToFilter('customer_id', $customerId)
+        ->addFieldToFilter('platform', '1');
+
+$igUserCollection = Mage::getModel('influencerusers/influencerusers')
+        ->getCollection()
+        ->addFieldToFilter('status', '1')
+        ->addFieldToFilter('customer_id', $customerId)
+        ->addFieldToFilter('platform', '2');
+
+$twUserCollection = Mage::getModel('influencerusers/influencerusers')
+        ->getCollection()
+        ->addFieldToFilter('status', '1')
+        ->addFieldToFilter('customer_id', $customerId)
+        ->addFieldToFilter('platform', '3');
+
+$helper = Mage::helper('influencerusers/data');
+$instagramCredentialsArr = $helper->getIntagramCredentials();
+
+//echo "<pre>"; print_r($igUserCollection->getData()); die();
+?>
+
+<div class="page-title">
+    <div class="row">
+        <div class="col-sm-6">
+            <h4 class="mb-0"> Social Media Management - Account Manager</h4>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                <li class="breadcrumb-item"><a href="<?php echo Mage::getBaseUrl(); ?>" class="default-color">Home</a></li>
+                <li class="breadcrumb-item active">Account Manager</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<?php //echo file_get_contents(Mage::getBaseUrl() . "options?active_option=accountManager"); ?>
+<!-- --------------- Modal Start ------------------>
+<input type="button" data-toggle="modal" data-target=".bd-example-modal-lg" id="btnModal" style="display: none;">
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="padding-bottom: 0px;">
+                <div class="modal-title">
+                    <div class="mb-30" style="padding-bottom: 0px; margin-bottom: 0px;">
+                        <h6 id="titleModal">EXPERTISE</h6>
+                    </div>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modal_body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- --------------- Modal Ends ------------------->
+<div class="row" id="users">
+    <div class="col-xl-4 mb-30">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <h5 class="card-title">Facebook Users (<?php echo $fbUserCollection->getSize(); ?>) </h5>
+                <!-- action group -->
+                <div class="btn-group info-drop">
+                    <button type="button" class="dropdown-toggle-split text-muted" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ti-more" data-toggle="tooltip" data-placement="bottom" title="Manage Users"></i></button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="javascript:addEditUsers('facebook');"><i class="text-success ti-thumb-up"></i> Add new user</a>
+                        <a class="dropdown-item" href="#"><i class="text-danger ti-trash"></i> Delete all</a>
+                    </div>
+                </div>
+                <div class="scrollbar  max-h-350" style="overflow-y: hidden; outline: currentcolor none medium;" tabindex="3">
+                    <ul class="list-unstyled">
+                        <?php if ($fbUserCollection->getSize() > 0): ?>
+                            <?php foreach ($fbUserCollection as $fbUser): ?>
+                                <li class="mb-30">
+                                    <div class="media">
+                                        <div class="position-relative">
+                                            <img class="img-fluid mr-15 avatar-small" src="<?php echo $fbUser->getProfilePicture(); ?>" alt="">
+                                            <i class="avatar-online bg-success"></i>
+                                        </div> 
+                                        <div class="media-body">
+                                            <h6 class="mt-0"><?php echo $fbUser->getName(); ?></h6>
+                                            <p>
+                                                <small style="float: right; padding-right: 10px;">
+                                                    <a style="border: none; padding-left: 2px; padding-right: 2px;" class="btn btn-outline-success btn-sm" href="https://www.facebook.com/<?php echo $fbUser->getUsername(); ?>" target="_blank" data-toggle="tooltip" data-placement="bottom" title="Facebook Profile"><i class="fa fa-facebook-square" style="font-size:18px"></i></a>
+                                                    <a style="border: none; padding-left: 2px; padding-right: 2px;" class="btn btn-outline-success btn-sm" href="" data-toggle="tooltip" data-placement="bottom" title="Add as Influencer"><i class="fa fa-user-circle-o" style="font-size:16px"></i></a>
+                                                    <a style="border: none; padding-left: 2px; padding-right: 2px;" class="btn btn-outline-success btn-sm" href="" data-toggle="tooltip" data-placement="bottom" title="Analysis"><i class="fa fa-line-chart" style="font-size:16px"></i></a>
+                                                    <a style="border: none; padding-left: 2px; padding-right: 2px;" class="btn btn-outline-warning btn-sm" href="javascript:deleteUser('<?php echo $fbUser->getId(); ?>'); " data-toggle="tooltip" data-placement="bottom" title="Delete"><i class="fa fa-trash-o" style="font-size:16px"></i></a>
+                                                </small>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="alert alert-danger" role="alert">
+                                Sorry! No Facebook User Found.
+                            </div>
+                        <?php endif; ?>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 mb-30">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <h5 class="card-title">Instagram Users (<?php echo $igUserCollection->getSize(); ?>) </h5>
+                <!-- action group -->
+                <div class="btn-group info-drop">
+                    <button type="button" class="dropdown-toggle-split text-muted" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ti-more" data-toggle="tooltip" data-placement="bottom" title="Manage Users"></i></button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="javascript:addEditUsersForInstagram();"><i class="text-success ti-thumb-up"></i> Add new user</a>
+                        <a class="dropdown-item" href="#"><i class="text-danger ti-trash"></i> Delete all</a>
+                    </div>
+                </div>
+                <div class="scrollbar  max-h-350" style="overflow-y: hidden; outline: currentcolor none medium;" tabindex="3">
+                    <ul class="list-unstyled">
+                        <?php if ($igUserCollection->getSize() > 0): ?>
+                            <?php foreach ($igUserCollection as $igUser): ?>
+                                <li class="mb-30">
+                                    <div class="media">
+                                        <div class="position-relative">
+                                            <img class="img-fluid mr-15 avatar-small" src="<?php echo $igUser->getProfilePicture(); ?>" alt="">
+                                            <i class="avatar-online bg-success"></i>
+                                        </div> 
+                                        <div class="media-body">
+                                            <h6 class="mt-0"><?php echo $igUser->getName(); ?></h6>
+                                            <p>
+                                                <small style="float: left; padding-right: 10px;">
+                                                    <?php echo $igUser->getUsername(); ?>
+                                                </small>
+                                                <small style="float: right; padding-right: 10px;">
+                                                    <a style="border: none; padding-left: 2px; padding-right: 2px;" class="btn btn-outline-success btn-sm" href="https://www.instagram.com/<?php echo $igUser->getUsername(); ?>" target="_blank" data-toggle="tooltip" data-placement="bottom" title="Instagram Profile"><i class="fa fa-instagram" style="font-size:18px"></i></a>
+                                                    <a style="border: none; padding-left: 2px; padding-right: 2px;" class="btn btn-outline-success btn-sm" href="" data-toggle="tooltip" data-placement="bottom" title="Add as Influencer"><i class="fa fa-user-circle-o" style="font-size:16px"></i></a>
+                                                    <a style="border: none; padding-left: 2px; padding-right: 2px;" class="btn btn-outline-success btn-sm" href="" data-toggle="tooltip" data-placement="bottom" title="Analysis"><i class="fa fa-line-chart" style="font-size:16px"></i></a>
+                                                    <a style="border: none; padding-left: 2px; padding-right: 2px;" class="btn btn-outline-warning btn-sm" href="javascript:deleteUser('<?php echo $igUser->getId(); ?>'); " data-toggle="tooltip" data-placement="bottom" title="Delete"><i class="fa fa-trash-o" style="font-size:16px"></i></a>
+                                                </small>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="alert alert-danger" role="alert">
+                                Sorry! No Instagram User Found.
+                            </div>
+                        <?php endif; ?>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 mb-30">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <h5 class="card-title">Twitter Users (<?php echo $twUserCollection->getSize(); ?>) </h5>
+                <!-- action group -->
+                <div class="btn-group info-drop">
+                    <button type="button" class="dropdown-toggle-split text-muted" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ti-more" data-toggle="tooltip" data-placement="bottom" title="Manage Users"></i></button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="javascript:addEditUsers('twitter');"><i class="text-success ti-thumb-up"></i> Add new user</a>
+                        <a class="dropdown-item" href="#"><i class="text-danger ti-trash"></i> Delete all</a>
+                    </div>
+                </div>
+                <div class="scrollbar  max-h-350" style="overflow-y: hidden; outline: currentcolor none medium;" tabindex="3">
+                    <ul class="list-unstyled">
+                        <?php if ($twUserCollection->getSize() > 0): ?>
+                            <?php foreach ($twUserCollection as $twUser): ?>
+                                <li class="mb-30">
+                                    <div class="media">
+                                        <div class="position-relative">
+                                            <img class="img-fluid mr-15 avatar-small" src="<?php echo $twUser->getProfilePicture(); ?>" alt="">
+                                            <i class="avatar-online bg-success"></i>
+                                        </div> 
+                                        <div class="media-body">
+                                            <h6 class="mt-0"><?php echo $twUser->getName(); ?></h6>
+                                            <p>
+                                                <small style="float: right; padding-right: 10px;">
+                                                    <a style="border: none; padding-left: 2px; padding-right: 2px;" class="btn btn-outline-success btn-sm" href="" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="fa fa-edit" style="font-size:16px"></i></a>
+                                                    <a style="border: none; padding-left: 2px; padding-right: 2px;" class="btn btn-outline-success btn-sm" href="" data-toggle="tooltip" data-placement="bottom" title="Add as Influencer"><i class="fa fa-user-circle-o" style="font-size:16px"></i></a>
+                                                    <a style="border: none; padding-left: 2px; padding-right: 2px;" class="btn btn-outline-success btn-sm" href="" data-toggle="tooltip" data-placement="bottom" title="Analysis"><i class="fa fa-line-chart" style="font-size:16px"></i></a>
+                                                    <a style="border: none; padding-left: 2px; padding-right: 2px;" class="btn btn-outline-warning btn-sm" href="" data-toggle="tooltip" data-placement="bottom" title="Delete"><i class="fa fa-trash-o" style="font-size:16px"></i></a>
+                                                </small>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="alert alert-danger" role="alert">
+                                Sorry! No Twitter User Found.
+                            </div>
+                        <?php endif; ?>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function addEditUsersForInstagram() {
+        var url = 'https://api.instagram.com/oauth/authorize/?client_id=<?php echo $instagramCredentialsArr['INSTAGRAM_CLIENT_ID']; ?>&redirect_uri=<?php echo urlencode($instagramCredentialsArr['INSTAGRAM_REDIRECT_URI']); ?>&response_type=code&scope=basic';
+        //window.open(url);
+        document.location.href = url;
+    }
+
+    function deleteUser(userId) {
+        var url = "<?php echo Mage::getBaseUrl(); ?>influencerusers/index/deleteUser?userId=" + userId;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: ""/*form.serialize()*/,
+            success: function (data)
+            {
+                var objData = jQuery.parseJSON(data);
+                //----------------------------------
+                jQuery.ajax({
+                    type: "POST",
+                    url: objData.url,
+                    data: ""/*form.serialize()*/,
+                    success: function (data)
+                    {
+                        var $result = jQuery(data).find('#users').html();
+                        jQuery("#users").html($result);
+                        jQuery("#pre-loader").hide();
+                    }
+                });
+                //----------------------------------
+            }
+        });
+    }
+
+    function addEditUsers(userType) {
+        //alert(userType);
+        var url = "<?php echo Mage::getBaseUrl(); ?>add_edit_user?userType=" + userType;
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: ""/*form.serialize()*/,
+            success: function (data)
+            {
+                jQuery("#titleModal").html("Create Facebook User");
+                jQuery("#pre-loader").hide();
+                jQuery("#modal_body").html(data);
+                document.getElementById("btnModal").click();
+            }
+        });
+    }
+</script>
+
+<style>
+
+</style>

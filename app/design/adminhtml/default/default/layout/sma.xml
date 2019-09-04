@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <sma_adminhtml_sma_index>
+        <reference name="content">
+            <block type="sma/adminhtml_sma" name="sma" />
+        </reference>
+    </sma_adminhtml_sma_index>
+</layout>

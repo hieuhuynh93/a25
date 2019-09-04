@@ -1,0 +1,633 @@
+<?php
+$custID = '';
+$userPermissions = '';
+
+if (isset($_REQUEST['customer_id'])) {
+    $custID = $_REQUEST['customer_id'];
+} elseif (Mage::getSingleton('customer/session')->isLoggedIn()) {
+    $customer = Mage::getSingleton('customer/session')->getCustomer();
+    $custID = $customer->getId();
+    $customerData = Mage::getModel('customer/customer')->load($customer->getId());
+    $userPermissions = $customerData->getUserPermissions();
+} else {
+    $customerLogin = Mage::getUrl('customer/account/login');
+    //Mage::app()->getFrontController()->getResponse()->setRedirect($customerLogin);
+}
+
+
+$processingStatusBar = '<i class="fa fa-spinner fa-spin" style="font-size:24px; color: #28a745;"></i><p><span class="badge badge-success">Processing</span></p>';
+$completedStatusBar = '<i class="fa fa-check-square-o" style="font-size:22px;color:#17a2b8;"></i><p><span class="badge badge-info">Completed</span></p>';
+$stoppedStatusBar = '<i class="fa fa-exclamation-triangle" style="font-size:22px;color:#ffc107;"></i><p><span class="badge badge-warning">Stopped</span></p>';
+
+$linkCollections = Mage::getModel('linkanalysis/linkanalysis')
+        ->getCollection()
+        ->addFieldToFilter('url_type', '1')
+        ->addFieldToFilter('customer_id', $custID)
+        ->setOrder('linkanalysis_id', 'DESC');
+
+
+
+
+?>
+<style>
+    .isDisabled {
+        color: currentColor;
+        cursor: not-allowed;
+        opacity: 0.5;
+        text-decoration: none;
+    }
+    .button + .button {
+        margin-left: 5px;
+        margin-bottom: 5px;
+        margin-right: 10px;
+        float: right;
+    }
+    .btn btn-outline-warning btn-sm{
+        display: none;
+    }
+</style>
+<!-- ------------- Website Audit Popup Starts -------------------->
+<button style="display: none;" id="btnProcessing" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"> Launch demo modal </button>
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="mb-30" style="margin-bottom: 0.143rem !important;">
+                        <h6>PLEASE WAIT, WHILE PROCESSING BELOW ACTIONS</h6>
+                        <p style="padding-left: 10px; margin-bottom: -5px;">
+                            <i class="fa fa-spinner fa-spin" style="font-size:15px;"></i>
+                            <b id="process_text" class="text-info" style="padding-left: 5px;">Start Website Auditing</b>
+                        </p>
+                    </div>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-sm-12">
+                    <div class="progress" style="height: 25px;">
+                        <p id="processPercentage" style="position: absolute;padding: 1px;font-size: 15px;font-weight: 600;color: #fff;text-align: center;width: 100%;">0 % Completed</p>
+                        <div id="divProgressBarContainer" class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; height: 25px;">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ------------- Website Audit Popup Ends ---------------------->
+<div class="page-title">
+    <div class="row">
+        <div class="col-sm-6">
+            <h4 class="mb-0"> Link Analysis</h4>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                <li class="breadcrumb-item"><a href="index.html" class="default-color">Home</a></li>
+                <li class="breadcrumb-item">Dashboard</li>
+                <li class="breadcrumb-item active">Link Analysis</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<div class="row">   
+    <div class="col-xl-12 mb-30">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        <div class="alert alert-danger" id="msgbox_error" role="alert" style="width: 100%; display: none;">This is a danger alert—check it out!</div>
+                        <div class="alert alert-success" id="msgbox_success" role="alert" style="width: 100%; display: none;">This is a success alert—check it out!</div>
+                        <div class="alert alert-warning" id="msgbox_warning" role="alert"style="width: 100%; display: none;">This is a warning alert—check it out!</div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-4" style="float: left; padding: 0px;">
+                    <form id="addDomainFrm">
+                        <div class="input-group mb-3">
+                            <input id="domain_name_root" name="domain_name_root" placeholder="Add Domain" class="form-control" aria-label="Text input with checkbox" type="search" required="required">
+                            <div class="input-group-prepend">
+                                <button onclick="addDomain();" class="button" type="button" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Check for robots.txt">Add</button>
+
+                            </div>
+                        </div>
+                        <input type="submit" id="submitdomainname" style="display: none;">
+                    </form>
+                </div>
+                <div class="col-sm-12 col-md-8" style="float: left; padding: 0px;">
+                    <a href="javascript:downloadLinkDetailsCsv('links_ids');" class="button" style="float: right;">
+                        <span>Download</span>
+                        <i class="fa fa-cloud-download" style="font-size:16px"></i>
+                    </a>
+
+
+                    <a href="javascript:void(0);" class="button">
+                        <span>Update All</span>
+                        <i class="fa fa-refresh" style="font-size:16px"></i>
+                    </a>
+
+                    <a href="javascript:deleteDomain('links_ids');" class="button">
+                        <span>Delete</span>
+                        <i class="fa fa-trash-o" style="font-size:16px"></i>
+                    </a>
+
+                    <a href="javascript:showPageById('7', '1');" class="button">
+                        <span>Update</span>
+                        <i class="fa fa-refresh" id="selectedUpdateCustom" style="font-size:16px"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" id="linkanalysis_table">   
+    <div class="col-xl-12 mb-30">     
+        <div class="card card-statistics h-100"> 
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="datatable" class="table table-striped table-bordered p-0">
+                        <thead>
+                            <tr>
+                                <th style="width: 8.5px; text-align: center;">
+                                    <input id="links_ids_all" onclick="checkUncheckAll('links_ids_all', 'links_ids');" type="checkbox">
+                                </th>
+                                <th style="width: 30.5px; text-align: center;">Domain Id</th>
+                                <th style="width: 250.5px;">Domain</th>
+                                <th style="width: 75.5px; text-align: center;">Date</th>
+                                <th style="width: 48.5px; text-align: center;">Status</th>
+                                <th style="width: 48.5px; text-align: center;">No Of URL</th>
+                                <th style="width: 75.5px; text-align: center;"></th>
+                                <th style="width: 75.5px; text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if ($linkCollections->getSize() > 0): ?>
+                                <?php foreach ($linkCollections as $linkCollection): ?>
+                                    <tr>
+                                        <td style="text-align: center;"><input type="checkbox" name="links_ids" value="<?php echo $linkCollection->getId(); ?>"></td>
+                                        <td style="text-align: center;">
+                                            <a href="<?php echo Mage::helper('cms/page')->getPageUrl(8) ?>?domain=<?php echo $linkCollection->getId(); ?>" target="_blank">
+                                                <?php echo $linkCollection->getId(); ?>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="<?php echo Mage::helper('cms/page')->getPageUrl(8) ?>?domain=<?php echo $linkCollection->getId(); ?>" target="_blank">
+                                                <?php echo $linkCollection->getUrl(); ?>
+                                            </a>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <a href="<?php echo Mage::helper('cms/page')->getPageUrl(8) ?>?domain=<?php echo $linkCollection->getId(); ?>" target="_blank">
+                                                <?php echo $linkCollection->getCreatedTime(); ?>
+                                            </a>
+                                        </td>
+                                        <td style="text-align: center;" id="status<?php echo $linkCollection->getId(); ?>">
+                                            <?php if ($linkCollection->getStatus() == '1'): ?>
+                                                <?php echo $processingStatusBar; ?>
+                                            <?php elseif ($linkCollection->getStatus() == '2'): ?>
+                                                <?php echo $completedStatusBar; ?>
+                                            <?php else: ?>
+                                                <?php echo $stoppedStatusBar; ?>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <a href="javascript:showWebsiteAudit('<?php echo $linkCollection->getId(); ?>');" target="_blank">
+                                                <?php echo $linkCollection->getNoOfUrl(); ?>
+                                            </a>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <?php /*?><a href="javascript:showWebsiteAudit('<?php echo $linkCollection->getId(); ?>');" class="btn btn-outline-success btn-sm"><b>View</b></a><?php */?>
+                                            <?php if($linkCollection->getNoOfUrl() > 0): ?>
+                                                <a href="<?php echo Mage::helper('cms/page')->getPageUrl(8) ?>?domain=<?php echo $linkCollection->getId(); ?>" target="_blank" class="btn btn-outline-success btn-sm">
+                                                    <b>Analysis</b>
+                                                </a>
+                                            <?php else: ?>
+                                                <a class="<?php echo ($linkCollection->getStatus() == 3 ? '' : 'isDisabled'); ?>" id="actionlink<?php echo $linkCollection->getId(); ?>" href="javascript:startAnalyse('<?php echo $linkCollection->getId(); ?>');" data-toggle="tooltip" title="Start Analyse">
+                                                    <i class="fa fa-sign-in" style="font-size:20px; padding: 4px;"></i>
+                                                    <p><b>Start Analysis</b></p>
+                                                </a>
+                                            <?php endif; ?>
+                                            
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <?php /*?><a class="<?php echo ($linkCollection->getStatus() == 3 ? '' : 'isDisabled'); ?>" id="actionlink<?php echo $linkCollection->getId(); ?>" href="javascript:startAnalyse('<?php echo $linkCollection->getId(); ?>');" data-toggle="tooltip" title="Start Analyse">
+                                                <i class="fa fa-sign-in" style="font-size:20px; padding: 4px;"></i>
+                                            </a><?php */?>
+
+                                            <a class="<?php echo ($linkCollection->getStatus() == 2 ? 'isDisabled' : ''); ?>" id="stoplink<?php echo $linkCollection->getId(); ?>" href="javascript:stopAnalyse('<?php echo $linkCollection->getId(); ?>');" data-toggle="tooltip" title="Stop Analyse">
+                                                <i class="fa fa-power-off" style="font-size:18px; padding: 4px;"></i>
+                                            </a>
+
+                                            <!--<a href="" title="Download Report" data-toggle="tooltip" title="Download Report">
+                                                <i class="fa fa-file-excel-o" style="font-size:18px; padding: 4px;"></i>
+                                            </a>-->
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="8">Sorry, No Record Found!</td>
+                                </tr>
+                            <?php endif; ?>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div> 
+<script>
+    var totalPercentage = 0;
+    
+    function showWebsiteAudit(domainId) {
+        document.getElementById("btnProcessing").click();
+        getDesktopScreenShot(domainId, '3');
+        document.getElementById("domain_id").value = domainId;
+    }
+    
+    function getTrafficAndErningEst(domainId, percentageVal){
+        totalPercentage = parseInt(totalPercentage) + parseInt(percentageVal);
+        var url = '<?php echo Mage::getBaseUrl(); ?>websiteaudit/index/getTrafficAndErningEst?domain=' + domainId;
+        document.getElementById("process_text").innerHTML = "Fetching Website Visits, Pages Views and Income Information";
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                document.getElementById("process_text").innerHTML = "Website Visits, Pages Views and Income Information Fetched.";
+                document.getElementById("website_visit_and_earnings").setAttribute("value", data);
+                document.getElementById("divProgressBarContainer").setAttribute("style", "width: " + totalPercentage + "%; height: 25px;");
+                document.getElementById("processPercentage").innerHTML = totalPercentage + " % Completed";
+                if (parseInt(totalPercentage) >= parseInt('100')) {
+                    document.getElementById("frmWebsiteAudit").submit();
+                } else {
+                    getBrokenLink(domainId, '5');   //Need to replace by next process
+                }
+            }
+        });
+    }
+    
+    function satsAndSuggessions(domainId, percentageVal){
+        totalPercentage = parseInt(totalPercentage) + parseInt(percentageVal);
+        var url = '<?php echo Mage::getBaseUrl(); ?>websiteaudit/index/satsAndSuggessions?domain=' + domainId;
+        document.getElementById("process_text").innerHTML = "Fetching Google Stats Information And Suggessitions for Desktop And Mobile";
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                document.getElementById("process_text").innerHTML = "Google Stats Information And Suggessitions for Desktop And Mobile Fetched successfully.";
+                document.getElementById("stats_and_suggessions").setAttribute("value", data);
+                document.getElementById("divProgressBarContainer").setAttribute("style", "width: " + totalPercentage + "%; height: 25px;");
+                document.getElementById("processPercentage").innerHTML = totalPercentage + " % Completed";
+                if (parseInt(totalPercentage) >= parseInt('100')) {
+                    document.getElementById("frmWebsiteAudit").submit();
+                } else {
+                    getTrafficAndErningEst(domainId, '5');   //Need to replace by next process
+                }
+            }
+        });
+    }
+    
+    function checkSitemapXml(domainId, percentageVal){
+        totalPercentage = parseInt(totalPercentage) + parseInt(percentageVal);
+        var url = '<?php echo Mage::getBaseUrl(); ?>websiteaudit/index/checkSitemapXml?domain=' + domainId;
+        document.getElementById("process_text").innerHTML = "Fetching sitemap url";
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                document.getElementById("process_text").innerHTML = "sitemap.xml found successfully.";
+                document.getElementById("site_map").setAttribute("value", data);
+                document.getElementById("divProgressBarContainer").setAttribute("style", "width: " + totalPercentage + "%; height: 25px;");
+                document.getElementById("processPercentage").innerHTML = totalPercentage + " % Completed";
+                if (parseInt(totalPercentage) >= parseInt('100')) {
+                    document.getElementById("frmWebsiteAudit").submit();
+                } else {
+                    keywordAnalysisPhrases(domainId, '5');   //Need to replace by next process
+                }
+            }
+        });
+    }
+    
+    function getRank(domainId, percentageVal) {
+        totalPercentage = parseInt(totalPercentage) + parseInt(percentageVal);
+        var url = '<?php echo Mage::getBaseUrl(); ?>websiteaudit/index/getRank?domain=' + domainId;
+        document.getElementById("process_text").innerHTML = "Calculating Rank";
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                document.getElementById("process_text").innerHTML = "Rank calculated successfully.";
+                document.getElementById("rank").setAttribute("value", data);
+                document.getElementById("divProgressBarContainer").setAttribute("style", "width: " + totalPercentage + "%; height: 25px;");
+                document.getElementById("processPercentage").innerHTML = totalPercentage + " % Completed";
+                if (parseInt(totalPercentage) >= parseInt('100')) {
+                    document.getElementById("frmWebsiteAudit").submit();
+                } else {
+                    getSimilarWebRawData(domainId, 15);   //Need to replace by next process
+                }
+            }
+        });
+    }
+    
+    function getYandexCount(domainId, percentageVal) {
+        totalPercentage = parseInt(totalPercentage) + parseInt(percentageVal);
+        var url = '<?php echo Mage::getBaseUrl(); ?>websiteaudit/index/getYandexCount?domain=' + domainId;
+        document.getElementById("process_text").innerHTML = "Calculating Yandex Index";
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                document.getElementById("process_text").innerHTML = "Yandex Index calculated successfully.";
+                document.getElementById("yandex_index").setAttribute("value", data);
+                document.getElementById("divProgressBarContainer").setAttribute("style", "width: " + totalPercentage + "%; height: 25px;");
+                document.getElementById("processPercentage").innerHTML = totalPercentage + " % Completed";
+                if (parseInt(totalPercentage) >= parseInt('100')) {
+                    document.getElementById("frmWebsiteAudit").submit();
+                } else {
+                    getpinterestShareCount(domainId, '1');   //Need to replace by next process
+                }
+            }
+        });
+    }
+    
+    function getBingCount(domainId, percentageVal) {
+        totalPercentage = parseInt(totalPercentage) + parseInt(percentageVal);
+        var url = '<?php echo Mage::getBaseUrl(); ?>websiteaudit/index/getBingCount?domain=' + domainId;
+        document.getElementById("process_text").innerHTML = "Calculating Bing Index";
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                document.getElementById("process_text").innerHTML = "Bing Index calculated successfully.";
+                document.getElementById("bing_index").setAttribute("value", data);
+                document.getElementById("divProgressBarContainer").setAttribute("style", "width: " + totalPercentage + "%; height: 25px;");
+                document.getElementById("processPercentage").innerHTML = totalPercentage + " % Completed";
+                if (parseInt(totalPercentage) >= parseInt('100')) {
+                    document.getElementById("frmWebsiteAudit").submit();
+                } else {
+                    getYandexCount(domainId, '1');   //Need to replace by next process
+                }
+            }
+        });
+    }
+    
+    function getYahooCount(domainId, percentageVal) {
+        totalPercentage = parseInt(totalPercentage) + parseInt(percentageVal);
+        var url = '<?php echo Mage::getBaseUrl(); ?>websiteaudit/index/getYahooCount?domain=' + domainId;
+        document.getElementById("process_text").innerHTML = "Calculating Yahoo Index";
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                document.getElementById("process_text").innerHTML = "Yahoo Index calculated successfully.";
+                document.getElementById("yahoo_index").setAttribute("value", data);
+                document.getElementById("divProgressBarContainer").setAttribute("style", "width: " + totalPercentage + "%; height: 25px;");
+                document.getElementById("processPercentage").innerHTML = totalPercentage + " % Completed";
+                if (parseInt(totalPercentage) >= parseInt('100')) {
+                    document.getElementById("frmWebsiteAudit").submit();
+                } else {
+                    getBingCount(domainId, '1');   //Need to replace by next process
+                }
+            }
+        });
+    }
+    
+    function getGoogleCount(domainId, percentageVal) {
+        totalPercentage = parseInt(totalPercentage) + parseInt(percentageVal);
+        var url = '<?php echo Mage::getBaseUrl(); ?>websiteaudit/index/getGoogleCount?domain=' + domainId;
+        document.getElementById("process_text").innerHTML = "Calculating Google Index";
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                document.getElementById("process_text").innerHTML = "Google Index calculated successfully.";
+                document.getElementById("google_index").setAttribute("value", data);
+                document.getElementById("divProgressBarContainer").setAttribute("style", "width: " + totalPercentage + "%; height: 25px;");
+                document.getElementById("processPercentage").innerHTML = totalPercentage + " % Completed";
+                if (parseInt(totalPercentage) >= parseInt('100')) {
+                    document.getElementById("frmWebsiteAudit").submit();
+                } else {
+                    getYahooCount(domainId, '1');   //Need to replace by next process
+                }
+            }
+        });
+    }
+
+    function getRobotTxt(domainId, percentageVal) {
+        totalPercentage = parseInt(totalPercentage) + parseInt(percentageVal);
+        var url = '<?php echo Mage::getBaseUrl(); ?>websiteaudit/index/getRobotTxt?domain=' + domainId;
+        document.getElementById("process_text").innerHTML = "Checking Robots.txt";
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                document.getElementById("process_text").innerHTML = "Robots.txt retrived successfully.";
+                document.getElementById("is_robot_txt").setAttribute("value", data);
+                document.getElementById("divProgressBarContainer").setAttribute("style", "width: " + totalPercentage + "%; height: 25px;");
+                document.getElementById("processPercentage").innerHTML = totalPercentage + " % Completed";
+                if (parseInt(totalPercentage) >= parseInt('100')) {
+                    document.getElementById("frmWebsiteAudit").submit();
+                } else {
+                    getHeadingTagsH1(domainId, '1');    //Need to replace by next process
+                }
+            }
+        });
+    }
+
+    function getBackLinkCount(domainId, percentageVal) {
+        totalPercentage = parseInt(totalPercentage) + parseInt(percentageVal);
+        var url = '<?php echo Mage::getBaseUrl(); ?>websiteaudit/index/getBackLinkCount?domain=' + domainId;
+        document.getElementById("process_text").innerHTML = "Getting Backlink Count";
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                document.getElementById("process_text").innerHTML = "Backlink Count retrived successfully.";
+                document.getElementById("backlink_count").setAttribute("value", data);
+                document.getElementById("divProgressBarContainer").setAttribute("style", "width: " + totalPercentage + "%; height: 25px;");
+                document.getElementById("processPercentage").innerHTML = totalPercentage + " % Completed";
+                if (parseInt(totalPercentage) >= parseInt('100')) {
+                    document.getElementById("frmWebsiteAudit").submit();
+                } else {
+                    getRobotTxt(domainId, '3');    //Need to replace by next process
+                }
+            }
+        });
+    }
+
+        
+
+    function getPageStatsMobile(domainId, percentageVal) {
+        totalPercentage = parseInt(totalPercentage) + parseInt(percentageVal);
+        var url = '<?php echo Mage::getBaseUrl(); ?>websiteaudit/index/getPageStatsMobile?domain=' + domainId;
+        document.getElementById("process_text").innerHTML = "Getting Page Stats Mobile";
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                document.getElementById("process_text").innerHTML = "Mobile Page Stats retrived successfully.";
+                document.getElementById("mobile_pagetats").setAttribute("value", data);
+                document.getElementById("divProgressBarContainer").setAttribute("style", "width: " + totalPercentage + "%; height: 25px;");
+                document.getElementById("processPercentage").innerHTML = totalPercentage + " % Completed";
+                if (parseInt(totalPercentage) >= parseInt('100')) {
+                    document.getElementById("frmWebsiteAudit").submit();
+                } else {
+                    getWhoIs(domainId, '3');
+                }
+            }
+        });
+    }
+
+    function getPageStatsDesktop(domainId, percentageVal) {
+        totalPercentage = parseInt(totalPercentage) + parseInt(percentageVal);
+        var url = '<?php echo Mage::getBaseUrl(); ?>websiteaudit/index/getPageStatsDesktop?domain=' + domainId;
+        document.getElementById("process_text").innerHTML = "Getting Page Stats Desktop";
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                document.getElementById("process_text").innerHTML = "Desktop Page Stats retrived successfully.";
+                document.getElementById("desktop_pagetats").setAttribute("value", data);
+                document.getElementById("divProgressBarContainer").setAttribute("style", "width: " + totalPercentage + "%; height: 25px;");
+                document.getElementById("processPercentage").innerHTML = totalPercentage + " % Completed";
+                if (parseInt(totalPercentage) >= parseInt('100')) {
+                    document.getElementById("frmWebsiteAudit").submit();
+                } else {
+                    getPageStatsMobile(domainId, '2');
+                }
+            }
+        });
+    }
+    
+    //----------------- Popup Processing Ends --------------------
+    function startAnalyse(linkId) {
+        jQuery("#actionlink" + linkId).addClass("isDisabled");
+        jQuery("#status" + linkId).html('<?php echo $processingStatusBar; ?>');
+        var url = "<?php echo Mage::getBaseUrl(); ?>linkanalysis/index/startAnalyse?linkId=" + linkId;
+        //var timerId = setInterval(() => autoUpdateNoOfURLFound(), 5000);
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                var objData = jQuery.parseJSON(data);
+                //setTimeout(() => { clearInterval(timerId); autoUpdateNoOfURLFound(); }, 5000);
+            }
+        });
+    }
+
+    function stopAnalyse(linkId) {
+        jQuery("#actionlink" + linkId).removeClass("isDisabled");
+        jQuery("#status" + linkId).html('<?php echo $stoppedStatusBar; ?>');
+    }
+
+    function deleteDomain(links_ids) {
+        var ids = [];
+        jQuery.each($("input[name='" + links_ids + "']:checked"), function () {
+            ids.push(jQuery(this).val());
+        });
+
+        var linkIds = ids.join(",");
+
+        if (linkIds == '' || linkIds == null) {
+            alert('Please select records...');
+        } else {
+            var url = "<?php echo Mage::getBaseUrl(); ?>linkanalysis/index/deletedomain?linkIds=" + linkIds;
+            jQuery("#pre-loader").css("opacity", '0.8');
+            jQuery("#pre-loader").show();
+            jQuery("#msgbox_warning").hide();
+            jQuery("#msgbox_success").hide();
+            jQuery("#msgbox_error").hide();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: ""/*form.serialize()*/,
+                success: function (data)
+                {
+                    jQuery("#pre-loader").hide();
+                    var objData = jQuery.parseJSON(data);
+                    if (parseInt(objData.status) == 1) {
+                        jQuery("#msgbox_success").html(objData.msg);
+                        jQuery("#msgbox_success").show();
+                        var $result = jQuery(objData.content).find('#linkanalysis_table').html();
+                        jQuery("#linkanalysis_table").html($result);
+                    } else {
+                        jQuery("#msgbox_error").html(objData.msg);
+                        jQuery("#msgbox_error").show();
+                    }
+                }
+            });
+        }
+    }
+
+    function autoUpdateNoOfURLFound() {
+        alert("Hello");
+    }
+
+    function addDomain() {
+        var domain_name = jQuery("#domain_name_root").val();
+        if (domain_name == "" || domain_name == null) {
+            document.getElementById("submitdomainname").click();
+        } else {
+            var form = jQuery("#addDomainFrm");
+            var url = "<?php echo Mage::getBaseUrl(); ?>linkanalysis/index/adddomain";
+            jQuery("#pre-loader").css("opacity", '0.8');
+            jQuery("#pre-loader").show();
+            jQuery("#msgbox_warning").hide();
+            jQuery("#msgbox_success").hide();
+            jQuery("#msgbox_error").hide();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: form.serialize(),
+                success: function (data)
+                {
+                    jQuery("#pre-loader").hide();
+                    var objData = jQuery.parseJSON(data);
+                    if (parseInt(objData.status) == 1) {
+                        jQuery("#msgbox_success").html(objData.msg);
+                        jQuery("#msgbox_success").show();
+                        var $result = jQuery(objData.content).find('#linkanalysis_table').html();
+                        jQuery("#linkanalysis_table").html($result);
+                    } else {
+                        jQuery("#msgbox_error").html(objData.msg);
+                        jQuery("#msgbox_error").show();
+                    }
+                    jQuery("#domain_name").val("");
+                }
+            });
+        }
+    }
+</script>

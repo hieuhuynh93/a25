@@ -1,0 +1,1308 @@
+<?php
+$kid = $_REQUEST['kid'];
+$helper = Mage::helper('keywordmanager/data');
+$customerId = $helper->getCurrentCustomer();
+
+$keywordManagerModel = Mage::getModel('keywordmanager/keywordmanager');
+$keywordManagerData = $keywordManagerModel->load($kid);
+
+//-------------------Google Trends Work Starts ---------------------
+$country = '';
+$customer = Mage::getModel('customer/customer')->load($customerId);
+if (isset($_REQUEST['cn'])) {
+    $country = $_REQUEST['cn'];
+} else {
+    $country = $customer->getCountryCode();
+}
+$_countries = Mage::getResourceModel('directory/country_collection')->loadData()->toOptionArray(false);
+//------------------- Google Trends Work Ends ----------------------
+?>
+<!-- ------------------------ Modal Starts --------------------------->
+<button id="btnModal" style="display:none;" type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button> 
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="mb-30" style="margin-bottom: 5px !important;">
+                        <h6 id="keyword_title">EXPERTISE</h6>
+                    </div>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="height: 70vh; overflow: auto;">
+                <center>
+                    <img style="display: none;" id="modal_loading" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                </center>
+                <table class="table center-aligned-table">
+                    <thead>
+                        <tr class="text-dark">
+                            <th># </th>
+                            <th>Keyword </th>
+                            <th>Count</th>
+                            <th>Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody style="display: contents;" id="keyword_analysis_result_modal_body">
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ------------------------ Modal Ends ----------------------------->
+<?php if (!empty($keywordManagerData)): ?>
+    <div class="page-title">
+        <div class="row">
+            <div class="col-sm-6">
+                <h4 class="mb-0"> Keyword Details View</h4>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                    <li class="breadcrumb-item"><a href="<?php echo Mage::getBaseUrl(); ?>" class="default-color">Home</a></li>
+                    <li class="breadcrumb-item"><a href="<?php echo Mage::getBaseUrl(); ?>keywordmanager">Keyword Manager</a></li>
+                    <li class="breadcrumb-item active"><?php echo $keywordManagerData->getKeyword(); ?></li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- ---------------------------------------------->
+    <style>
+        .acd-group{
+            color: #ffffff;
+            background: #84ba3f;
+            margin-bottom: 20px;
+            padding: 12px 24px !important;
+            font-weight: 500;
+            font-size: 1.143rem;
+            padding: 12px 0;
+            border-radius: 3px;
+        }
+
+        table {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100% !important;
+        }
+
+        caption, th, td {
+            text-align: left;
+            font-weight: normal;
+            padding-left: 10px;
+        }
+
+        html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            outline: 0;
+            font-weight: inherit;
+            font-style: inherit;
+            font-size: 100%;
+            font-family: inherit;
+            vertical-align: baseline;
+        }
+        *, *::after, *::before {
+            box-sizing: border-box;
+        }
+    </style>
+
+    <div class="row">
+        <input type="hidden" id="KeywordCompetetion" value="1">
+        <div class="col-xl-12 mb-30">     
+            <div class="card card-statistics h-100"> 
+                <div class="card-body">
+                    <div class="acd-group">
+                        <a onclick="showKeywordCompetetion()" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#Keyword_Competation" aria-expanded="false"><i class="fa fa-list-ol" style="font-size:16px; margin-right: 10px;"></i>Keyword Competation</a>
+                    </div>
+                    <div id="Keyword_Competation" class="panel-collapse collapse show">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xl-12 mb-30" id="resulteywordCompetetion">
+                                    <?php
+                                    $url = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/keyword_competetion.php?url=' . $keywordManagerData->getKeyword();
+                                    $html = file_get_contents($url);
+                                    echo $html;
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+        </div>
+    </div>
+
+    <div class="row">
+        <input type="hidden" id="txtTop_10_on_Search_Engine" value="0">
+        <div class="col-xl-12 mb-30">     
+            <div class="card card-statistics h-100"> 
+                <div class="card-body">
+                    <div class="acd-group">
+                        <a onclick="getTop_10_on_Search_Engine()" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#Top_10_on_Search_Engine" aria-expanded="false"><i class="fa fa-line-chart" style="font-size:16px; margin-right: 10px;"></i>Top 10 on Search Engine</a>
+                    </div>
+                    <center>
+                        <img style="display: none;" id="rowLoaderTop_10_on_Search_Engine" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                    </center>
+                    <div id="Top_10_on_Search_Engine" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="row" id="resultsTop_10_on_Search_Engine">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+        </div>
+    </div>
+
+
+    <div class="row">
+        <input type="hidden" id="GoogleTrends" value="0">
+        <div class="col-xl-12 mb-30">     
+            <div class="card card-statistics h-100"> 
+                <div class="card-body">
+                    <div class="acd-group">
+                        <a onclick="showGoogleTrends('<?php echo $keywordManagerData->getKeyword(); ?>')" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#Google_Trend" aria-expanded="false"><i class="fa fa-google" style="font-size:16px; margin-right: 10px;"></i>Google Trend</a>
+                    </div>
+                    <center>
+                        <img style="display: none;" id="rowLoaderGoogleTrends" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                    </center>
+                    <div id="Google_Trend" class="panel-collapse collapse">
+                        <div class="panel-body" style="height: 485px;">
+                            <div class="row">
+                                <?php if (count($_countries) > 0): ?>
+                                    <select onchange="setTrendsCountry(this);" name="country" id="country" style="width: 150px; margin-left: 50px;">
+                                        <option value="">-- Country --</option>
+                                        <?php foreach ($_countries as $_country): ?>
+                                            <option <?php echo ($country == $_country['value'] ? 'selected="selected"' : '') ?> value="<?php echo $_country['value'] ?>">
+                                                <?php echo $_country['label'] ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <!-- ---------------------------->
+                                    <select onchange="setTrendsTime(this);" id="google_trends_time" name="google_trends_time">
+                                        <option value="now 1-H" selected="selected">now 1-H</option>
+                                        <option value="now 4-H">now 4-H</option>
+                                        <option value="now 1-d">now 1-d</option>
+                                        <option value="now 7-d">now 7-d</option>
+                                        <option value="today 1-m">today 1-m</option>
+                                        <option value="today 3-m">today 3-m</option>
+                                    </select>
+                                    <!-- ---------------------------->
+                                <?php endif; ?>
+                                <div class="col-xl-12 mb-30" id="GoogleTrends">
+                                    <iframe id="trendsPopupFrame" frameborder="0" src="" height="500" width="100%"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+        </div>
+    </div>
+
+
+    <div class="row">
+        <input type="hidden" id="KeywordInWebpages" value="0">
+        <div class="col-xl-12 mb-30">     
+            <div class="card card-statistics h-100"> 
+                <div class="card-body">
+                    <div class="acd-group">
+                        <a onclick="showKeywordInWebpage()" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#Keyword_in_webpages" aria-expanded="false"><i class="fa fa-code" style="font-size:16px; margin-right: 10px;"></i>Keyword in webpages</a>
+                    </div>
+                    <center>
+                        <img style="display: none;" id="rowLoaderKeywordInWebpages" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                    </center>
+                    <div id="Keyword_in_webpages" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xl-12 mb-30" id="resultKeywordInWebpages">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+        </div>
+    </div>
+
+    <div class="row">
+        <input type="hidden" id="txtKeyword_Suggestion" value="0">
+        <div class="col-xl-12 mb-30">     
+            <div class="card card-statistics h-100"> 
+                <div class="card-body">
+                    <div class="acd-group">
+                        <a onclick="showKeyword_Suggestion()" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#Keyword_Suggestion" aria-expanded="false"><i class="fa fa-cogs" style="font-size:16px; margin-right: 10px;"></i>Keyword Suggestion</a>
+                    </div>
+                    <center>
+                        <img style="display: none;" id="rowLoaderKeyword_Suggestion" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                    </center>
+                    <div id="Keyword_Suggestion" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xl-12 mb-30" id="resultKeyword_Suggestion">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+        </div>
+    </div>
+
+    <div class="row">
+        <input type="hidden" id="FacebookBusiness" value="0">
+        <div class="col-xl-12 mb-30">     
+            <div class="card card-statistics h-100"> 
+                <div class="card-body">
+                    <div class="acd-group">
+                        <a onclick="showFacebookBusiness()" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#Facebook_Business" aria-expanded="false"><i class="fa fa-facebook-square" style="font-size:16px; margin-right: 10px;"></i>Facebook Business</a>
+                    </div>
+                    <center>
+                        <img style="display: none;" id="rowLoaderFacebookBusiness" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                    </center>
+                    <div id="Facebook_Business" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xl-12 mb-30" id="resultFacebookBusiness">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+        </div>
+    </div>
+
+    <div class="row">
+        <input type="hidden" id="TwitterBusiness" value="0">
+        <div class="col-xl-12 mb-30">     
+            <div class="card card-statistics h-100"> 
+                <div class="card-body">
+                    <div class="acd-group">
+                        <a onclick="showTwitterBusiness()" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#Twitter_Business" aria-expanded="false"><i class="fa fa-twitter-square" style="font-size:16px; margin-right: 10px;"></i>Twitter Business</a>
+                    </div>
+                    <center>
+                        <img style="display: none;" id="rowLoaderTwitterBusiness" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                    </center>
+                    <div id="Twitter_Business" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xl-12 mb-30" id="resultTwitterBusiness">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+        </div>
+    </div>
+
+    <div class="row">
+        <input type="hidden" id="SocialMediaAnalysis" value="0">
+        <div class="col-xl-12 mb-30">     
+            <div class="card card-statistics h-100"> 
+                <div class="card-body">
+                    <div class="acd-group">
+                        <a onclick="showSocialMediaAnalysis()" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#Social_Media_Analysis" aria-expanded="false"><i class="fa fa-bug" style="font-size:16px; margin-right: 10px;"></i>Social Media Analysis</a>
+                    </div>
+                    <center>
+                        <img style="display: none;" id="rowLoaderSocialMediaAnalysis" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                    </center>
+                    <div id="Social_Media_Analysis" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xl-12 mb-30" id="resultSocialMediaAnalysis">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+        </div>
+    </div>
+
+    <div class="row">
+        <input type="hidden" id="KeywordDifficulty" value="0">
+        <div class="col-xl-12 mb-30">     
+            <div class="card card-statistics h-100"> 
+                <div class="card-body">
+                    <div class="acd-group">
+                        <a onclick="showKeywordDifficulty()" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#Keyword_Difficulty" aria-expanded="false">Keyword Difficulty</a>
+                    </div>
+                    <center>
+                        <img style="display: none;" id="rowLoaderKeywordDifficulty" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                    </center>
+                    <div id="Keyword_Difficulty" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xl-12 mb-30" id="resultKeywordDifficulty">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+        </div>
+    </div>
+
+    <div class="row">
+        <input type="hidden" id="txtLong_Tail_non_stop_keyword_tool" value="0">
+        <div class="col-xl-12 mb-30">     
+            <div class="card card-statistics h-100"> 
+                <div class="card-body">
+                    <div class="acd-group">
+                        <a onclick="showLongTailNonStopKeywordTool()" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#Long_Tail_non_stop_keyword_tool" aria-expanded="false">Long Tail non-stop keyword tool</a>
+                    </div>
+                    <center>
+                        <img style="display: none;" id="rowLoaderLong_Tail_non_stop_keyword_tool" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                    </center>
+                    <div id="Long_Tail_non_stop_keyword_tool" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xl-12 mb-30" id="resultsLong_Tail_non_stop_keyword_tool" style="display: none;">
+                                    <iframe src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true); ?>lib/small_seo_tools/Ultimate_Long_Tail_Keywords_Search_Tool/index.php?keywords=<?php echo $keywordManagerData->getKeyword(); ?>" frmeborder="0" width="100%" height="390"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+        </div>
+    </div>
+
+    <div class="row">
+        <input type="hidden" id="txtKeyword_Position_on_Webpages" value="0">
+        <div class="col-xl-12 mb-30">     
+            <div class="card card-statistics h-100"> 
+                <div class="card-body">
+                    <div class="acd-group">
+                        <a onclick="showKeywordPositionOnWebpage()" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#Keyword_Position_on_Webpages" aria-expanded="false">Keyword Position on Webpages</a>
+                    </div>
+                    <center>
+                        <img style="display: none;" id="rowKeyword_Position_on_Webpages" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                    </center>
+                    <div id="Keyword_Position_on_Webpages" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xl-12 mb-30">
+                                    <div class="table-responsive mb-10" id="resultsKeyword_Position_on_Webpages">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+        </div>
+    </div>
+
+    <div class="row">
+        <input type="hidden" id="txtWebPage_Keyword_Analysis" value="0">
+        <div class="col-xl-12 mb-30">     
+            <div class="card card-statistics h-100"> 
+                <div class="card-body">
+                    <div class="acd-group">
+                        <a onclick="showWebPageKeywordAnalysis()" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#WebPage_Keyword_Analysis" aria-expanded="false">WebPage Keyword Analysis</a>
+                    </div>
+                    <center>
+                        <img style="display: none;" id="rowLoaderWebPage_Keyword_Analysis" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                    </center>
+                    <div id="WebPage_Keyword_Analysis" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xl-12 mb-30">
+                                    <div class="table-responsive mb-10" id="resultWebPage_Keyword_Analysis">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+        </div>
+    </div>
+
+    <?php /*?><div class="row">
+        <div class="col-xl-12 mb-30">     
+            <div class="card card-statistics h-100"> 
+                <div class="card-body">
+                    <div class="acd-group">
+                        <a onclick="showIndexCount()" class="acd-heading collapsed" data-toggle="collapse" data-parent="#accordion" href="#Youtube_Search_Analysis" aria-expanded="false">Youtube Search Analysis</a>
+                    </div>
+                    <center>
+                        <img style="display: none;" id="rowLoaderIndexCount" src="<?php echo $this->getSkinUrl('images/pre-loader/726.gif', array('_secure' => true)); ?>" alt="">
+                    </center>
+                    <div id="Youtube_Search_Analysis" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xl-12 mb-30">
+                                    Content - 2
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+        </div>
+    </div><?php */?>
+
+    <!-- ---------------------------------------------->
+
+<?php else: ?>
+    <div class="page-title">
+        <div class="row">
+            <div class="col-sm-6">
+                <h4 class="mb-0"> Keyword Details View</h4>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                    <li class="breadcrumb-item"><a href="<?php echo Mage::getBaseUrl(); ?>" class="default-color">Home</a></li>
+                    <li class="breadcrumb-item"><a href="<?php echo Mage::getBaseUrl(); ?>keywordmanager">Keyword Manager</a></li>
+                    <li class="breadcrumb-item active"><?php echo $keywordManagerData->getKeyword(); ?></li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-bottom: -30px;">
+        <div class="col-xl-12 mb-30" id="msg">
+            Sorry!, This is not valid key associated with you.
+        </div>
+    </div>
+<?php endif; ?>
+
+<script>
+    
+    function showLongTailNonStopKeywordTool(){
+        var txtLong_Tail_non_stop_keyword_tool = document.getElementById("txtLong_Tail_non_stop_keyword_tool").value;
+        if (parseInt(txtLong_Tail_non_stop_keyword_tool) <= 0) {
+            var keyword = '<?php echo $keywordManagerData->getKeyword(); ?>';
+            var url = "";
+            jQuery("#rowLoaderLong_Tail_non_stop_keyword_tool").show();
+            jQuery("#resultsLong_Tail_non_stop_keyword_tool").show();
+            jQuery("#rowLoaderLong_Tail_non_stop_keyword_tool").hide();
+        }
+    }
+
+    function showKeywordAnalysis(linkDetailsId, keyword, domain) {
+        jQuery("#pre-loader").css("opacity", '0.8');
+        jQuery("#pre-loader").show();
+
+        jQuery("#keyword_analysis_result_modal_body").hide();
+        //var url = "<?php //echo Mage::getBaseUrl();    ?>linkanalysis/index/getkeywordanalysisresulthtml?linkdetails_id="+linkDetailsId+"&keyword=" + keyword;
+        var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true); ?>lib/small_seo_tools/keyword_density_checker.php?url=" + domain;
+        jQuery("#keyword_title").html("Analysis Result: " + keyword);
+        jQuery.ajax({
+            type: "POST",
+            url: url,
+            data: "",
+            success: function (data)
+            {
+                var objData = jQuery.parseJSON(data);
+                jQuery("#pre-loader").hide();
+                jQuery("#keyword_analysis_result_modal_body").show();
+                jQuery("#keyword_analysis_result_modal_body").html(objData.html);
+                document.getElementById("btnModal").click();
+            }
+        });
+    }
+
+
+    function showWebPageKeywordAnalysis() {
+        var txtWebPage_Keyword_Analysis = document.getElementById("txtKeyword_Position_on_Webpages").value;
+        if (parseInt(txtWebPage_Keyword_Analysis) <= 0) {
+            var keyword = '<?php echo $keywordManagerData->getKeyword(); ?>';
+            var url = "<?php echo Mage::getBaseUrl(); ?>keywordmanager/index/getWebPageKeywordAnalysis?keyword=" + keyword;
+            jQuery("#rowLoaderWebPage_Keyword_Analysis").show();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: '',
+                success: function (data)
+                {
+                    document.getElementById("resultWebPage_Keyword_Analysis").innerHTML = data;
+                    jQuery("#rowLoaderWebPage_Keyword_Analysis").hide();
+                    document.getElementById("txtWebPage_Keyword_Analysis").value = 1;
+                }
+            });
+        }
+    }
+
+    function showKeywordPositionOnWebpage() {
+        var txtKeyword_Position_on_Webpages = document.getElementById("txtKeyword_Position_on_Webpages").value;
+        if (parseInt(txtKeyword_Position_on_Webpages) <= 0) {
+            var keyword = '<?php echo $keywordManagerData->getKeyword(); ?>';
+            var url = "<?php echo Mage::getBaseUrl(); ?>keywordmanager/index/getKeywordPositionOnWebpages?keyword=" + keyword;
+            jQuery("#rowKeyword_Position_on_Webpages").show();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: '',
+                success: function (data)
+                {
+                    document.getElementById("resultsKeyword_Position_on_Webpages").innerHTML = data;
+                    jQuery("#rowKeyword_Position_on_Webpages").hide();
+                    document.getElementById("txtKeyword_Position_on_Webpages").value = 1;
+                }
+            });
+        }
+    }
+
+    function showKeyword_Suggestion() {
+        var txtKeyword_Suggestion = document.getElementById("txtKeyword_Suggestion").value;
+        if (parseInt(txtKeyword_Suggestion) <= 0) {
+            var keyword = '<?php echo $keywordManagerData->getKeyword(); ?>';
+            var url = "<?php echo Mage::getBaseUrl(); ?>keywordmanager/index/getKeywordSugessition?keyword=" + keyword;
+            jQuery("#rowLoaderKeyword_Suggestion").show();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: '',
+                success: function (data)
+                {
+                    document.getElementById("resultKeyword_Suggestion").innerHTML = data;
+                    jQuery("#rowLoaderKeyword_Suggestion").hide();
+                    document.getElementById("txtKeyword_Suggestion").value = 1;
+                }
+            });
+        }
+    }
+
+    function getTop_10_on_Search_Engine() {
+        var txtTop_10_on_Search_Engine = document.getElementById("txtTop_10_on_Search_Engine").value;
+        if (parseInt(txtTop_10_on_Search_Engine) <= 0) {
+            var keyword = '<?php echo $keywordManagerData->getKeyword(); ?>';
+            var url = "<?php echo Mage::getBaseUrl(); ?>keywordmanager/index/getTopTenSearchResults?keyword=" + keyword;
+            jQuery("#rowLoaderTop_10_on_Search_Engine").show();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: '',
+                success: function (data)
+                {
+                    document.getElementById("resultsTop_10_on_Search_Engine").innerHTML = data;
+                    jQuery("#rowLoaderTop_10_on_Search_Engine").hide();
+                    document.getElementById("txtTop_10_on_Search_Engine").value = 1;
+                }
+            });
+        }
+    }
+
+    function showGoogleTrends(key) {
+        var GoogleTrendsTxt = document.getElementById("GoogleTrends").value;
+        if (parseInt(GoogleTrendsTxt) <= 0) {
+            jQuery("#rowLoaderGoogleTrends").show();
+            codeTrendsTime = 'now 1-H';//document.getElementById("google_trends_time").value;
+            var country = 'IN';//document.getElementById("country").value;
+            codeTrendsCountry = country;
+            document.getElementById("trendsPopupFrame").setAttribute("src", "");
+            codeTrendsKey = key;
+            var url = "<?php echo Mage::getBaseUrl() . 'keyword-trends?google_trends_keywords='; ?>" + codeTrendsKey + "&google_trends_geo=" + codeTrendsCountry + "&google_trends_time=" + codeTrendsTime;
+            document.getElementById("trendsPopupFrame").setAttribute("src", url);
+            jQuery("#rowLoaderGoogleTrends").hide();
+            document.getElementById("GoogleTrends").value = 1;
+        }
+    }
+
+    function setTrendsTime(e) {
+        codeTrendsTime = e.value;
+        var country = document.getElementById("country").value;
+        codeTrendsCountry = country;
+        var newURL = "<?php echo Mage::getBaseUrl() . 'keyword-trends?google_trends_keywords='; ?>" + codeTrendsKey + "&google_trends_geo=" + codeTrendsCountry + "&google_trends_time=" + codeTrendsTime;
+        var iframe = document.getElementById('trendsPopupFrame');
+        iframe.src = newURL;
+    }
+
+    function setTrendsCountry(e) {
+        codeTrendsTime = document.getElementById("google_trends_time").value;
+        codeTrendsCountry = e.value;
+        var newURL = "<?php echo Mage::getBaseUrl() . 'keyword-trends?google_trends_keywords='; ?>" + codeTrendsKey + "&google_trends_geo=" + codeTrendsCountry + "&google_trends_time=" + codeTrendsTime;
+        var iframe = document.getElementById('trendsPopupFrame');
+        iframe.src = newURL;
+    }
+
+    function showKeywordInWebpage() {
+        var KeywordInWebpages = document.getElementById("KeywordInWebpages").value;
+        if (parseInt(KeywordInWebpages) <= 0) {
+            var keyword = '<?php echo $keywordManagerData->getKeyword(); ?>';
+            var url = '<?php echo Mage::getBaseUrl(); ?>keywordmanager/index/getKeywordInWebpages?keyword=' + keyword;
+            jQuery("#rowLoaderKeywordInWebpages").show();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: '',
+                success: function (data)
+                {
+                    document.getElementById("resultKeywordInWebpages").innerHTML = data;
+                    jQuery("#rowLoaderKeywordInWebpages").hide();
+                    document.getElementById("KeywordInWebpages").value = 1;
+                }
+            });
+        }
+    }
+
+    function showSocialMediaAnalysis() {
+        var SocialMediaAnalysisTxt = document.getElementById("SocialMediaAnalysis").value;
+        if (parseInt(SocialMediaAnalysisTxt) <= 0) {
+            var keyword = '<?php echo $keywordManagerData->getKeyword(); ?>';
+            var url = '<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true); ?>lib/small_seo_tools/Social_Media_Sentiment_Analysis/index.php?url=' + keyword;
+            jQuery("#rowLoaderSocialMediaAnalysis").show();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: '',
+                success: function (data)
+                {
+                    document.getElementById("resultSocialMediaAnalysis").innerHTML = data;
+                    jQuery("#rowLoaderSocialMediaAnalysis").hide();
+                    document.getElementById("SocialMediaAnalysis").value = 1;
+                }
+            });
+        }
+    }
+
+    function showKeywordDifficulty() {
+        var KeywordDifficultyTxt = document.getElementById("KeywordDifficulty").value;
+        if (parseInt(KeywordDifficultyTxt) <= 0) {
+            var keyword = '<?php echo $keywordManagerData->getKeyword(); ?>';
+            var se = 'com';
+            var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/keyword_difficulties/ajax.php?keyword='; ?>" + keyword + "&se=" + se;
+            jQuery("#rowLoaderKeywordDifficulty").show();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: '',
+                success: function (data)
+                {
+                    document.getElementById("resultKeywordDifficulty").innerHTML = data;
+                    jQuery("#rowLoaderKeywordDifficulty").hide();
+                    document.getElementById("KeywordDifficulty").value = 1;
+                }
+            });
+        }
+    }
+
+    function showFacebookBusiness() {
+        var FacebookBusinessTxt = document.getElementById("FacebookBusiness").value;
+        if (parseInt(FacebookBusinessTxt) <= 0) {
+            var keyword = '<?php echo $keywordManagerData->getKeyword(); ?>';
+            var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/Facebook_Business_Search_Tools/ajax.php?url='; ?>" + keyword;
+            jQuery("#rowLoaderFacebookBusiness").show();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: '',
+                success: function (data)
+                {
+                    document.getElementById("resultFacebookBusiness").innerHTML = data;
+                    jQuery("#rowLoaderFacebookBusiness").hide();
+                    document.getElementById("FacebookBusiness").value = 1;
+                }
+            });
+        }
+    }
+
+    function showTwitterBusiness() {
+        var TwitterBusinessTxt = document.getElementById("TwitterBusiness").value;
+        if (parseInt(TwitterBusinessTxt) <= 0) {
+            var keyword = '<?php echo $keywordManagerData->getKeyword(); ?>';
+            var url = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'lib/small_seo_tools/Twitter_People and_Profile_Search/ajax.php?url='; ?>" + keyword;
+            jQuery("#rowLoaderTwitterBusiness").show();
+            jQuery.ajax({
+                type: "POST",
+                url: url,
+                data: '',
+                success: function (data)
+                {
+                    document.getElementById("resultTwitterBusiness").innerHTML = data;
+                    jQuery("#rowLoaderTwitterBusiness").hide();
+                    document.getElementById("TwitterBusiness").value = 1;
+                }
+            });
+        }
+    }
+
+    function check_domain(d, e) {
+
+        jQuery.ajax({
+            type: "POST",
+            url: "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true); ?>lib/small_seo_tools/All_In_One_Keyword_Research_Tool/ajax.php?domain=" + d,
+            success: function (data) {
+
+                var ele = jQuery("." + e);
+
+                ele.find("td.td_com img").hide();
+                ele.find("td.td_net img").hide();
+
+                var exists = data.split('-');
+
+                if (exists[0] == 0) {
+                    ele.find("td.td_com").html("<span class='available'>Available</span>");
+                } else {
+                    ele.find("td.td_com").html("<span class='registered'>Registered</span>");
+                }
+
+                if (exists[1] == 0) {
+                    ele.find("td.td_net").html("<span class='available'>Available</span>");
+                } else {
+                    ele.find("td.td_net").html("<span class='registered'>Registered</span>");
+                }
+
+            }
+        });
+    }
+</script>
+
+<style>
+
+    table tbody{
+        display: inline-table;
+        width: 100%;
+        border: solid 1px #ccc;
+    }
+
+    /* reset */
+    html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-weight:inherit;font-style:inherit;font-size:100%;font-family:inherit;vertical-align:baseline}:focus{outline:0}body{line-height:1;color:black;background:white}ol,ul{list-style:none}table{border-collapse:separate;border-spacing:0}caption,th,td{text-align:left;font-weight:normal}blockquote:before,blockquote:after,q:before,q:after{content:""}blockquote,q{quotes:""""}
+
+    /* clearfix */
+    .clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden}.clearfix{display:inline-table}/* Hides from IE-mac \*/* html .clearfix{height:1%}*+html .clearfix{height:1%}.clearfix{display:block}/* End hide from IE-mac */
+
+    html,body{}
+
+    body{
+        -webkit-text-size-adjust:none;
+        font-family:helvetica,arial,sans-serif;
+        font-size:1em;
+        color:#333;
+        min-width:1000px;
+        /*background-color:#eee;*/
+    }
+
+    /*a, a:link, a:visited {color: #0059D0;}
+    a:hover {}*/
+
+    img{border:0;}
+
+    img.absmiddle{vertical-align:middle;}
+    table td.middle{vertical-align:middle;}
+
+    p{
+        display:block;
+        margin:0 0 1.5em 0;
+        line-height:1.25em;
+    }
+
+    strong{
+        font-weight:bold;	
+    }
+
+    h1,h2,h3{
+        padding-bottom: 0.5em;
+        font-weight: normal;
+        display:block;
+    }
+
+    h1{
+        font-size: 1.6em;
+        color: #555;
+        font-weight:bold;
+    }
+
+    h2{
+        color:#54555C;
+        font-size: 1.2em;
+        font-weight:bold;
+        font-family:Arial, Helvetica, sans-serif;
+        line-height:1.2em;
+        padding-bottom: 0.8em;
+    }
+
+    h3{
+        font-size:1.5em;
+        font-weight:bold;
+        line-height:1.25em;
+        /*margin:1.5em 0 0.5em;*/
+        padding:0;
+    }
+
+    h4 {
+        font-size:1.2em;
+        font-weight:normal;
+        margin:0 0 0.75em 0;
+        padding:0;
+    }
+
+    #container {
+        padding:10px 25px;
+        /*padding:25px;
+        margin:15px 20px;
+        background-color:#fff;
+        -moz-border-radius:8px;
+        -webkit-border-radius:8px;
+        border-radius:8px;
+        */
+    }
+
+    #header{
+
+        height:50px;
+        margin-bottom:30px;
+
+    }
+
+    #logo{
+        float:left;
+        margin-top:18px;
+    }
+
+    #search_top{
+        float:left;
+        margin-left:15px;
+    }
+
+    #search_types{
+        font-size:2em;
+    }
+
+    #search_types a{
+        margin-right:0.73em;
+        font-size:0.8em;
+    }
+    #search_line {
+
+        border-bottom:4px solid #ddd;
+    }
+
+    #search_types a.selected{
+        color:#54555C;
+        text-decoration:none;
+        font-weight:bold;
+    }
+
+    #search_top input[type="submit"]{
+        height:31px;
+        padding:0 5px;
+    }
+
+    .search_box{
+        margin-top:4px;
+        height: 24px;
+        font-size:1em; 
+
+        background-color:#f2f2f2;
+        padding: 3px 1px 0px 3px;
+    }
+
+    #search_options{
+        float:left;
+        margin:18px 0 0 5px;
+        font-size:0.6em;
+    }
+
+    #wrapper{
+        clear:both;
+    }
+
+    table.advanced_search td{
+        padding-bottom:4px;
+    }
+    #header_top_margin{
+        margin-top:20px;
+
+    }
+
+    input{padding:4px;}
+    select{padding:1px;}
+
+    #footer {
+        border-top:1px solid #ddd;
+        clear:both;
+        color:#838E96;
+        font-size:0.9sem;
+        line-height:19px;
+        padding:10px 0 0;
+        margin-top:20px;
+    }
+
+    #container_results {}
+
+    #container_results .total {
+        margin: 0 0 10px 0;
+        padding: 4px;
+        color:#fff;
+        background-color:#ccc;
+        font-weight: bold;
+        font-size:0.8em;
+        display:inline;
+    }
+
+    #column_left {
+        float:left;
+        width:25%;
+    }
+
+    #column_middle {
+        float:left;
+        width:70%;
+        margin:0 15px 20px 25px;
+    }
+
+    #column_right {
+        float:right;
+        width:160px;
+    }
+
+    #search_details {
+        font-size:0.9em;
+        margin:0 0 10px 0;
+    }
+
+    .column_ad {
+        border-top:1px solid #ccc;
+        padding:10px 0 0 0;
+        margin:0 0 0 0;
+    }
+
+    .box {
+        margin:0 0 10px 0;
+        padding:10px;
+        -moz-border-radius:4px;
+        -webkit-border-radius: 4px;
+        /*height:auto !important;*/
+    }
+
+    .box.text {
+        font-size:0.75em;
+        font-weight:bold;
+        margin:0 0 4px;
+    }
+
+    .box_analytics {
+        background:#eee none repeat scroll 0 0;
+        margin:0 0 4px 0;
+        -moz-border-radius:4px;
+        -webkit-border-radius: 4px;
+        float:left;
+        padding:10px 5px;
+        width:88px;
+        font-weight:bold;
+        text-align:center;
+    }
+
+    .box_analytics .score {
+        font-size:1.4em;
+        font-weight:bold;
+    }
+
+    .box_analytics .score_title {
+        font-size:0.9em;
+        font-weight:normal;
+    }
+
+    .box_segment {
+        padding:10px 0;
+        border-bottom:1px solid #ccc;	
+    }
+
+    #top_keywords table {
+    }
+
+    #top_keywords td {
+        font-size:0.75em;
+        font-weight:bold;
+        padding-bottom:7px;
+    }
+
+    #top_keywords a {
+        color:#000;
+        text-decoration:none;	
+    }
+
+    #top_keywords a:hover {
+        text-decoration:underline;	
+    }
+
+    .chart_bar {
+        -moz-border-radius:2px;
+        -webkit-border-radius: 2px;
+        background:#0060b6 none repeat scroll 0 0;
+    }
+
+    .box.grey {
+        background:#eee none repeat scroll 0 0;
+    }
+
+    .box.yellow {
+        background:#FCF7E3 none repeat scroll 0 0;
+        border:1px solid #FCDF6B;
+    }
+
+    .box.blue {
+        background:#F1F5FE none repeat scroll 0 0;
+        border:1px solid #C6DCFE;
+    }
+
+    .box p, .box table td {
+        font-size:0.9em;
+        margin-bottom:0.5em;
+    }
+
+    .column_top_area {
+        padding:10px;
+        margin: 0 0 10px 0;
+        font-size:0.9em;
+        background-color:#eee;
+        -moz-border-radius:4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+    }
+
+    /* results */
+
+    #sort_show {
+        margin-bottom:20px;
+        font-size:0.8em;
+    }
+
+    #sort_show .show_results {
+        float:left;
+    }
+
+
+    #sort_show .sort_results {
+        text-align:right;
+    }
+
+    #sort_show  a {
+        color:#497BB6;
+    }
+
+    #sort_show a.selected {
+        font-weight:bold;
+        text-decoration:none;
+        color:#666666;
+    }
+
+    /* search results css */
+
+    #results {
+        max-width:100%;
+        text-align: justify;
+    }
+
+    /* full is for images and videos */
+    #results.full {
+        max-width:none;
+        padding-right:250px;
+    }
+
+    #results.full .result {
+        float:left;
+        margin:0 0 20px 20px;
+    }
+
+    #results.full .result.images {
+        /*height:225px;
+        width:225px;*/
+        text-align:center;
+        width:160px;
+    }
+
+    #results.full .result.images .description {
+        height:150px;
+        width:150px;
+    }
+
+    .result.images .description img {
+        height:150px;
+        max-width:150px;
+    }
+
+    #results.full .result.videos {
+        height:500px;
+        width:400px;
+    }
+
+    #results.full .result .description {}
+
+    /* standard results css */
+    #results .result {
+        margin-bottom:0px;
+    }
+
+    .user_image {
+        height:24px;
+        width:24px;
+        vertical-align:middle;
+        border:1px solid #ddd;
+        padding:2px;
+    }
+
+    .result .icon {
+        float:left;
+    }
+
+    .result .body {
+        margin-left:38px;
+    }
+
+    .result img {
+        max-height:150px;
+        max-width:200px;
+        overflow:hidden;
+        text-align:center;
+        /*margin:10px 0;*/
+    }
+
+    .result img.thumbnail {
+        border:1px solid #ddd;
+        float:right;
+        padding:2px;
+        margin:0 0 5px 5px;
+        max-height:75px;
+        max-width:100px;
+        overflow:hidden;
+        text-align:center;
+    }
+
+    .result .description embed {
+    }
+
+    .result .description {
+        font-size:0.9em;
+        line-height:1.3em;
+        margin-top:5px;
+    }
+
+    .result .info {
+        color:#666;
+        font-size:0.8em;
+        white-space:nowrap;
+        clear:both;
+    }
+
+    .info a.link {
+        color:#539D36;
+        text-decoration:none;
+    }
+
+    .info a.link:hover {
+        text-decoration:underline;
+    }
+
+    .result h3 {
+        display:inline;
+        font-weight:normal;
+        margin:0;
+        font-size:1.1em;
+    }
+
+    .postrank {
+        margin-top:4px;
+        height:16px;
+        width:40px;
+        background-image:url(/assets/img/icons/postrank.png);
+        background-repeat:no-repeat;
+        background-position:left top;
+        background-color:#ccc;
+        color:#000;
+        font-size:11px;
+        font-weight:bold;
+        font-family:Arial, Helvetica, sans-serif;
+    }
+    .postrank div {
+        padding:3px 0 0 0;
+        margin: 0 0 0 16px;
+        text-align:center;
+        width:24px;
+    }
+
+    /* analytics */
+
+    .social_index{
+        font-size: 5em;
+        color:#FB7C00;
+    }
+
+    .social_index_total{
+        font-size:2em;
+        color:#555;
+    }
+
+    .analytics_title{
+        font-size:1.3em;
+    }
+
+    .analytics_item_value{
+        font-size:1em;
+    }
+
+    .analytics_social_source{
+        padding:2px 4px;
+        -moz-border-radius:4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        background-color:#FB7C00;
+        color:#fff;
+        float:left;
+    }
+
+    .gchart{
+        text-align:center;
+        -moz-border-radius:4px;
+        -webkit-border-radius: 4px;
+        padding:5px;
+        background-color:#fff;
+    }
+
+    /* pagination */
+    .pagination {
+        clear:both;
+        padding-top:15px;
+        font-size:0.9em;
+        height:28px;
+    }
+
+    .pagination a {
+        text-decoration:none;
+        color:#0066CC;
+    }
+
+    .pagination div.page {
+        background-color:#fff;
+        border:1px solid #ccc;
+        float:left;
+        font-weight:bold;
+        margin-right:1px;
+        padding:5px 7px;
+    }
+
+    .pagination div.selected, .pagination a:hover div.page {
+        background-color:#ccc;
+        color:#fff;
+    }
+
+    .tagcloud {font-size:1em;line-height:1.4em; word-spacing:0.25em;}
+    .tagcloud .font1 {font-size:75%;}
+    .tagcloud .font2 {font-size:100%;}
+    .tagcloud .font3 {font-size:125%;}
+    .tagcloud .font4 {font-size:140%;}
+    .tagcloud .font5 {font-size:150%;}
+</style>

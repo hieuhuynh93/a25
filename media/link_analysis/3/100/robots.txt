@@ -1,0 +1,5 @@
+Sitemap: https://smilecaptured.com/index.php/sitemap.xml
+Sitemap: https://smilecaptured.com/index.php/news-sitemap.xml
+User-agent: *
+Disallow: /wp-admin/
+Allow: /wp-admin/admin-ajax.php

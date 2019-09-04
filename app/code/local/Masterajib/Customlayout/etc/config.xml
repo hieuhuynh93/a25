@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Masterajib_Customlayout>
+            <version>0.1.0</version>
+        </Masterajib_Customlayout>
+    </modules>   
+    <global>
+        <page>
+            <layouts> 
+                <new_cms_layout module="page" translate="label">
+                    <label>SEO One Column Without Header Footer</label>
+                    <template>page/1-column-without-header-footer.phtml</template>
+                    <layout_handle>lookbook</layout_handle>
+                </new_cms_layout>
+                <new_cms_layout2 module="page" translate="label">
+                    <label>SEO Two Column Left With Header Footer</label>
+                    <template>page/2-column-left-with-header-footer.phtml</template>
+                    <layout_handle>lookbook</layout_handle>
+                </new_cms_layout2>
+                <new_cms_layout3 module="page" translate="label">
+                    <label>Pure Empty</label>
+                    <template>page/pure_empty.phtml</template>
+                    <layout_handle>lookbook</layout_handle>
+                </new_cms_layout3>
+            </layouts>
+        </page>
+    </global>
+</config>
